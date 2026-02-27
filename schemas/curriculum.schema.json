@@ -1,0 +1,431 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://papertek.no/schemas/curriculum.schema.json",
+  "title": "Papertek Edu-Framework Curriculum Configuration Schema",
+  "description": "Defines how curricula are registered and configured in the Papertek framework",
+  "type": "object",
+  "additionalProperties": {
+    "$ref": "#/$defs/curriculumEntry"
+  },
+  "$defs": {
+    "curriculumEntry": {
+      "type": "object",
+      "title": "Curriculum Entry",
+      "description": "A single curriculum configuration in the registry",
+      "required": [
+        "id",
+        "filePrefix",
+        "folderName",
+        "chapters",
+        "title",
+        "description",
+        "languageDir",
+        "languageConfig"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Curriculum ID",
+          "description": "Unique identifier for the curriculum (e.g., 'tysk1-vg1')",
+          "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$",
+          "minLength": 3,
+          "maxLength": 64
+        },
+        "filePrefix": {
+          "type": "string",
+          "title": "File Prefix",
+          "description": "Prefix used for generated lesson files (e.g., 'vg1' for vg1-1-1.html)",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "folderName": {
+          "type": "string",
+          "title": "Folder Name",
+          "description": "Directory name where curriculum content is stored (e.g., 'tysk')",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "chapters": {
+          "type": "integer",
+          "title": "Number of Chapters",
+          "description": "Total number of chapters in the curriculum",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "title": {
+          "type": "string",
+          "title": "Curriculum Title",
+          "description": "Display name for the curriculum",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "title": "Curriculum Description",
+          "description": "Detailed description of the curriculum",
+          "minLength": 5,
+          "maxLength": 500
+        },
+        "contentPath": {
+          "type": "string",
+          "title": "Content Path",
+          "description": "Path where curriculum content is located",
+          "pattern": "^[a-z0-9/_-]+$",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "paths": {
+          "type": "object",
+          "title": "Path Configuration",
+          "description": "Path overrides for curriculum-specific URLs",
+          "properties": {
+            "homeLink": {
+              "type": "string",
+              "title": "Home Link",
+              "description": "URL path to the curriculum home page",
+              "pattern": "^/[a-z0-9/_-]*\\.html$",
+              "minLength": 1,
+              "maxLength": 256
+            }
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "languageDir": {
+          "type": "string",
+          "title": "Language Directory",
+          "description": "Directory name for language-specific content (e.g., 'tysk')",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "chapterMapping": {
+          "type": "object",
+          "title": "Chapter Mapping",
+          "description": "Maps curriculum chapter numbers to display chapter numbers",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          }
+        },
+        "startButtonText": {
+          "type": "string",
+          "title": "Start Button Text",
+          "description": "Text displayed on the curriculum start button",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "languageConfig": {
+          "$ref": "#/$defs/languageConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "languageConfig": {
+      "type": "object",
+      "title": "Language Configuration",
+      "description": "Language-specific settings and grammar rules",
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "title": "Language Code",
+          "description": "ISO 639-1 language code (e.g., 'de' for German)",
+          "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+          "minLength": 2,
+          "maxLength": 5
+        },
+        "grammar": {
+          "$ref": "#/$defs/grammarConfig"
+        },
+        "dataKeys": {
+          "type": "object",
+          "title": "Data Keys",
+          "description": "Keys used for target and native language in data structures",
+          "properties": {
+            "target": {
+              "type": "string",
+              "title": "Target Language Key",
+              "description": "Key for the target language in data objects",
+              "minLength": 1,
+              "maxLength": 32
+            },
+            "native": {
+              "type": "string",
+              "title": "Native Language Key",
+              "description": "Key for the native language in data objects",
+              "minLength": 1,
+              "maxLength": 32
+            }
+          }
+        },
+        "specialChars": {
+          "type": "array",
+          "title": "Special Characters",
+          "description": "Special characters used in the language (e.g., umlauts for German)",
+          "items": {
+            "type": "string",
+            "pattern": "^.+$",
+            "maxLength": 2
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "grammarConfig": {
+      "type": "object",
+      "title": "Grammar Configuration",
+      "description": "Grammar-specific rules and settings for the language",
+      "properties": {
+        "genderCount": {
+          "type": "integer",
+          "title": "Number of Genders",
+          "description": "Number of grammatical genders (e.g., 3 for German: m, f, n)",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "articles": {
+          "type": "object",
+          "title": "Articles",
+          "description": "Definite articles for each gender and plural",
+          "properties": {
+            "m": {
+              "type": "string",
+              "title": "Masculine Article",
+              "minLength": 1,
+              "maxLength": 10
+            },
+            "f": {
+              "type": "string",
+              "title": "Feminine Article",
+              "minLength": 1,
+              "maxLength": 10
+            },
+            "n": {
+              "type": "string",
+              "title": "Neuter Article",
+              "minLength": 1,
+              "maxLength": 10
+            },
+            "pl": {
+              "type": "string",
+              "title": "Plural Article",
+              "minLength": 1,
+              "maxLength": 10
+            }
+          },
+          "additionalProperties": false
+        },
+        "genderLabels": {
+          "type": "object",
+          "title": "Gender Labels",
+          "description": "Display labels for each grammatical gender",
+          "properties": {
+            "m": {
+              "type": "string",
+              "title": "Masculine Label",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            "f": {
+              "type": "string",
+              "title": "Feminine Label",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            "n": {
+              "type": "string",
+              "title": "Neuter Label",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            "pl": {
+              "type": "string",
+              "title": "Plural Label",
+              "minLength": 1,
+              "maxLength": 50
+            }
+          },
+          "additionalProperties": false
+        },
+        "genderColors": {
+          "type": "object",
+          "title": "Gender Colors",
+          "description": "Color coding for each gender (hex format)",
+          "properties": {
+            "m": {
+              "type": "string",
+              "title": "Masculine Color",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "f": {
+              "type": "string",
+              "title": "Feminine Color",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "n": {
+              "type": "string",
+              "title": "Neuter Color",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "pl": {
+              "type": "string",
+              "title": "Plural Color",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "verbLogic": {
+          "type": "object",
+          "title": "Verb Logic",
+          "description": "Language-specific verb conjugation rules",
+          "properties": {
+            "infinitiveParticle": {
+              "type": "string",
+              "title": "Infinitive Particle",
+              "description": "Particle used before infinitives (e.g., 'zu' in German)",
+              "minLength": 1,
+              "maxLength": 10
+            },
+            "acceptInfinitiveParticle": {
+              "type": "boolean",
+              "title": "Accept Infinitive Particle",
+              "description": "Whether to accept infinitive particle in answers"
+            }
+          },
+          "additionalProperties": false
+        },
+        "pronouns": {
+          "type": "array",
+          "title": "Pronouns",
+          "description": "List of pronouns in standard order (singular to plural)",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "additionalProperties": false
+    },
+    "exerciseDatabaseEntry": {
+      "type": "object",
+      "title": "Exercise Database Entry",
+      "description": "Configuration for exercises in a specific lesson (chapter-lesson)",
+      "required": [],
+      "properties": {
+        "ovelser": {
+          "type": "integer",
+          "title": "Number of Regular Exercises",
+          "description": "Number of standard exercises (øvelser) in the lesson",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "ekstraovelser": {
+          "type": "integer",
+          "title": "Number of Extra Exercises",
+          "description": "Number of extra exercises (ekstraøvelser) in the lesson. Use 0 to disable extra exercises tab",
+          "minimum": 0,
+          "maximum": 200
+        },
+        "tests": {
+          "type": "array",
+          "title": "Test Types",
+          "description": "Types of tests available for the lesson",
+          "items": {
+            "type": "string",
+            "enum": [
+              "leksjon",
+              "kapittel",
+              "repetisjonstest",
+              "avsluttende"
+            ],
+            "title": "Test Type"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "examples": [
+    {
+      "tysk1-vg1": {
+        "id": "tysk1-vg1",
+        "filePrefix": "vg1",
+        "folderName": "tysk",
+        "chapters": 8,
+        "title": "Wir sprechen Deutsch 1 - VG1",
+        "description": "Tysk nivå 1 for videregående",
+        "contentPath": "content/german",
+        "paths": {
+          "homeLink": "/tysk/index.html"
+        },
+        "languageDir": "tysk",
+        "chapterMapping": {
+          "1": "1",
+          "2": "2"
+        },
+        "startButtonText": "Start",
+        "languageConfig": {
+          "code": "de",
+          "grammar": {
+            "genderCount": 3,
+            "articles": {
+              "m": "der",
+              "f": "die",
+              "n": "das",
+              "pl": "die"
+            },
+            "genderLabels": {
+              "m": "Maskulin",
+              "f": "Feminin",
+              "n": "Neutrum",
+              "pl": "Flertall"
+            },
+            "genderColors": {
+              "m": "#3B82F6",
+              "f": "#EC4899",
+              "n": "#10B981",
+              "pl": "#8B5CF6"
+            },
+            "verbLogic": {
+              "infinitiveParticle": "zu",
+              "acceptInfinitiveParticle": true
+            },
+            "pronouns": [
+              "ich",
+              "du",
+              "er/sie/es",
+              "wir",
+              "ihr",
+              "sie/Sie"
+            ]
+          },
+          "dataKeys": {
+            "target": "tysk",
+            "native": "norsk"
+          },
+          "specialChars": [
+            "ä",
+            "ö",
+            "ü",
+            "ß",
+            "Ä",
+            "Ö",
+            "Ü"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+/**
+ * =================================================================
+ * STORAGE UTILITIES - Standardized Exercise State Management
+ * =================================================================
+ *
+ * Centralized exercise storage utilities that ensure consistent
+ * localStorage key patterns across all exercise types.
+ *
+ * STANDARD KEY FORMAT: {curriculum}-{lessonId}-{exerciseType}-{exerciseId}
+ *
+ * Examples:
+ * - vg1-tysk1-1-3-fill-in-aufgabeA
+ * - vg1-tysk1-1-3-true-false-aufgabeC
+ * - vg1-tysk1-2-2-matching-ovelse-1
+ *
+ * Benefits:
+ * - Easy to query all exercises for a lesson (prefix matching)
+ * - Consistent ordering (alphabetically sorted by lesson)
+ * - Simpler reset logic
+ * - Easier debugging
+ */
+
+/**
+ * Generate standardized localStorage key for an exercise
+ * @param {string} curriculum - Curriculum ID (e.g., 'vg1-tysk1')
+ * @param {string} lessonId - Lesson ID (e.g., '1-3')
+ * @param {string} exerciseType - Type of exercise (e.g., 'fill-in', 'true-false')
+ * @param {string} exerciseId - Exercise identifier (e.g., 'aufgabeA', 'ovelse-1')
+ * @returns {string} Standardized localStorage key
+ */
+export function getExerciseStorageKey(curriculum, lessonId, exerciseType, exerciseId) {
+    return `${curriculum}-${lessonId}-${exerciseType}-${exerciseId}`;
+}
+
+/**
+ * Save exercise state to localStorage
+ * @param {string} curriculum - Curriculum ID
+ * @param {string} lessonId - Lesson ID
+ * @param {string} exerciseType - Type of exercise
+ * @param {string} exerciseId - Exercise identifier
+ * @param {any} state - State to save (will be JSON stringified)
+ */
+export function saveExerciseState(curriculum, lessonId, exerciseType, exerciseId, state) {
+    const key = getExerciseStorageKey(curriculum, lessonId, exerciseType, exerciseId);
+    localStorage.setItem(key, JSON.stringify(state));
+    console.log(`💾 Saved exercise state: ${key}`);
+}
+
+/**
+ * Load exercise state from localStorage
+ * @param {string} curriculum - Curriculum ID
+ * @param {string} lessonId - Lesson ID
+ * @param {string} exerciseType - Type of exercise
+ * @param {string} exerciseId - Exercise identifier
+ * @param {any} defaultState - Default state if not found
+ * @returns {any} Parsed state or default
+ */
+export function loadExerciseState(curriculum, lessonId, exerciseType, exerciseId, defaultState = null) {
+    const key = getExerciseStorageKey(curriculum, lessonId, exerciseType, exerciseId);
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : defaultState;
+}
+
+/**
+ * Clear all exercise state for a specific lesson
+ * Handles both new standardized format AND old legacy format
+ * @param {string} curriculum - Curriculum ID
+ * @param {string} lessonId - Lesson ID
+ * @returns {number} Number of keys cleared
+ */
+export function clearLessonExercises(curriculum, lessonId) {
+    const keysToRemove = [];
+
+    // Pattern 1: New standardized format
+    // {curriculum}-{lessonId}-{exerciseType}-{exerciseId}
+    // Example: vg1-tysk1-1-1-fill-in-aufgabeA
+    const newFormatPrefix = `${curriculum}-${lessonId}-`;
+
+    // Pattern 2: Old fill-in format (legacy)
+    // {curriculum}-fill-in-{exerciseId}-{lessonId}
+    // Example: vg1-tysk1-fill-in-aufgabeA-1-1
+    const oldFillInPrefix = `${curriculum}-fill-in-`;
+    const oldFillInSuffix = `-${lessonId}`;
+
+    // Pattern 3: Other old formats
+    // {curriculum}-{exerciseType}-{...}-{lessonId}
+    const oldExerciseTypes = ['true-false', 'matching', 'drag-drop', 'writing', 'flashcard', 'quiz', 'jeopardy'];
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key) continue;
+
+        // Check new standardized format
+        if (key.startsWith(newFormatPrefix)) {
+            keysToRemove.push(key);
+            continue;
+        }
+
+        // Check old fill-in format: curriculum-fill-in-{...}-lessonId
+        if (key.startsWith(oldFillInPrefix) && key.endsWith(oldFillInSuffix)) {
+            keysToRemove.push(key);
+            continue;
+        }
+
+        // Check other old formats: curriculum-exerciseType-{...}-lessonId
+        for (const exerciseType of oldExerciseTypes) {
+            const oldPrefix = `${curriculum}-${exerciseType}-`;
+            if (key.startsWith(oldPrefix) && key.endsWith(oldFillInSuffix)) {
+                keysToRemove.push(key);
+                break;
+            }
+        }
+    }
+
+    keysToRemove.forEach(key => {
+        localStorage.removeItem(key);
+        console.log(`🧹 Cleared exercise: ${key}`);
+    });
+
+    console.log(`✅ Cleared ${keysToRemove.length} exercise state keys for lesson ${lessonId}`);
+    return keysToRemove.length;
+}
+
+/**
+ * Get all exercise keys for a lesson
+ * @param {string} curriculum - Curriculum ID
+ * @param {string} lessonId - Lesson ID
+ * @returns {string[]} Array of matching keys
+ */
+export function getLessonExerciseKeys(curriculum, lessonId) {
+    const prefix = `${curriculum}-${lessonId}-`;
+    const keys = [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(prefix)) {
+            keys.push(key);
+        }
+    }
+
+    return keys;
+}
+
+/**
+ * Clear all old-format exercise keys (migration helper)
+ * This removes keys that don't follow the new standard format
+ *
+ * Old patterns that will be cleared:
+ * - {curriculum}-fill-in-{exerciseId}-{lessonId}
+ * - {curriculum}-true-false-{lessonId}
+ * - {curriculum}-matching-{exerciseId}-{lessonId}
+ * - {curriculum}-drag-drop-{exerciseId}-{lessonId}
+ * - {curriculum}-writing-{exerciseId}-{lessonId}
+ *
+ * @returns {number} Number of old keys cleared
+ */
+export function clearOldExerciseKeys() {
+    console.log('🧹 Clearing old exercise storage keys...');
+
+    const oldPatterns = [
+        // Pattern: curriculum-exerciseType-...
+        // New pattern starts with: curriculum-lessonId-exerciseType
+        // So old keys have exerciseType in 2nd position after first hyphen
+        /^[^-]+-fill-in-/,
+        /^[^-]+-true-false-/,
+        /^[^-]+-matching-/,
+        /^[^-]+-drag-drop-/,
+        /^[^-]+-writing-/,
+        /^[^-]+-flashcard-/,
+        /^[^-]+-quiz-/,
+        /^[^-]+-jeopardy-/
+    ];
+
+    const keysToRemove = [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key) continue;
+
+        // Check if key matches any old pattern
+        for (const pattern of oldPatterns) {
+            if (pattern.test(key)) {
+                keysToRemove.push(key);
+                break;
+            }
+        }
+    }
+
+    console.log(`Found ${keysToRemove.length} old exercise keys to clear`);
+
+    keysToRemove.forEach(key => {
+        localStorage.removeItem(key);
+        console.log(`🧹 Removed old key: ${key}`);
+    });
+
+    console.log('✅ Old exercise keys cleared');
+    return keysToRemove.length;
+}

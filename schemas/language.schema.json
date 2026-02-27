@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://papertek.no/schemas/language.schema.json",
+  "title": "Papertek Language Configuration",
+  "description": "Language-specific configuration for the target language being taught. Defines grammatical features, UI text, special characters, and language-specific settings.",
+  "type": "object",
+  "required": [
+    "code",
+    "name",
+    "genderSystem"
+  ],
+  "properties": {
+    "code": {
+      "type": "string",
+      "pattern": "^[a-z]{2}$",
+      "description": "ISO 639-1 two-letter language code (e.g., 'de', 'fr', 'es')"
+    },
+    "name": {
+      "type": "string",
+      "description": "English name of the language (e.g., 'German', 'French')"
+    },
+    "nativeName": {
+      "type": "string",
+      "description": "Name of the language in the language itself (e.g., 'Deutsch')"
+    },
+    "scriptDirection": {
+      "type": "string",
+      "enum": ["ltr", "rtl"],
+      "default": "ltr",
+      "description": "Text direction: left-to-right or right-to-left"
+    },
+    "genderSystem": {
+      "type": "string",
+      "enum": ["none", "two", "three"],
+      "description": "Grammatical gender system: 'none' (English, Chinese), 'two' (French, Spanish), 'three' (German, Russian)"
+    },
+    "articles": {
+      "type": "object",
+      "description": "Definite articles keyed by gender code (m, f, n, pl). Values are article strings.",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "examples": [
+        {
+          "m": "der",
+          "f": "die",
+          "n": "das",
+          "pl": "die"
+        }
+      ]
+    },
+    "genderLabels": {
+      "type": "object",
+      "description": "Display labels for each gender keyed by gender code (m, f, n, pl).",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "examples": [
+        {
+          "m": "Masculine",
+          "f": "Feminine",
+          "n": "Neuter",
+          "pl": "Plural"
+        }
+      ]
+    },
+    "genderColors": {
+      "type": "object",
+      "description": "Hex color codes for each gender keyed by gender code (m, f, n, pl) for UI highlighting.",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      },
+      "examples": [
+        {
+          "m": "#3b82f6",
+          "f": "#ec4899",
+          "n": "#10b981",
+          "pl": "#6366f1"
+        }
+      ]
+    },
+    "specialCharacters": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Special characters unique to this language (e.g., ä, ö, ü, ß for German)"
+    },
+    "characterNormalization": {
+      "type": "object",
+      "description": "Maps special characters to ASCII equivalents for search/normalization (e.g., 'ö' -> 'oe')",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "examples": [
+        {
+          "ä": "ae",
+          "ö": "oe",
+          "ü": "ue",
+          "ß": "ss"
+        }
+      ]
+    },
+    "ttsVoice": {
+      "type": "string",
+      "description": "Text-to-speech voice identifier (e.g., 'de-DE-Chirp3-HD' for Google Cloud TTS)"
+    },
+    "verbConfig": {
+      "type": "object",
+      "description": "Verb-specific configuration for this language",
+      "properties": {
+        "infinitiveParticle": {
+          "type": "string",
+          "description": "Particle used with infinitives (e.g., 'zu' for German, 'à' for French)"
+        },
+        "acceptInfinitiveParticle": {
+          "type": "boolean",
+          "description": "Whether to accept answers with or without the infinitive particle"
+        },
+        "pronouns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Standard pronouns in grammatical order (e.g., ich, du, er/sie/es, wir, ihr, sie/Sie)"
+        }
+      }
+    },
+    "caseSystem": {
+      "type": "object",
+      "description": "Grammatical case configuration (for languages like German with multiple cases)",
+      "properties": {
+        "cases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of cases in this language (e.g., nominativ, akkusativ, dativ, genitiv)"
+        },
+        "progressionGating": {
+          "type": "object",
+          "description": "Maps case names to chapter numbers where they are introduced/unlocked",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "examples": [
+            {
+              "nominativ": 1,
+              "akkusativ": 2,
+              "dativ": 4,
+              "genitiv": 6
+            }
+          ]
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

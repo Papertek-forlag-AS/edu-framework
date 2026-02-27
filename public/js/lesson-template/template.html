@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Leksjon {{LESSON_NUMBER}}: {{TITLE}}</title>
+    <link href="../../../../papertek.css" rel="stylesheet" />
+    <link href="../../../../stylesheet.css" rel="stylesheet" />
+    <link href="../../../../manifest.json" rel="manifest" />
+    <link href="../../../../ikoner/icon-192x192.png" rel="apple-touch-icon" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="Tysk1" name="apple-mobile-web-app-title" />
+</head>
+
+<body class="bg-neutral-50 text-neutral-800" data-chapter-id="{{CHAPTER_ID}}">
+    <div class="container mx-auto p-4 sm:p-6 md:p-8">
+        <div id="page-header-placeholder"></div>
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-primary-700 tracking-tight">{{TITLE}}</h1>
+        </div>
+        <main>
+            <!-- LEKSJON TAB -->
+            <div class="tab-content space-y-8" id="leksjon">
+                <!-- Læringsmål -->
+                <div class="bg-surface p-6 rounded-xl shadow-sm">
+                    <h2 class="text-2xl font-bold text-primary-700 mb-4" data-i18n="goals_title">Læringsmål</h2>
+                    <p class="mb-4" data-i18n="goals_intro">I denne leksjonen vil du lære:</p>
+                    <ul class="list-disc list-inside space-y-2 text-neutral-700" id="maal-liste">
+                        <!-- Fylles dynamisk av lessons-content-loader.js -->
+                    </ul>
+                </div>
+                <!-- Additional texts container (info sections, etc.) -->
+                <div id="additional-texts-container"></div>
+                <!-- Dialog -->
+                <div class="bg-surface p-6 rounded-xl shadow-sm">
+                    <h2 class="text-2xl font-bold text-primary-700 mb-4">
+                        <span data-i18n="text_a_title">Tekst A:</span> <span
+                            id="dialog-tittel"><!-- Fylles dynamisk --></span>
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <audio class="w-full mb-4" controls="">
+                                <source src="" type="audio/mpeg" />
+                                Nettleseren din støtter ikke lydelementet.
+                            </audio>
+                            <p class="mb-4" id="dialog-beskrivelse"><!-- Fylles dynamisk --></p>
+                            <div class="bg-neutral-100 p-6 rounded-lg space-y-3" id="dialog-replikker">
+                                <!-- Fylles dynamisk av lessons-content-loader.js -->
+                            </div>
+                        </div>
+                        <div>
+                            <img alt="" class="w-full h-auto object-contain rounded-lg max-h-96" id="dialog-bilde"
+                                src="" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Placeholder locations for other content -->
+                <div id="uttale-placeholder"></div>
+                <div id="landeskunde-placeholder"></div>
+                <div class="mt-12 p-6 bg-neutral-100/60 rounded-lg text-center">
+                    <button
+                        class="next-tab-btn bg-primary-500 text-white font-bold py-3 px-5 rounded-lg hover:bg-primary-600 transition-colors"
+                        data-next-tab="ordforrad" data-i18n="btn_next">
+                        Gå videre
+                    </button>
+                </div>
+            </div>
+
+            <!-- ORDFORRÅD TAB -->
+            <div class="tab-content hidden" id="ordforrad">
+                <div class="bg-surface p-6 rounded-xl shadow-sm mb-6">
+                    <h2 class="text-2xl font-bold text-primary-700 mb-4" data-i18n="vocab_interactive_title">Interaktivt
+                        Ordforråd</h2>
+                    <p class="mb-4" data-i18n="vocab_intro">Her kan du øve på ordene fra leksjonen. Klikk på et kort for
+                        å snu det.</p>
+                    <div class="flex gap-4 mb-6">
+                        <button
+                            class="flex-1 bg-neutral-200 hover:bg-neutral-300 font-semibold py-2 px-4 rounded-lg transition-colors"
+                            id="show-german-btn" data-i18n="btn_show_german">{{START_BUTTON_TEXT}}</button>
+                        <button
+                            class="flex-1 bg-neutral-200 hover:bg-neutral-300 font-semibold py-2 px-4 rounded-lg transition-colors"
+                            id="show-norwegian-btn" data-i18n="btn_show_norwegian">Start med norsk</button>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+                        id="flashcard-container">
+                    </div>
+                </div>
+                <div class="bg-surface p-6 rounded-xl shadow-sm mt-8">
+                    <h2 class="text-2xl font-bold text-primary-700 mb-4" data-i18n="vocab_trainer_title">Øv på glosene
+                    </h2>
+                    <p class="text-neutral-600 mb-6" data-i18n="vocab_trainer_intro">Velg en metode nedenfor for å øve
+                        aktivt på ordene fra denne leksjonen.</p>
+                    <div id="vocab-trainer-module"></div>
+                </div>
+                <div class="mt-12 p-6 bg-neutral-100/60 rounded-lg text-center">
+                    <button
+                        class="next-tab-btn bg-primary-500 text-white font-bold py-3 px-5 rounded-lg hover:bg-primary-600 transition-colors"
+                        data-next-tab="grammatikk" data-i18n="btn_next">
+                        Gå videre
+                    </button>
+                </div>
+            </div>
+
+            <!-- GRAMMATIKK TAB -->
+            <div class="tab-content hidden space-y-8" id="grammatikk">
+                <!-- Grammar content loaded dynamically by grammatikk-innhold-loader.js -->
+                <div class="mt-12 p-6 bg-neutral-100/60 rounded-lg text-center">
+                    <button
+                        class="next-tab-btn bg-primary-500 text-white font-bold py-3 px-5 rounded-lg hover:bg-primary-600 transition-colors"
+                        data-next-tab="ovelser" data-i18n="btn_next">
+                        Gå videre
+                    </button>
+                </div>
+            </div>
+
+            <!-- ØVELSER TAB -->
+            <div class="tab-content hidden space-y-8" id="ovelser">
+                <!-- Øvelser lastes dynamisk av exercises-content-loader.js -->
+                <!-- Sjekkliste -->
+                <div class="bg-surface p-6 rounded-xl shadow-sm">
+                    <h2 class="text-2xl font-bold text-primary-700 mb-4" data-i18n="exercises_checklist_title">Dette har
+                        du lært</h2>
+                    <ul class="space-y-3" id="checklist">
+                        <!-- Fylles dynamisk av lessons-content-loader.js -->
+                    </ul>
+                </div>
+
+                <!-- Classroom Dialog Button -->
+                <div class="bg-primary-50 border-l-4 border-primary-500 p-6 rounded-r-xl">
+                    <div class="flex flex-col md:flex-row items-center gap-4">
+                        <div class="flex-shrink-0 text-4xl">🖥️</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-primary-800 mb-2" data-i18n="dialog_title">Klasseromsdialog
+                            </h3>
+                            <p class="text-neutral-700" data-i18n="dialog_subtitle">Dialoger designet for bruk på
+                                projektor eller smartboard i klasserommet</p>
+                        </div>
+                        <button
+                            class="classroom-dialog-btn bg-primary-500 text-white font-bold py-3 px-5 rounded-lg hover:bg-primary-600 transition-colors whitespace-nowrap"
+                            data-i18n="dialog_open_btn">
+                            Åpne dialog →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Test Start Section -->
+                <div class="mt-8 flex flex-col lg:flex-row items-center gap-4 lg:gap-8" id="test-start-punkt">
+                    <div class="w-full lg:w-auto lg:flex-1 bg-primary-100/60 p-6 rounded-lg text-center">
+                        <h3 class="text-xl font-bold text-primary-800">Klar for å teste deg selv?</h3>
+                        <p class="text-neutral-700 mt-2 mb-4">Ta en kort test for å se hva du har lært i denne leksjonen.
+                        </p>
+                        <a class="inline-block bg-primary-500 text-white font-bold py-3 px-5 rounded-lg hover:bg-primary-600"
+                            href="../../../../test.html?type=leksjon&id={{LESSON_DOT_NUMBER}}&returnTo={{FILE_NAME}}">
+                            Start testen for Leksjon {{LESSON_NUMBER}}
+                        </a>
+                    </div>
+                    <div class="hidden w-full lg:w-auto lg:flex-1 text-center" id="next-lesson-unlockable">
+                        <h3 class="text-xl font-bold text-success-800">Godt jobbet!</h3>
+                        <p class="text-neutral-700 mt-2 mb-4">Du har fullført testen og er klar for neste utfordring.</p>
+                        <a class="inline-block bg-success-600 text-white font-bold py-3 px-5 rounded-lg hover:bg-success-700"
+                            href="#">
+                            Gå til neste leksjon →
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EKSTRAØVELSER TAB (conditional) -->
+            {{EKSTRAOVELSER_TAB}}
+
+            <!-- DIALOG TAB -->
+            <div class="tab-content hidden" id="dialog">
+                <!-- Classroom dialog content is dynamically loaded by classroom-dialog-loader.js -->
+                <div id="classroom-dialog-container"></div>
+            </div>
+
+            <!-- LÆRER TAB -->
+            <div class="tab-content hidden" id="larer">
+                <div class="bg-surface p-6 rounded-xl shadow-sm mb-6">
+                    <h2 class="text-2xl font-bold text-primary-700 mb-4">👨‍🏫 Lærerressurser</h2>
+                    <p class="text-neutral-600 mb-4">Denne fanen inneholder ekstra ressurser og aktiviteter for lærere.
+                    </p>
+                </div>
+
+                <!-- Teacher content loaded dynamically by teacher-content-loader.js -->
+                <div id="teacher-content-container" class="space-y-6"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- App initialization -->
+    <script type="module" src="../../../../js/main.js"></script>
+
+    <!-- Dev-only context harvester (auto-disables outside localhost) -->
+    <script src="../../../../js/dev-harvester.js"></script>
+</body>
+
+</html>

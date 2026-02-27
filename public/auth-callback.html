@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logger inn med FEIDE...</title>
+    <link rel="stylesheet" href="papertek.css">
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 min-h-screen flex items-center justify-center">
+    <div class="text-center max-w-md px-4">
+        <!-- Spinner -->
+        <div class="mb-6 flex justify-center">
+            <div class="w-16 h-16 border-4 border-info-500 border-t-transparent rounded-full spinner"></div>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-3xl font-bold text-neutral-800 mb-3">
+            Logger inn med FEIDE...
+        </h1>
+
+        <!-- Message -->
+        <p class="text-neutral-600 mb-6">
+            Vent litt mens vi henter dine data og synkroniserer fremgangen din.
+        </p>
+
+        <!-- Info box -->
+        <div class="bg-info-50 border-2 border-info-200 rounded-lg p-4 text-left">
+            <p class="text-sm text-info-800">
+                <strong>Første gang du logger inn?</strong><br>
+                Din lokale fremgang vil automatisk synkroniseres til skyen og være tilgjengelig på alle enheter.
+            </p>
+        </div>
+
+        <!-- Error message (hidden by default) -->
+        <div id="error-message" class="hidden mt-6 bg-error-50 border-2 border-error-200 rounded-lg p-4">
+            <p class="text-error-800 font-semibold mb-2">
+                ⚠️ Innlogging feilet
+            </p>
+            <p class="text-sm text-error-700" id="error-details">
+                Kunne ikke fullføre innlogging. Vennligst prøv igjen.
+            </p>
+            <a href="/index.html" class="mt-4 inline-block bg-error-600 text-white px-4 py-2 rounded-lg hover:bg-error-700 transition-colors">
+                Tilbake til forsiden
+            </a>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- Environment config -->
+    <script src="/js/config/env.js"></script>
+
+    <!-- Auth callback handler -->
+    <script type="module">
+        import { checkAuthStatus } from './js/auth/firebase-feide-auth.js';
+        import { getCurrentUser } from './js/auth/firebase-client.js';
+
+        // Handle Firebase auth redirect callback
+        async function processCallback() {
+            try {
+                // Firebase handles redirect result automatically via checkAuthStatus
+                await checkAuthStatus();
+
+                // Check if user is logged in
+                const user = getCurrentUser();
+
+                if (user) {
+                    // Show success message briefly
+                    document.querySelector('h1').textContent = '✅ Innlogging vellykket!';
+                    document.querySelector('p').textContent = 'Omdirigerer til forsiden...';
+
+                    // Redirect to home page after 1 second
+                    setTimeout(() => {
+                        window.location.href = '/index.html';
+                    }, 1000);
+                } else {
+                    // Show error
+                    showError('Kunne ikke fullføre innlogging. Vennligst prøv igjen.');
+                }
+            } catch (error) {
+                console.error('Callback error:', error);
+                showError(`Feil: ${error.message}`);
+            }
+        }
+
+        function showError(message) {
+            document.querySelector('.spinner').parentElement.classList.add('hidden');
+            document.querySelector('h1').classList.add('hidden');
+            document.querySelector('p').classList.add('hidden');
+            document.querySelector('.bg-info-50').classList.add('hidden');
+
+            const errorDiv = document.getElementById('error-message');
+            const errorDetails = document.getElementById('error-details');
+
+            errorDetails.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        // Start processing callback after a short delay to ensure Firebase is initialized
+        setTimeout(processCallback, 500);
+    </script>
+</body>
+</html>

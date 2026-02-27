@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Caches - Tysk08</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+        .success {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+        .error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+        button {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 10px 10px 0;
+        }
+        button:hover {
+            background: #d97706;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .log {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 3px 0;
+        }
+        .log-entry.success { color: #059669; }
+        .log-entry.error { color: #dc2626; }
+        .log-entry.info { color: #2563eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Cache Cleanup Tool</h1>
+        <p>This tool will clean up old service workers and caches. Use this if the app isn't working offline or if you see errors.</p>
+
+        <div class="status" id="status">
+            Ready to clean caches...
+        </div>
+
+        <button onclick="clearAllCaches()" id="clearBtn">Clear All Caches</button>
+        <button onclick="unregisterServiceWorkers()" id="unregisterBtn">Unregister Service Workers</button>
+        <button onclick="fullCleanup()" id="fullCleanupBtn">Full Cleanup (Recommended)</button>
+        <button onclick="location.href='./index.html'" style="background: #10b981;">Back to App</button>
+
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        function addLog(message, type = 'info') {
+            const log = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        async function clearAllCaches() {
+            addLog('Starting cache cleanup...');
+            try {
+                const cacheNames = await caches.keys();
+                addLog(`Found ${cacheNames.length} caches`);
+
+                for (const cacheName of cacheNames) {
+                    await caches.delete(cacheName);
+                    addLog(`✓ Deleted cache: ${cacheName}`, 'success');
+                }
+
+                document.getElementById('status').className = 'status success';
+                document.getElementById('status').textContent = `✓ Successfully deleted ${cacheNames.length} caches!`;
+                addLog('All caches cleared!', 'success');
+            } catch (error) {
+                addLog(`✗ Error: ${error.message}`, 'error');
+                document.getElementById('status').className = 'status error';
+                document.getElementById('status').textContent = '✗ Error clearing caches';
+            }
+        }
+
+        async function unregisterServiceWorkers() {
+            addLog('Starting service worker cleanup...');
+            try {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                addLog(`Found ${registrations.length} service workers`);
+
+                for (const registration of registrations) {
+                    await registration.unregister();
+                    addLog(`✓ Unregistered service worker`, 'success');
+                }
+
+                document.getElementById('status').className = 'status success';
+                document.getElementById('status').textContent = `✓ Successfully unregistered ${registrations.length} service workers!`;
+                addLog('All service workers unregistered!', 'success');
+            } catch (error) {
+                addLog(`✗ Error: ${error.message}`, 'error');
+                document.getElementById('status').className = 'status error';
+                document.getElementById('status').textContent = '✗ Error unregistering service workers';
+            }
+        }
+
+        async function fullCleanup() {
+            addLog('='.repeat(50), 'info');
+            addLog('Starting FULL cleanup...', 'info');
+            addLog('='.repeat(50), 'info');
+
+            document.getElementById('fullCleanupBtn').disabled = true;
+
+            try {
+                // Step 1: Unregister all service workers
+                addLog('Step 1: Unregistering service workers...', 'info');
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (const registration of registrations) {
+                    await registration.unregister();
+                    addLog(`✓ Unregistered SW`, 'success');
+                }
+
+                // Step 2: Clear all caches
+                addLog('Step 2: Clearing all caches...', 'info');
+                const cacheNames = await caches.keys();
+                for (const cacheName of cacheNames) {
+                    await caches.delete(cacheName);
+                    addLog(`✓ Deleted cache: ${cacheName}`, 'success');
+                }
+
+                // Step 3: Clear localStorage (optional - commented out to preserve progress)
+                // localStorage.clear();
+                // addLog('✓ Cleared localStorage', 'success');
+
+                document.getElementById('status').className = 'status success';
+                document.getElementById('status').innerHTML = `
+                    <strong>✓ Full cleanup complete!</strong><br>
+                    <small>Deleted ${cacheNames.length} caches and ${registrations.length} service workers</small><br>
+                    <small><strong>Next step:</strong> Click "Back to App" and the new service worker v270 will install fresh</small>
+                `;
+                addLog('='.repeat(50), 'success');
+                addLog('✓ CLEANUP COMPLETE! Refresh the app to install v270', 'success');
+                addLog('='.repeat(50), 'success');
+
+            } catch (error) {
+                addLog(`✗ Error during cleanup: ${error.message}`, 'error');
+                document.getElementById('status').className = 'status error';
+                document.getElementById('status').textContent = '✗ Error during cleanup';
+            } finally {
+                document.getElementById('fullCleanupBtn').disabled = false;
+            }
+        }
+
+        // Auto-run on load
+        addLog('Cache Cleanup Tool ready', 'info');
+        addLog('Click "Full Cleanup" to remove all old service workers and caches', 'info');
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+public/
+stilark-tailwind.css
+
+# Backups
+bilder-original-backup/
+lydfiler-wav-backup/
+
+# Vercel
+.vercel/
+
+# External libraries
+bibliotek/
+
+# Archive/Inspiration folders
+Bokprosjekt - inspirasjon/
+arkiv/
+
+# Minified files
+*.min.js
+*.min.css
+
+# Lock files
+package-lock.json

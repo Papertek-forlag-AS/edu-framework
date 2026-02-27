@@ -1,0 +1,43 @@
+name: Validate Vocabulary
+
+on:
+  push:
+    paths:
+      - 'shared/vocabulary/**'
+      - 'back-stage/validate-vocabulary.js'
+      - 'back-stage/check-audio-coverage.js'
+  pull_request:
+    paths:
+      - 'shared/vocabulary/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate vocabulary data
+        run: node back-stage/validate-vocabulary.js
+
+      - name: Check audio file coverage
+        run: node back-stage/check-audio-coverage.js
+
+      - name: Verify iOS symlinks
+        run: |
+          echo "Checking iOS symlinks..."
+          test -L apps/wir-sprechen-curriculum/Resources/Manifests || echo "Warning: Manifests symlink missing"
+          test -L apps/wir-sprechen-curriculum/Resources/VocabAudio || echo "Warning: VocabAudio symlink missing"
+
+      - name: Verify webapp symlinks
+        run: |
+          echo "Checking webapp symlinks..."
+          test -L public/content/german/vocab-audio || echo "Warning: German audio symlink missing"
+          test -L public/content/spanish/vocab-audio || echo "Warning: Spanish audio symlink missing"

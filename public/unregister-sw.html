@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unregister Service Worker - Tysk Lærebok</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .status.info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #90caf9;
+        }
+        .status.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #81c784;
+        }
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef5350;
+        }
+        button {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #1557b0;
+        }
+        button.secondary {
+            background: #5f6368;
+        }
+        button.secondary:hover {
+            background: #3c4043;
+        }
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .instructions ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 5px 0;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', monospace;
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Service Worker Management</h1>
+        <p>This page helps you unregister the service worker during development/testing.</p>
+
+        <div id="status" class="status info">
+            Checking service worker status...
+        </div>
+
+        <div style="margin: 20px 0;">
+            <button id="unregisterBtn" onclick="unregisterServiceWorker()">
+                Unregister Service Worker
+            </button>
+            <button class="secondary" onclick="clearCache()">
+                Clear All Caches
+            </button>
+            <button class="secondary" onclick="location.href='index.html'">
+                Go to App
+            </button>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Why Unregister?</h3>
+            <ul>
+                <li><strong>Development/Testing:</strong> Service workers cache files, making it hard to see updates</li>
+                <li><strong>Debugging:</strong> Old cached code can cause confusing bugs</li>
+                <li><strong>Fresh Start:</strong> Ensures you're always seeing the latest version</li>
+            </ul>
+        </div>
+
+        <div class="instructions">
+            <h3>🔄 After Unregistering:</h3>
+            <ol>
+                <li>Service worker will be removed from your browser</li>
+                <li>All caches will be cleared</li>
+                <li>App will work normally, just without offline support</li>
+                <li>Hard refresh (Ctrl+Shift+R / Cmd+Shift+R) to ensure clean state</li>
+            </ol>
+        </div>
+
+        <div class="instructions">
+            <h3>✅ When Ready to Launch:</h3>
+            <p>To re-enable the service worker before launch:</p>
+            <ol>
+                <li>Open <code>sw.js</code></li>
+                <li>Change <code>const SW_ENABLED = false;</code> to <code>const SW_ENABLED = true;</code></li>
+                <li>Deploy to production</li>
+                <li>Service worker will automatically register again</li>
+            </ol>
+        </div>
+
+        <h3>Manual Unregistration (if needed):</h3>
+        <ol>
+            <li>Open browser DevTools (F12)</li>
+            <li>Go to <strong>Application</strong> tab (Chrome) or <strong>Storage</strong> tab (Firefox)</li>
+            <li>Click <strong>Service Workers</strong> in the left sidebar</li>
+            <li>Click <strong>Unregister</strong> next to each service worker</li>
+            <li>Go to <strong>Cache Storage</strong> and delete all caches</li>
+            <li>Refresh the page</li>
+        </ol>
+    </div>
+
+    <script>
+        // Check current service worker status
+        window.addEventListener('load', async () => {
+            await checkStatus();
+        });
+
+        async function checkStatus() {
+            const statusDiv = document.getElementById('status');
+
+            if (!('serviceWorker' in navigator)) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Service Workers not supported in this browser';
+                document.getElementById('unregisterBtn').disabled = true;
+                return;
+            }
+
+            try {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                const cacheNames = await caches.keys();
+
+                if (registrations.length === 0 && cacheNames.length === 0) {
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = '✅ <strong>Clean state!</strong> No service workers or caches registered.';
+                } else if (registrations.length > 0) {
+                    statusDiv.className = 'status info';
+                    statusDiv.innerHTML = `⚠️ <strong>Active:</strong> ${registrations.length} service worker(s) registered, ${cacheNames.length} cache(s) found.<br>Click "Unregister Service Worker" to remove them.`;
+                } else {
+                    statusDiv.className = 'status info';
+                    statusDiv.innerHTML = `⚠️ <strong>Caches only:</strong> ${cacheNames.length} cache(s) found, no active service workers.<br>Click "Clear All Caches" to remove them.`;
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Error checking status: ' + error.message;
+            }
+        }
+
+        async function unregisterServiceWorker() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status info';
+            statusDiv.textContent = '⏳ Unregistering service workers...';
+
+            try {
+                // Unregister all service workers
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                let unregisteredCount = 0;
+
+                for (const registration of registrations) {
+                    const success = await registration.unregister();
+                    if (success) {
+                        unregisteredCount++;
+                        console.log('Unregistered service worker:', registration.scope);
+                    }
+                }
+
+                // Clear all caches
+                const cacheNames = await caches.keys();
+                let deletedCount = 0;
+
+                for (const cacheName of cacheNames) {
+                    const success = await caches.delete(cacheName);
+                    if (success) {
+                        deletedCount++;
+                        console.log('Deleted cache:', cacheName);
+                    }
+                }
+
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `✅ <strong>Success!</strong><br>` +
+                    `Unregistered ${unregisteredCount} service worker(s)<br>` +
+                    `Deleted ${deletedCount} cache(s)<br><br>` +
+                    `Now refresh the page (Ctrl+Shift+R / Cmd+Shift+R) for a clean start.`;
+
+                // Reload status after a delay
+                setTimeout(checkStatus, 3000);
+
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Error during unregistration: ' + error.message;
+                console.error('Unregistration error:', error);
+            }
+        }
+
+        async function clearCache() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status info';
+            statusDiv.textContent = '⏳ Clearing caches...';
+
+            try {
+                const cacheNames = await caches.keys();
+                let deletedCount = 0;
+
+                for (const cacheName of cacheNames) {
+                    const success = await caches.delete(cacheName);
+                    if (success) {
+                        deletedCount++;
+                        console.log('Deleted cache:', cacheName);
+                    }
+                }
+
+                statusDiv.className = 'status success';
+                statusDiv.textContent = `✅ Deleted ${deletedCount} cache(s)`;
+
+                setTimeout(checkStatus, 2000);
+
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Error clearing caches: ' + error.message;
+                console.error('Cache clearing error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://papertek.no/schemas/question-bank.schema.json",
+  "title": "Papertek Edu-Framework Question Bank Schema",
+  "description": "JSON Schema (draft 2020-12) for the Papertek Edu-Framework question bank / test system. Validates question objects used in Tysk1 and other language learning curricula.",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/question"
+  },
+  "minItems": 0,
+  "$defs": {
+    "question": {
+      "title": "Question",
+      "description": "A single question object in the question bank",
+      "type": "object",
+      "required": [
+        "leksjon",
+        "kapittel",
+        "type",
+        "sporsmal",
+        "svar"
+      ],
+      "properties": {
+        "leksjon": {
+          "title": "Lesson Reference",
+          "description": "Lesson identifier in format 'chapter.lesson' (e.g., '1.1', '2.3')",
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+$",
+          "examples": [
+            "1.1",
+            "2.1",
+            "3.1",
+            "5.2"
+          ]
+        },
+        "kapittel": {
+          "title": "Chapter",
+          "description": "Chapter identifier, typically a numeric string matching the first part of leksjon",
+          "type": "string",
+          "pattern": "^\\d+$",
+          "examples": [
+            "1",
+            "2",
+            "3",
+            "5"
+          ]
+        },
+        "type": {
+          "title": "Question Type",
+          "description": "The type of question which determines required additional properties",
+          "type": "string",
+          "enum": [
+            "fill-in",
+            "drag-and-drop",
+            "multiple-choice"
+          ]
+        },
+        "sporsmal": {
+          "title": "Question Text",
+          "description": "The question prompt. Can contain HTML tags (e.g., <br>, <em>) for formatting.",
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "Hva heter «god morgen» på tysk?<br><em>Guten ___</em>",
+            "Sett ordene i riktig rekkefølge:",
+            "Hva betyr «Schule» på norsk?"
+          ]
+        },
+        "svar": {
+          "title": "Answer",
+          "description": "The correct answer. Format depends on question type.",
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "Morgen",
+            "Ich heiße Lukas",
+            "Skole"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "fill-in"
+              }
+            }
+          },
+          "then": {
+            "title": "Fill-In Question",
+            "description": "A fill-in-the-blank question with a single correct answer string",
+            "$comment": "Fill-in questions require: leksjon, kapittel, type, sporsmal, svar. No additional properties required.",
+            "properties": {
+              "type": {
+                "const": "fill-in"
+              },
+              "svar": {
+                "title": "Correct Answer",
+                "description": "The correct word or phrase to fill in the blank",
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "drag-and-drop"
+              }
+            }
+          },
+          "then": {
+            "title": "Drag-and-Drop Question",
+            "description": "A word ordering question where students arrange words into correct sequence",
+            "required": [
+              "ord"
+            ],
+            "properties": {
+              "type": {
+                "const": "drag-and-drop"
+              },
+              "ord": {
+                "title": "Words to Order",
+                "description": "Array of words that students must arrange in correct order",
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "examples": [
+                  [
+                    "Ich",
+                    "heiße",
+                    "Lukas"
+                  ],
+                  [
+                    "Der",
+                    "Hund",
+                    "ist",
+                    "groß"
+                  ]
+                ]
+              },
+              "svar": {
+                "title": "Correct Sentence",
+                "description": "The correct sentence formed by arranging the words in order",
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "multiple-choice"
+              }
+            }
+          },
+          "then": {
+            "title": "Multiple-Choice Question",
+            "description": "A multiple-choice question with multiple answer options",
+            "required": [
+              "alternativer"
+            ],
+            "properties": {
+              "type": {
+                "const": "multiple-choice"
+              },
+              "alternativer": {
+                "title": "Answer Options",
+                "description": "Array of answer choices. The correct answer must be one of these options.",
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 10,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "examples": [
+                  [
+                    "Skole",
+                    "Stol",
+                    "Sko",
+                    "Skilt"
+                  ],
+                  [
+                    "Yes",
+                    "No",
+                    "Maybe"
+                  ]
+                ]
+              },
+              "svar": {
+                "title": "Correct Answer",
+                "description": "The correct answer, which must be one of the options in alternativer",
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "dependentSchemas": {
+              "svar": {
+                "properties": {
+                  "svar": true,
+                  "alternativer": true
+                },
+                "allOf": [
+                  {
+                    "$comment": "Validate that svar is one of the alternativer options"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

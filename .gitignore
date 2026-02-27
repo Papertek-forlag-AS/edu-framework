@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+
+# Firebase (optional auth)
+.firebase/
+serviceAccountKey.json
+*-firebase-adminsdk-*.json
+
+# Backups
+*.bak
+*.backup
+nul
+
+# Audio files (fetched/generated at build time)
+public/audiofiles/dialogue-*.mp3
+public/audiofiles/info-*.mp3
+
+# Xcode user-specific files
+*.xcuserstate
+xcuserdata/
+
+# Build artifacts — fetched from Papertek Vocabulary API at build time
+# Run `npm run fetch:vocabulary` to populate these
+shared/vocabulary/
+public/shared/vocabulary/
+public/content/*/vocab-audio/
+
+# Temp/lock files
+*.tmp
+.~lock.*
+
+# Trashbin — old docs/plans pending deletion
+trashbin/
+
+# Back-stage — local dev resources
+back-stage/
+
+# IDE / OS artifacts
+.idea/
+.vscode/
+.gradle/
+.idx/
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*
+
+# Working artifacts (not part of the framework)
+TAILWIND_AUDIT_*.md
+TAILWIND_AUDIT_*.txt
+TAILWIND_CLASS_REFERENCE.md
+MIGRATION_REPORT.md
+
+# Generated lesson HTML (these belong in content projects, not the framework)
+public/vg1-*.html
+public/us-*.html

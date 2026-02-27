@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://papertek.no/schemas/lesson.schema.json",
+  "title": "Papertek Edu-Framework Lesson Data Schema",
+  "description": "JSON Schema for lesson data files in the Papertek Edu-Framework. Defines the structure for lesson content including dialog, learning goals, and metadata.",
+  "type": "object",
+  "additionalProperties": {
+    "$ref": "#/$defs/lessonEntry"
+  },
+  "examples": [
+    {
+      "1-1": {
+        "germanTitle": "Hallo! Wie heißt du?",
+        "learningGoals": [
+          "Hilse på noen på tysk",
+          "Si hva du heter"
+        ],
+        "dialog": {
+          "title": "Dialog: Erste Begegnung",
+          "description": "Lukas og Olivia møter hverandre...",
+          "audioFile": "dialogue-1-1a.mp3",
+          "image": "kapitel1-dialog.jpg",
+          "imageAlt": "Students meeting",
+          "lines": [
+            {
+              "person": "lukas",
+              "tekst": "Hallo! Ich <span class=\"word-lookup\" data-type=\"verb\" data-verb=\"heißen\">heiße</span> Lukas."
+            },
+            {
+              "person": "olivia",
+              "tekst": "Hallo Lukas! Ich <span class=\"word-lookup\" data-type=\"verb\" data-verb=\"heißen\">heiße</span> Olivia."
+            }
+          ]
+        },
+        "checklist": [
+          "Jeg kan hilse på noen på tysk",
+          "Jeg kan si hva jeg heter"
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "lessonEntry": {
+      "type": "object",
+      "title": "Lesson Entry",
+      "description": "A single lesson entry keyed by lesson ID (e.g., '1-1', '3-2')",
+      "required": [
+        "germanTitle",
+        "learningGoals",
+        "dialog",
+        "checklist"
+      ],
+      "properties": {
+        "germanTitle": {
+          "type": "string",
+          "title": "German Title",
+          "description": "The lesson title in the target language (German)",
+          "minLength": 1
+        },
+        "learningGoals": {
+          "type": "array",
+          "title": "Learning Goals",
+          "description": "Array of learning objectives for the lesson in Norwegian",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "dialog": {
+          "$ref": "#/$defs/dialogEntry"
+        },
+        "checklist": {
+          "type": "array",
+          "title": "Self-Assessment Checklist",
+          "description": "Array of self-assessment items for students, phrased as 'Jeg kan...' statements",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "dialogEntry": {
+      "type": "object",
+      "title": "Dialog",
+      "description": "Lesson dialog with metadata and dialog lines",
+      "required": [
+        "title",
+        "description",
+        "audioFile",
+        "image",
+        "imageAlt",
+        "lines"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "Dialog Title",
+          "description": "Title for the dialog section",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "title": "Dialog Description",
+          "description": "Contextual description of the dialog in Norwegian",
+          "minLength": 1
+        },
+        "audioFile": {
+          "type": "string",
+          "title": "Audio File",
+          "description": "Filename of the audio file (e.g., 'dialogue-1-1a.mp3')",
+          "minLength": 1,
+          "pattern": "^[\\w\\-]+\\.(mp3|wav|ogg|m4a)$"
+        },
+        "image": {
+          "type": "string",
+          "title": "Image File",
+          "description": "Filename of the dialog image (e.g., 'kapitel1-dialog.jpg')",
+          "minLength": 1,
+          "pattern": "^[\\w\\-]+\\.(jpg|jpeg|png|webp|gif)$"
+        },
+        "imageAlt": {
+          "type": "string",
+          "title": "Image Alt Text",
+          "description": "Accessible alt text for the image",
+          "minLength": 1
+        },
+        "lines": {
+          "type": "array",
+          "title": "Dialog Lines",
+          "description": "Array of dialog lines spoken by characters",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/dialogLine"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "dialogLine": {
+      "type": "object",
+      "title": "Dialog Line",
+      "description": "A single line spoken by a character in the dialog",
+      "required": [
+        "person",
+        "tekst"
+      ],
+      "properties": {
+        "person": {
+          "type": "string",
+          "title": "Speaker",
+          "description": "Character key identifying who speaks this line (referenced from characters data file)",
+          "minLength": 1
+        },
+        "tekst": {
+          "type": "string",
+          "title": "Text",
+          "description": "The dialog text (may contain HTML word-lookup spans with data-type, data-verb, data-word, or data-noun attributes)",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "lessonMetadata": {
+      "type": "object",
+      "title": "Lesson Metadata",
+      "description": "Metadata for lessons used by the template generator, keyed by lesson ID",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "germanTitle"
+        ],
+        "properties": {
+          "germanTitle": {
+            "type": "string",
+            "title": "German Title",
+            "description": "The lesson title in German",
+            "minLength": 1
+          },
+          "spanishTitle": {
+            "type": "string",
+            "title": "Spanish Title",
+            "description": "The lesson title in Spanish (optional, for multilingual support)",
+            "minLength": 1
+          },
+          "frenchTitle": {
+            "type": "string",
+            "title": "French Title",
+            "description": "The lesson title in French (optional, for multilingual support)",
+            "minLength": 1
+          },
+          "hasEkstraovelser": {
+            "type": "boolean",
+            "title": "Has Extra Exercises",
+            "description": "Whether this lesson includes extra exercises (ekstraøvelser)",
+            "default": false
+          },
+          "hasDialog": {
+            "type": "boolean",
+            "title": "Has Dialog",
+            "description": "Whether this lesson includes a dialog section",
+            "default": true
+          },
+          "nextLesson": {
+            "type": "string",
+            "title": "Next Lesson ID",
+            "description": "The ID of the next lesson in sequence (e.g., '1-2')",
+            "pattern": "^\\d+-\\d+$"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Tysk Vg1 - Lær tysk interaktivt",
+  "short_name": "Tysk Vg1",
+  "description": "En interaktiv lærebok i tysk nivå 1 for vg1, designet for å fungere offline.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#fafaf9",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "ikoner/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "ikoner/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "ikoner/maskable-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

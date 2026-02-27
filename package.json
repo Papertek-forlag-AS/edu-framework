@@ -1,0 +1,50 @@
+{
+  "name": "@papertek/edu-framework",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Open-source framework for building offline-first educational web apps (PWAs)",
+  "private": true,
+  "license": "MIT",
+  "author": "Papertek Forlag",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/papertek/edu-framework"
+  },
+  "bin": {
+    "create-edu-app": "cli/create-edu-app.js"
+  },
+  "scripts": {
+    "create": "node cli/create-edu-app.js",
+    "fetch:vocabulary": "node scripts/fetch-vocabulary.cjs",
+    "build:dictionary": "node scripts/dictionary/enrich-curriculum-words.js && node scripts/dictionary/import-goethe-words.js && node scripts/dictionary/add-frequency-data.js && node scripts/dictionary/generate-dict-translations.js && node scripts/dictionary/build-search-index.js",
+    "build:vocab": "npm run fetch:vocabulary && npm run build:dictionary && rm -rf public/shared/vocabulary && mkdir -p public/shared && cp -R shared/vocabulary public/shared/",
+    "build": "npm run build:vocab",
+    "dev": "npx http-server public -p 8000 -c-1",
+    "generate:lessons": "node public/js/lesson-template/template-generator.js",
+    "verify:lessons": "node public/js/lesson-template/verify-generated.js",
+    "validate:schemas": "node scripts/validate-schemas.js",
+    "validate:config": "node scripts/config-parser.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "test": "vitest",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "@playwright/test": "^1.56.1",
+    "@vitest/ui": "^3.2.4",
+    "ajv": "^8.18.0",
+    "ajv-draft-04": "^1.0.0",
+    "ajv-formats": "^3.0.1",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "http-server": "^14.1.1",
+    "prettier": "^3.6.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

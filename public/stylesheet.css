@@ -1,0 +1,553 @@
+/* Importerer Inter-fonten lokalt med korrekte filnavn */
+/* inter-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  src: url('bibliotek/fonts/inter-v19-latin-regular.woff2') format('woff2');
+}
+
+/* inter-600 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  src: url('bibliotek/fonts/inter-v19-latin-600.woff2') format('woff2');
+}
+
+/* inter-700 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  src: url('bibliotek/fonts/inter-v19-latin-700.woff2') format('woff2');
+}
+
+/* Generell stil for siden */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Stil for faneknapper */
+.tab-button.active {
+  border-color: #F59E0B;
+  color: #F59E0B;
+}
+
+/* Stil for interaktive ordforråd-kort (flashcards) */
+.flashcard {
+  perspective: 1000px;
+}
+
+.flashcard-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+  will-change: transform;
+}
+
+.flashcard.flipped .flashcard-inner {
+  transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+}
+
+.flashcard-back {
+  transform: rotateY(180deg);
+}
+
+/* Stil for "kombiner"-øvelsen */
+.match-item.selected {
+  background-color: #FBBF24;
+}
+
+.match-item.correct {
+  background-color: #34D399;
+  color: white;
+  cursor: default !important;
+}
+
+.match-item.incorrect {
+  background-color: #F87171;
+  color: white;
+  animation: shake 0.5s;
+}
+
+/* Animasjon for feil svar */
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Animasjon for fade-in effekt */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
+}
+
+/* Stil for bilde-matching-øvelsen */
+.image-match-item {
+  width: 100px;
+  height: 100px;
+  padding: 0;
+  overflow: hidden;
+  border: 3px solid transparent;
+}
+
+.image-match-item.selected {
+  border-color: #FBBF24;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.3);
+}
+
+.image-match-item.correct {
+  border-color: #34D399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.3);
+  cursor: default !important;
+}
+
+.image-match-item.incorrect {
+  border-color: #F87171;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.3);
+  animation: shake 0.5s;
+}
+
+.answer-match-item.selected {
+  background-color: #FBBF24;
+}
+
+.answer-match-item.correct {
+  background-color: #34D399;
+  color: white;
+  cursor: default !important;
+}
+
+.answer-match-item.incorrect {
+  background-color: #F87171;
+  color: white;
+  animation: shake 0.5s;
+}
+
+/* Stil for tilbakemelding i "fyll inn"-øvelsen */
+.feedback-correct {
+  border-color: #10B981;
+}
+
+.feedback-incorrect {
+  border-color: #EF4444;
+}
+
+/* Quiz feedback feiring */
+.quiz-feedback {
+  transition: all 0.3s ease;
+}
+
+.quiz-feedback.celebration {
+  animation: celebrate 2s ease-in-out;
+}
+
+@keyframes celebrate {
+  0% {
+    transform: scale(1);
+  }
+
+  25% {
+    transform: scale(1.05);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  75% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Tooltip synlighet */
+.tooltip {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.group:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Quiz answer styles */
+.quiz-option.correct-answer {
+  background-color: #10b981 !important;
+  color: white !important;
+  border-color: #059669 !important;
+}
+
+.quiz-option.wrong-answer {
+  background-color: #ef4444 !important;
+  color: white !important;
+  border-color: #dc2626 !important;
+}
+
+.quiz-option.correct-answer-temp {
+  background-color: #10b981 !important;
+  color: white !important;
+  border-color: #059669 !important;
+  opacity: 0.7;
+}
+
+/* Flash animation for correct answer highlighting */
+@keyframes flash-green {
+
+  0%,
+  100% {
+    background-color: #f3f4f6;
+  }
+
+  50% {
+    background-color: #10b981;
+    color: white;
+  }
+}
+
+/* Stil for tooltips i familietre og lignende */
+.tooltip {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  pointer-events: none;
+}
+
+/* Vises på hover (PC) ELLER når den har 'show-tooltip'-klassen (mobil-trykk) */
+.group:hover .tooltip,
+.group.show-tooltip .tooltip {
+  opacity: 1;
+}
+
+/* NYTT: Forbedret stil for alle grammatikk-tabeller */
+#grammatikk table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+}
+
+#grammatikk th,
+#grammatikk td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e7e5e4;
+  /* stone-200 */
+}
+
+#grammatikk thead th {
+  background-color: #f5f5f4;
+  /* stone-100 */
+  font-weight: 600;
+  color: #334155;
+  /* slate-700 */
+  border-bottom: 2px solid #d6d3d1;
+  /* stone-300 */
+  border: 2px dashed #d6d3d1;
+  /* stone-300 */
+}
+
+#grammatikk tbody tr:hover {
+  background-color: #fafaf9;
+  /* stone-50 */
+}
+
+/* Stil for interaktive ord med grammatikk-info */
+.grammar-info,
+.word-lookup {
+  border-bottom: 2px dotted #ca8a04;
+  /* amber-600 */
+  cursor: help;
+  position: relative;
+}
+
+/* Selve popup/tooltip-boksen */
+#grammar-tooltip,
+#vocab-tooltip {
+  position: absolute;
+  background-color: #292524;
+  /* stone-800 */
+  color: white;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  width: max-content;
+  max-width: 300px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  /* Gjemt som standard */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  pointer-events: none;
+  /* Sørger for at den ikke blokkerer musepekeren */
+}
+
+#grammar-tooltip.visible,
+#vocab-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  /* <-- DENNE LINJEN LØSER PROBLEMET */
+}
+
+/* Stil inne i tooltipen */
+#grammar-tooltip .tooltip-title,
+#vocab-tooltip .tooltip-title {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #f59e0b;
+  /* amber-500 */
+  margin-bottom: 0.25rem;
+}
+
+#grammar-tooltip .tooltip-gender,
+#vocab-tooltip .tooltip-gender {
+  font-style: italic;
+  color: #d6d3d1;
+  /* stone-300 */
+}
+
+/* Stil for grammatiske termer som kan slås opp */
+.term-lookup,
+.grammar-term {
+  border-bottom: 2px dotted #4f46e5;
+  /* indigo-600 */
+  cursor: help;
+  font-weight: 600;
+  position: relative;
+}
+
+/* Styling for Dra-og-slipp-oppgaver */
+.drop-zone {
+  min-height: 60px;
+  padding: 0.5rem;
+  border: 2px dashed #d6d3d1;
+  /* stone-300 */
+}
+
+.clickable-word {
+  padding: 0.5rem 1rem;
+  background-color: #f5f5f4;
+  /* stone-100 */
+  border: 1px solid #e7e5e4;
+  /* stone-200 */
+  cursor: pointer;
+  /* Endret fra 'grab' til 'pointer' */
+  transition: all 0.2s ease;
+}
+
+.clickable-word:hover {
+  background-color: #e7e5e4;
+  /* stone-200 */
+  border-color: #d6d3d1;
+  /* stone-300 */
+}
+
+.draggable-word.dragging {
+  opacity: 0.5;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Stil for lydknapp i tooltips */
+.audio-button {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background-color: #44403c;
+  /* stone-700 */
+  color: white;
+  border: 1px solid #57534e;
+  /* stone-600 */
+  border-radius: 0.375rem;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.audio-button:hover {
+  background-color: #57534e;
+  /* stone-600 */
+}
+
+/* Animasjon for fjerning av ord-kort (forbedret versjon) */
+@keyframes fall-and-fade {
+  0% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  100% {
+    transform: translateY(80px) rotate(8deg);
+    /* Faller ned og roterer litt */
+    opacity: 0;
+    filter: blur(5px);
+    /* Blir uskarpt på veien ut */
+  }
+}
+
+.is-destroying {
+  /* Vi øker varigheten litt for en jevnere effekt */
+  animation: fall-and-fade 0.5s ease-in forwards;
+}
+
+/* Stil for interaktivt SVG-kart */
+#interactive-map .bundesland {
+  transition: fill 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+#interactive-map .bundesland:hover {
+  fill: #f59e0b;
+  /* Amber-500 */
+  opacity: 0.8;
+}
+
+#interactive-map .bundesland.selected {
+  fill: #f59e0b !important;
+  /* Amber-500 */
+  stroke: #d97706;
+  /* Amber-600 */
+  stroke-width: 2;
+}
+
+#map-tooltip {
+  background-color: #292524;
+  /* stone-800 */
+  color: white;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  width: max-content;
+  max-width: 300px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  transition: opacity 0.2s, visibility 0.2s;
+  pointer-events: none;
+}
+
+#map-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+#map-tooltip .tooltip-title {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #f59e0b;
+  /* amber-500 */
+  margin-bottom: 0.25rem;
+}
+
+/* Jeopardy Game Styles */
+.jeopardy-tile {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  /* blue-800 to blue-500 */
+  color: #fbbf24;
+  /* amber-400 */
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 2rem 1rem;
+  min-height: 120px;
+  border: 3px solid #1e3a8a;
+  /* blue-900 */
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.jeopardy-tile:hover:not(.selected) {
+  background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+  /* blue-600 to blue-400 */
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.jeopardy-tile.selected {
+  background: #1e293b;
+  /* slate-800 */
+  color: #1e293b;
+  cursor: not-allowed;
+  opacity: 0.4;
+  border-color: #334155;
+  /* slate-700 */
+}
+
+.jeopardy-tile .points {
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.mode-btn {
+  background-color: #f5f5f4;
+  /* stone-100 */
+  color: #57534e;
+  /* stone-600 */
+  border: 2px solid #d6d3d1;
+  /* stone-300 */
+}
+
+.mode-btn:hover {
+  background-color: #e7e5e4;
+  /* stone-200 */
+  border-color: #a8a29e;
+  /* stone-400 */
+}
+
+.mode-btn.active {
+  background-color: #f59e0b;
+  /* amber-500 */
+  color: white;
+  border-color: #d97706;
+  /* amber-600 */
+}
+
+.mode-btn.active:hover {
+  background-color: #d97706;
+  /* amber-600 */
+}

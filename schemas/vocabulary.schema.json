@@ -1,0 +1,797 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://papertek.no/schemas/vocabulary.schema.json",
+  "title": "Papertek Vocabulary Schema",
+  "description": "JSON Schema for vocabulary data in the Papertek Edu-Framework. Defines structures for vocabulary banks (core words), translations, and curriculum manifests consumed by the framework at runtime.",
+  "oneOf": [
+    { "$ref": "#/$defs/bankFile" },
+    { "$ref": "#/$defs/translationFile" },
+    { "$ref": "#/$defs/curriculumManifest" }
+  ],
+  "$defs": {
+    "metadata": {
+      "title": "Metadata",
+      "description": "File-level metadata providing provenance and versioning information.",
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Source of this file. Examples: 'core', 'dictionary', 'merged'.",
+          "enum": ["core", "dictionary", "merged", "translation", "curriculum"]
+        },
+        "packId": {
+          "type": "string",
+          "description": "Pack identifier (e.g., 'german', 'spanish', 'french')."
+        },
+        "targetLanguage": {
+          "type": "string",
+          "description": "Target language code (ISO 639-1). Examples: 'de', 'es', 'fr'."
+        },
+        "nativeLanguage": {
+          "type": "string",
+          "description": "Native/reference language code (ISO 639-1). Examples: 'nb', 'en'. Used in translation files."
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of file generation."
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of file contents."
+        },
+        "totalEntries": {
+          "type": "integer",
+          "description": "Total number of vocabulary entries in this file (excluding _metadata).",
+          "minimum": 0
+        },
+        "curriculumEntries": {
+          "type": "integer",
+          "description": "Number of entries marked as part of the curriculum.",
+          "minimum": 0
+        },
+        "dictionaryOnlyEntries": {
+          "type": "integer",
+          "description": "Number of entries marked as dictionary-only (not in curriculum).",
+          "minimum": 0
+        }
+      },
+      "required": ["source", "generatedAt"],
+      "additionalProperties": false
+    },
+    "bankFile": {
+      "title": "Vocabulary Bank File",
+      "description": "A vocabulary bank file containing word entries indexed by word ID. Each key is a word ID (e.g., 'abend_noun'), plus a _metadata key.",
+      "type": "object",
+      "properties": {
+        "_metadata": {
+          "$ref": "#/$defs/metadata"
+        }
+      },
+      "required": ["_metadata"],
+      "additionalProperties": {
+        "oneOf": [
+          { "$ref": "#/$defs/nounEntry" },
+          { "$ref": "#/$defs/verbEntry" },
+          { "$ref": "#/$defs/adjectiveEntry" },
+          { "$ref": "#/$defs/adverbEntry" },
+          { "$ref": "#/$defs/prepositionEntry" },
+          { "$ref": "#/$defs/conjunctionEntry" },
+          { "$ref": "#/$defs/interjectionEntry" },
+          { "$ref": "#/$defs/pronounEntry" },
+          { "$ref": "#/$defs/articleEntry" },
+          { "$ref": "#/$defs/numberEntry" },
+          { "$ref": "#/$defs/phraseEntry" },
+          { "$ref": "#/$defs/otherWordEntry" }
+        ]
+      }
+    },
+    "wordEntry": {
+      "title": "Word Entry (Base)",
+      "description": "Base properties common to all word types.",
+      "type": "object",
+      "properties": {
+        "word": {
+          "type": "string",
+          "description": "The word in the target language.",
+          "minLength": 1
+        },
+        "_id": {
+          "type": "string",
+          "description": "Canonical word ID (mirrors the object key). Format: {word_stem}_{type}. Examples: 'abend_noun', 'spielen_verb'.",
+          "pattern": "^[a-z0-9_]+_(noun|verb|adj|adv|prep|conj|interj|pron|art|num|phrase|interr|propn|contr|expr|dem_pron|poss_pron|dobj_pron|iobj_pron|refl_pron|strong|weak|modal|reflexive|separable|general)$",
+          "minLength": 1
+        },
+        "audio": {
+          "type": ["string", "null"],
+          "description": "Audio filename (without path). Example: 'substantiv_abend.mp3'. null if no audio available."
+        },
+        "type": {
+          "type": "string",
+          "description": "Part of speech / word type.",
+          "enum": [
+            "noun",
+            "verb",
+            "adj",
+            "adv",
+            "prep",
+            "conj",
+            "interj",
+            "pron",
+            "art",
+            "num",
+            "phrase",
+            "interr",
+            "propn",
+            "contr",
+            "expr",
+            "dem_pron",
+            "poss_pron",
+            "dobj_pron",
+            "iobj_pron",
+            "refl_pron",
+            "general"
+          ]
+        },
+        "intro": {
+          "type": ["string", "null"],
+          "description": "Lesson ID where this word is introduced. Pattern: X.Y (e.g., '5.2', '1.1'). null if introduced before curriculum.",
+          "pattern": "^[0-9]+\\.[0-9]+$"
+        },
+        "curriculum": {
+          "type": "boolean",
+          "description": "true if word is part of the curriculum; false if dictionary-only."
+        },
+        "cefr": {
+          "type": ["string", "null"],
+          "description": "CEFR (Common European Framework of Reference) level.",
+          "enum": ["A1", "A2", "B1", "B2", "C1", "C2", null]
+        },
+        "frequency": {
+          "type": ["integer", "null"],
+          "description": "Frequency rank. 1 = most common word, higher numbers = less common. null if not ranked.",
+          "minimum": 1
+        },
+        "translations": {
+          "type": "object",
+          "description": "Translations indexed by language code (ISO 639-1). Example: { 'nb': 'kveld', 'en': 'evening' }.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "synonyms": {
+          "type": "array",
+          "description": "Synonyms in the target language.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "translation_synonyms": {
+          "type": "object",
+          "description": "Synonyms in native language(s), indexed by language code.",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "explanations": {
+          "type": "object",
+          "description": "Explanations/definitions indexed by language code.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "description": "Categorical tags for filtering and progressive disclosure.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["word", "_id", "type", "curriculum"],
+      "additionalProperties": false
+    },
+    "nounEntry": {
+      "title": "Noun Entry",
+      "description": "Noun word entry with declension and gender information.",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "noun"
+            },
+            "genus": {
+              "type": "string",
+              "description": "Grammatical gender: m (masculine), f (feminine), n (neuter), c (common), pl (plural-only).",
+              "enum": ["m", "f", "n", "c", "pl"]
+            },
+            "plural": {
+              "type": ["string", "null"],
+              "description": "Plural form of the noun. null if no separate plural form or plural-only noun."
+            },
+            "declension_type": {
+              "type": "string",
+              "description": "Declension pattern type.",
+              "enum": ["strong", "weak", "mixed", "plural-only", "uncountable"]
+            },
+            "weak_masculine": {
+              "type": "boolean",
+              "description": "true if this is a weak masculine noun (e.g., 'der Mensch')."
+            },
+            "cases": {
+              "type": "object",
+              "description": "Declension forms indexed by case (nominativ, akkusativ, dativ, genitiv).",
+              "properties": {
+                "nominativ": { "$ref": "#/$defs/caseForm" },
+                "akkusativ": { "$ref": "#/$defs/caseForm" },
+                "dativ": { "$ref": "#/$defs/caseForm" },
+                "genitiv": { "$ref": "#/$defs/caseForm" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": ["genus", "declension_type"]
+        }
+      ]
+    },
+    "caseForm": {
+      "title": "Case Form",
+      "description": "Declension forms for a specific case.",
+      "type": "object",
+      "properties": {
+        "intro": {
+          "type": ["string", "null"],
+          "description": "Lesson ID where this case form is introduced.",
+          "pattern": "^[0-9]+\\.[0-9]+$"
+        },
+        "feature": {
+          "type": ["string", "null"],
+          "description": "Grammar feature flag for progressive disclosure."
+        },
+        "forms": {
+          "type": "object",
+          "description": "Declension forms split by number (singular/plural).",
+          "properties": {
+            "singular": {
+              "type": "object",
+              "description": "Singular forms.",
+              "properties": {
+                "definite": {
+                  "type": "string",
+                  "description": "Form with definite article."
+                },
+                "indefinite": {
+                  "type": "string",
+                  "description": "Form with indefinite article."
+                }
+              },
+              "additionalProperties": false
+            },
+            "plural": {
+              "type": "object",
+              "description": "Plural forms.",
+              "properties": {
+                "definite": {
+                  "type": "string",
+                  "description": "Plural form with definite article."
+                },
+                "indefinite": {
+                  "type": "string",
+                  "description": "Plural form with indefinite article."
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "verbEntry": {
+      "title": "Verb Entry",
+      "description": "Verb word entry with conjugations and mood information.",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "verb"
+            },
+            "conjugations": {
+              "type": "object",
+              "description": "Conjugation forms indexed by tense name.",
+              "additionalProperties": {
+                "$ref": "#/$defs/tenseForm"
+              }
+            },
+            "inseparable": {
+              "type": "boolean",
+              "description": "true if verb has an inseparable prefix (e.g., 'ver-', 'be-')."
+            },
+            "tags": {
+              "type": "array",
+              "description": "Verb-specific tags: 'regular', 'irregular', 'modal', 'separable', 'reflexive', 'inseparable'.",
+              "items": {
+                "type": "string",
+                "enum": ["regular", "irregular", "modal", "separable", "reflexive", "inseparable"]
+              }
+            }
+          },
+          "required": ["conjugations"]
+        }
+      ]
+    },
+    "tenseForm": {
+      "title": "Tense Form",
+      "description": "Conjugation forms for a specific tense.",
+      "type": "object",
+      "properties": {
+        "intro": {
+          "type": ["string", "null"],
+          "description": "Lesson ID where this tense is introduced.",
+          "pattern": "^[0-9]+\\.[0-9]+$"
+        },
+        "feature": {
+          "type": ["string", "null"],
+          "description": "Grammar feature flag for progressive disclosure."
+        },
+        "former": {
+          "type": "object",
+          "description": "Conjugation forms indexed by pronoun.",
+          "properties": {
+            "ich": { "type": "string" },
+            "du": { "type": "string" },
+            "er": { "type": "string" },
+            "sie": { "type": "string" },
+            "es": { "type": "string" },
+            "wir": { "type": "string" },
+            "ihr": { "type": "string" },
+            "sie_plural": { "type": "string" },
+            "Sie": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "auxiliary": {
+          "type": "string",
+          "description": "Auxiliary verb used in compound tenses: 'haben', 'sein', or 'both'.",
+          "enum": ["haben", "sein", "both"]
+        },
+        "participle": {
+          "type": ["string", "null"],
+          "description": "Past participle form. null if not applicable for this tense."
+        }
+      },
+      "additionalProperties": false
+    },
+    "adjectiveEntry": {
+      "title": "Adjective Entry",
+      "description": "Adjective word entry with declension and comparison forms.",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "adj"
+            },
+            "comparison": {
+              "type": "object",
+              "description": "Comparison forms (positive, comparative, superlative).",
+              "properties": {
+                "positiv": {
+                  "type": "string",
+                  "description": "Positive form (base form)."
+                },
+                "komparativ": {
+                  "oneOf": [
+                    { "type": "string" },
+                    {
+                      "type": "object",
+                      "description": "Comparative form (may be complex).",
+                      "additionalProperties": { "type": "string" }
+                    }
+                  ]
+                },
+                "superlativ": {
+                  "oneOf": [
+                    { "type": "string" },
+                    {
+                      "type": "object",
+                      "description": "Superlative form (may be complex).",
+                      "additionalProperties": { "type": "string" }
+                    }
+                  ]
+                }
+              }
+            },
+            "declension": {
+              "type": "object",
+              "description": "Declension patterns indexed by degree (positiv, komparativ, superlativ).",
+              "additionalProperties": {
+                "type": "object",
+                "description": "Declension indexed by article type (stark, schwach, gemischt).",
+                "additionalProperties": {
+                  "type": "object",
+                  "description": "Declension indexed by case.",
+                  "additionalProperties": {
+                    "type": "object",
+                    "description": "Forms indexed by gender.",
+                    "properties": {
+                      "maskulin": { "type": "string" },
+                      "feminin": { "type": "string" },
+                      "neutrum": { "type": "string" },
+                      "plural": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              }
+            },
+            "undeclinable": {
+              "type": "boolean",
+              "description": "true if adjective does not decline."
+            },
+            "nicht_komparierbar": {
+              "type": "boolean",
+              "description": "true if adjective cannot be compared (e.g., 'wooden')."
+            }
+          }
+        }
+      ]
+    },
+    "adverbEntry": {
+      "title": "Adverb Entry",
+      "description": "Adverb word entry.",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "adv"
+            }
+          }
+        }
+      ]
+    },
+    "prepositionEntry": {
+      "title": "Preposition Entry",
+      "description": "Preposition word entry with case information.",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "prep"
+            },
+            "case": {
+              "type": ["string", "array"],
+              "description": "Case(s) governed by this preposition: 'dativ', 'akkusativ', or both.",
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": ["dativ", "akkusativ", "genitiv"]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["dativ", "akkusativ", "genitiv"]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "conjunctionEntry": {
+      "title": "Conjunction Entry",
+      "description": "Conjunction word entry.",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "conj"
+            },
+            "subtype": {
+              "type": "string",
+              "description": "Conjunction subtype: 'coordinating', 'subordinating'.",
+              "enum": ["coordinating", "subordinating"]
+            }
+          }
+        }
+      ]
+    },
+    "interjectionEntry": {
+      "title": "Interjection Entry",
+      "description": "Interjection word entry.",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "interj"
+            }
+          }
+        }
+      ]
+    },
+    "pronounEntry": {
+      "title": "Pronoun Entry",
+      "description": "Pronoun word entry with declension information.",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": ["pron", "dem_pron", "poss_pron", "dobj_pron", "iobj_pron", "refl_pron"]
+            },
+            "pronoun_type": {
+              "type": "string",
+              "description": "Pronoun subtype.",
+              "enum": ["personal", "demonstrative", "possessive", "relative", "interrogative", "reflexive", "reciprocal"]
+            },
+            "cases": {
+              "type": "object",
+              "description": "Declension forms indexed by case.",
+              "additionalProperties": {
+                "type": "object",
+                "description": "Forms indexed by pronoun/person.",
+                "additionalProperties": { "type": "string" }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "articleEntry": {
+      "title": "Article Entry",
+      "description": "Article word entry with declension.",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "art"
+            },
+            "article_type": {
+              "type": "string",
+              "description": "Article type: 'definite', 'indefinite', 'demonstrative'.",
+              "enum": ["definite", "indefinite", "demonstrative"]
+            },
+            "cases": {
+              "type": "object",
+              "description": "Declension forms indexed by case and gender.",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "maskulin": { "type": "string" },
+                  "feminin": { "type": "string" },
+                  "neutrum": { "type": "string" },
+                  "plural": { "type": "string" }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "numberEntry": {
+      "title": "Number Entry",
+      "description": "Number word entry (cardinal, ordinal, etc.).",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "num"
+            },
+            "number_type": {
+              "type": "string",
+              "description": "Number type: 'cardinal', 'ordinal', 'fractional'.",
+              "enum": ["cardinal", "ordinal", "fractional"]
+            },
+            "value": {
+              "type": "number",
+              "description": "Numeric value (e.g., 5 for 'five')."
+            }
+          }
+        }
+      ]
+    },
+    "phraseEntry": {
+      "title": "Phrase Entry",
+      "description": "Multi-word phrase or expression entry.",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": ["phrase", "expr"]
+            },
+            "components": {
+              "type": "array",
+              "description": "Component word IDs if phrase is built from known words.",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "otherWordEntry": {
+      "title": "Other Word Entry",
+      "description": "Generic word entry for types not covered by specialized schemas.",
+      "allOf": [
+        { "$ref": "#/$defs/wordEntry" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": ["interr", "propn", "contr", "strong", "weak", "modal", "reflexive", "separable", "general"]
+            }
+          }
+        }
+      ]
+    },
+    "translationFile": {
+      "title": "Translation File",
+      "description": "Translation file mapping word IDs to translations and example sentences in a native language.",
+      "type": "object",
+      "properties": {
+        "_metadata": {
+          "allOf": [
+            { "$ref": "#/$defs/metadata" },
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "translation"
+                },
+                "nativeLanguage": {
+                  "type": "string",
+                  "description": "Native/reference language code (ISO 639-1)."
+                }
+              },
+              "required": ["nativeLanguage"]
+            }
+          ]
+        }
+      },
+      "required": ["_metadata"],
+      "additionalProperties": {
+        "$ref": "#/$defs/translationEntry"
+      }
+    },
+    "translationEntry": {
+      "title": "Translation Entry",
+      "description": "Single translation entry with translation, explanation, and examples.",
+      "type": "object",
+      "properties": {
+        "translation": {
+          "type": "string",
+          "description": "Primary translation in the native language.",
+          "minLength": 1
+        },
+        "definite": {
+          "type": ["string", "null"],
+          "description": "Definite form of translation (for nouns). null if not applicable."
+        },
+        "explanation": {
+          "type": ["object", "null"],
+          "description": "Explanation object with _description key.",
+          "properties": {
+            "_description": {
+              "type": "string",
+              "description": "Explanation text in the native language."
+            }
+          },
+          "additionalProperties": false
+        },
+        "examples": {
+          "type": "array",
+          "description": "Example sentences demonstrating usage.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sentence": {
+                "type": "string",
+                "description": "Example sentence in target language."
+              },
+              "translation": {
+                "type": "string",
+                "description": "Example sentence translation in native language."
+              }
+            },
+            "required": ["sentence", "translation"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["translation"],
+      "additionalProperties": false
+    },
+    "curriculumManifest": {
+      "title": "Curriculum Manifest",
+      "description": "Curriculum configuration mapping lessons to word IDs and grammar features for progressive disclosure.",
+      "type": "object",
+      "properties": {
+        "_metadata": {
+          "allOf": [
+            { "$ref": "#/$defs/metadata" },
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "curriculum"
+                },
+                "curriculumId": {
+                  "type": "string",
+                  "description": "Curriculum identifier (e.g., 'tysk1-vg1', 'spansk1-vg2')."
+                }
+              }
+            }
+          ]
+        },
+        "lessons": {
+          "type": "object",
+          "description": "Lesson mappings indexed by lesson ID.",
+          "additionalProperties": {
+            "$ref": "#/$defs/lessonManifest"
+          }
+        }
+      },
+      "required": ["_metadata", "lessons"],
+      "additionalProperties": false
+    },
+    "lessonManifest": {
+      "title": "Lesson Manifest Entry",
+      "description": "Configuration for a single lesson within the curriculum.",
+      "type": "object",
+      "properties": {
+        "words": {
+          "type": "array",
+          "description": "Word IDs introduced or practiced in this lesson.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "features": {
+          "type": "array",
+          "description": "Grammar features taught in this lesson for progressive disclosure.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "title": {
+          "type": "string",
+          "description": "Display title of the lesson."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of lesson contents."
+        }
+      },
+      "required": ["words"],
+      "additionalProperties": false
+    }
+  }
+}
