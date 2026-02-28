@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://papertek.no/schemas/curriculum.schema.json",
-  "title": "Papertek Edu-Framework Curriculum Configuration Schema",
-  "description": "Defines how curricula are registered and configured in the Papertek framework",
+  "title": "Papertek Framework for Education Curriculum Configuration Schema",
+  "description": "Defines how curricula are registered and configured in the Papertek Framework for Education",
   "type": "object",
   "additionalProperties": {
     "$ref": "#/$defs/curriculumEntry"

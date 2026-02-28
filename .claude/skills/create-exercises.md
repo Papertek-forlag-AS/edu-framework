@@ -1,6 +1,6 @@
 # /create-exercises
 
-**Purpose**: Generate exercises and extra exercises for a lesson, language-agnostic, using the Papertek Edu-Framework exercise schema.
+**Purpose**: Generate exercises and extra exercises for a lesson, language-agnostic, using the Papertek — Framework for Education exercise schema.
 
 **Usage**: `/create-exercises [curriculum-id] [chapter] [lesson]`
 

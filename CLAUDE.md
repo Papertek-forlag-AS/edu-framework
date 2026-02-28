@@ -1,11 +1,11 @@
-# CLAUDE.md — Papertek Edu-Framework
+# CLAUDE.md — Papertek: Framework for Education
 
 > This file is the primary interface for AI agents working with Papertek projects.
 > Read this FIRST before making any changes.
 
 ## What This Is
 
-Papertek Edu-Framework is an open-source framework for building **offline-first educational web apps** (PWAs). It uses vanilla JavaScript (ES modules), zero-dependency CSS, and convention-over-configuration design.
+Papertek — Framework for Education is an open-source framework for building **offline-first educational web apps** (PWAs). It uses vanilla JavaScript (ES modules), zero-dependency CSS, and convention-over-configuration design.
 
 The framework is designed to be **built by AI agents** reading this file — not hand-coded by humans.
 
@@ -142,7 +142,7 @@ refactor: Extract grammar renderer into module registry
 
 All AI-generated commits include:
 ```
-🤖 Generated with Papertek Edu-Framework
+🤖 Generated with Papertek — Framework for Education
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

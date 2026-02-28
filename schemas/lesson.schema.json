@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://papertek.no/schemas/lesson.schema.json",
-  "title": "Papertek Edu-Framework Lesson Data Schema",
-  "description": "JSON Schema for lesson data files in the Papertek Edu-Framework. Defines the structure for lesson content including dialog, learning goals, and metadata.",
+  "title": "Papertek Framework for Education Lesson Data Schema",
+  "description": "JSON Schema for lesson data files in the Papertek Framework for Education. Defines the structure for lesson content including dialog, learning goals, and metadata.",
   "type": "object",
   "additionalProperties": {
     "$ref": "#/$defs/lessonEntry"

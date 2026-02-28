@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://papertek.no/schemas/vocabulary.schema.json",
   "title": "Papertek Vocabulary Schema",
-  "description": "JSON Schema for vocabulary data in the Papertek Edu-Framework. Defines structures for vocabulary banks (core words), translations, and curriculum manifests consumed by the framework at runtime.",
+  "description": "JSON Schema for vocabulary data in the Papertek Framework for Education. Defines structures for vocabulary banks (core words), translations, and curriculum manifests consumed by the framework at runtime.",
   "oneOf": [
     { "$ref": "#/$defs/bankFile" },
     { "$ref": "#/$defs/translationFile" },

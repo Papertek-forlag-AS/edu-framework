@@ -1,4 +1,4 @@
-# Contributing to Papertek Edu-Framework
+# Contributing to Papertek — Framework for Education
 
 Thank you for your interest in contributing! This framework is designed to be built by both humans and AI agents, so contributions of all kinds are welcome.
 

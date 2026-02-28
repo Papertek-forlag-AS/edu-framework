@@ -1,6 +1,6 @@
 # Math Basics — Non-Language Example
 
-This example demonstrates that Papertek Edu-Framework is **not limited to language courses**. It can be used for any subject that benefits from structured lessons, exercises, and progress tracking.
+This example demonstrates that Papertek Framework for Education is **not limited to language courses**. It can be used for any subject that benefits from structured lessons, exercises, and progress tracking.
 
 This mini-course teaches basic algebra concepts to middle school students, using Norwegian as the UI language.
 

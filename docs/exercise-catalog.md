@@ -1,6 +1,6 @@
 # Exercise Type Catalog
 
-This document shows all 17 exercise types supported by the Papertek Edu-Framework, with data format examples and descriptions of how each renders.
+This document shows all 17 exercise types supported by the Papertek Framework for Education, with data format examples and descriptions of how each renders.
 
 ## Quick Reference
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * create-edu-app — Papertek Edu-Framework Project Scaffolder
+ * create-edu-app — Papertek — Framework for Education Project Scaffolder
  *
  * Usage:
  *   node cli/create-edu-app.js                  # Interactive mode
@@ -130,7 +130,7 @@ async function main() {
 
   console.log();
   console.log('  ╔══════════════════════════════════════════════╗');
-  console.log('  ║   📚  Papertek Edu-Framework Scaffolder      ║');
+  console.log('  ║   📚  Papertek — Framework for Education     ║');
   console.log('  ║   Create a new educational web app           ║');
   console.log('  ╚══════════════════════════════════════════════╝');
   console.log();
@@ -277,7 +277,7 @@ async function main() {
   try {
     execSync('git init', { cwd: projectRoot, stdio: 'pipe' });
     execSync('git add -A', { cwd: projectRoot, stdio: 'pipe' });
-    execSync(`git commit -m "Initial commit: ${courseName} scaffolded with Papertek Edu-Framework"`, { cwd: projectRoot, stdio: 'pipe' });
+    execSync(`git commit -m "Initial commit: ${courseName} scaffolded with Papertek Framework for Education"`, { cwd: projectRoot, stdio: 'pipe' });
     console.log('  ✅ Initialized git repository');
   } catch {
     console.log('  ⚠️  Git not available — skipping repo init');
@@ -402,7 +402,7 @@ function generateClaudeMd({ courseName, langCode, langPreset, chapters, lessonsP
 
 ## What This Is
 
-${courseName} is an educational web app built with the **Papertek Edu-Framework**.
+${courseName} is an educational web app built with the **Papertek Framework for Education**.
 It teaches ${langPreset.name} (${cefrLevel}) as an offline-first PWA.
 
 ## Critical Rules
@@ -471,7 +471,7 @@ function generateAgentsMd({ courseName, langCode, langPreset }) {
 ## Project
 
 - **Name:** ${courseName}
-- **Type:** Offline-first educational PWA (Papertek Edu-Framework)
+- **Type:** Offline-first educational PWA (Papertek Framework for Education)
 - **Stack:** Vanilla JS (ES Modules), zero-dependency CSS
 - **Target Language:** ${langPreset.name} (${langCode})
 
@@ -503,7 +503,7 @@ function generatePackageJson({ slug, courseName }) {
     name: slug,
     version: '1.0.0',
     type: 'module',
-    description: `${courseName} — built with Papertek Edu-Framework`,
+    description: `${courseName} — built with Papertek Framework for Education`,
     private: true,
     license: 'CC-BY-SA-4.0',
     scripts: {

@@ -2,7 +2,7 @@
 /**
  * migrate-tailwind.cjs — Tailwind → Papertek CSS Migration Script
  *
- * Phase 2.4 of the Papertek Edu-Framework master plan.
+ * Phase 2.4 of the Papertek Framework for Education master plan.
  *
  * This script:
  *   1. Renames Tailwind color classes to Papertek naming convention

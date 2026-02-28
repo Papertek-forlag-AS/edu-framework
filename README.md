@@ -1,4 +1,4 @@
-# Papertek Edu-Framework
+# Papertek — Framework for Education
 
 An open-source framework for building **offline-first educational web apps** (PWAs). Designed to be built by AI agents — not hand-coded by humans.
 
@@ -130,7 +130,7 @@ The `examples/` directory contains proof-of-concept courses:
 
 ## Origin
 
-Papertek Edu-Framework was extracted from **Wir sprechen Deutsch** (papertek.no), a German language learning app for Norwegian high school students, built by [Papertek Forlag](https://papertek.no). The framework is the engine; the content stays with the publisher.
+Papertek was extracted from **Wir sprechen Deutsch** (papertek.no), a German language learning app for Norwegian high school students, built by [Papertek Forlag](https://papertek.no). The framework is the engine; the content stays with the publisher.
 
 ## License
 

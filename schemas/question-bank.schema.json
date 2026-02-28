@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://papertek.no/schemas/question-bank.schema.json",
-  "title": "Papertek Edu-Framework Question Bank Schema",
-  "description": "JSON Schema (draft 2020-12) for the Papertek Edu-Framework question bank / test system. Validates question objects used in Tysk1 and other language learning curricula.",
+  "title": "Papertek Framework for Education Question Bank Schema",
+  "description": "JSON Schema (draft 2020-12) for the Papertek Framework for Education question bank / test system. Validates question objects used in Tysk1 and other language learning curricula.",
   "type": "array",
   "items": {
     "$ref": "#/$defs/question"

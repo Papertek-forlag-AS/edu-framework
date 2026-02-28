@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://papertek.no/schemas/exercise.schema.json",
-  "title": "Papertek Edu-Framework Exercise Schema",
-  "description": "JSON Schema for exercises in the Papertek Edu-Framework. Defines the structure for all exercise types used in language learning applications.",
+  "title": "Papertek Framework for Education Exercise Schema",
+  "description": "JSON Schema for exercises in the Papertek Framework for Education. Defines the structure for all exercise types used in language learning applications.",
   "type": "object",
   "additionalProperties": {
     "$ref": "#/$defs/lesson"

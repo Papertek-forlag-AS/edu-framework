@@ -2,7 +2,7 @@
   "name": "@papertek/edu-framework",
   "version": "0.1.0",
   "type": "module",
-  "description": "Open-source framework for building offline-first educational web apps (PWAs)",
+  "description": "Papertek — Framework for Education. Open-source, AI-first framework for building offline-first educational web apps (PWAs)",
   "private": true,
   "license": "MIT",
   "author": "Papertek Forlag",

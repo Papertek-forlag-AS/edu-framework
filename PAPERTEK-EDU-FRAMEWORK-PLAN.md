@@ -1,4 +1,4 @@
-# Papertek Edu-Framework: Full Plan
+# Papertek — Framework for Education: Full Plan
 
 > **Date:** 2026-02-27
 > **Author:** Geir Forbord + Claude Code
@@ -30,7 +30,7 @@
 
 ## 1. Vision
 
-**Papertek Edu-Framework** is an open-source framework for building offline-first educational web apps (PWAs). Its primary interface is not documentation for human developers — it is CLAUDE.md files, JSON schemas, and AI skills designed so that an AI agent (Claude Code, Cursor, GitHub Copilot, etc.) can build a complete educational app from a natural language conversation with an educator.
+**Papertek — Framework for Education** is an open-source framework for building offline-first educational web apps (PWAs). Its primary interface is not documentation for human developers — it is CLAUDE.md files, JSON schemas, and AI skills designed so that an AI agent (Claude Code, Cursor, GitHub Copilot, etc.) can build a complete educational app from a natural language conversation with an educator.
 
 ### The Three Audiences (priority order)
 
@@ -543,7 +543,7 @@ docs/              → Human-readable explanations (secondary)
 The framework ships a CLAUDE.md template that every Papertek project inherits:
 
 ```markdown
-# CLAUDE.md — Papertek Edu-Framework
+# CLAUDE.md — Papertek — Framework for Education
 
 ## What This Project Is
 [auto-filled from papertek.config.js]
@@ -598,7 +598,7 @@ Following the Linux Foundation AAIF standard adopted by 60,000+ projects:
 ```markdown
 # AGENTS.md
 
-## Project: Papertek Edu-Framework App
+## Project: Papertek — Framework for Education App
 ## Type: Offline-first educational PWA
 ## Stack: Vanilla JS (ES Modules), Papertek CSS (zero-dependency), Firebase (optional)
 
@@ -1187,7 +1187,7 @@ Open source projects attract talented developers. Contributors may become hires 
 ```
 OPEN SOURCE (free)                    PAPERTEK FORLAG (paid, B2B)
 ────────────────────                  ──────────────────────────────
-Papertek Edu-Framework                Content & Services
+Papertek — Framework for Education                Content & Services
   - Exercise engine (22 types)          - Wir sprechen Deutsch
   - Progress tracking                   - Hablamos Español
   - Vocab trainer (5 modes)             - On parle 8
@@ -1295,4 +1295,4 @@ For the framework's example content (needed for demos), you have two options:
 
 ---
 
-*This document was created on 2026-02-27 by Geir Forbord and Claude Code as the vision and plan for the Papertek Edu-Framework.*
+*This document was created on 2026-02-27 by Geir Forbord and Claude Code as the vision and plan for the Papertek — Framework for Education.*

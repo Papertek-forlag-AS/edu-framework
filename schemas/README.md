@@ -1,6 +1,6 @@
 # JSON Schemas
 
-This directory contains the contract layer for the Papertek Edu-Framework.
+This directory contains the contract layer for the Papertek Framework for Education.
 AI agents and validation scripts use these schemas to ensure content conformance.
 
 ## Schema Files (Phase 1 deliverables)

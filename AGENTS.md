@@ -5,7 +5,7 @@
 
 ## Project
 
-- **Name:** Papertek Edu-Framework
+- **Name:** Papertek — Framework for Education
 - **Type:** Offline-first educational PWA framework
 - **Stack:** Vanilla JS (ES Modules), zero-dependency CSS, Firebase (optional)
 - **License:** MIT (engine), CC-BY-SA (content)

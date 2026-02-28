@@ -1,6 +1,6 @@
 # Build Scripts
 
-Validation and build scripts for the Papertek Edu-Framework.
+Validation and build scripts for the Papertek Framework for Education.
 
 ## Scripts (Phase 1 deliverables)
 

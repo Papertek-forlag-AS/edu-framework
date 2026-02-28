@@ -1,6 +1,6 @@
 # /create-project
 
-**Purpose**: Scaffold a new Papertek Edu-Framework project from scratch.
+**Purpose**: Scaffold a new Papertek — Framework for Education project from scratch.
 
 **Usage**: `/create-project`
 

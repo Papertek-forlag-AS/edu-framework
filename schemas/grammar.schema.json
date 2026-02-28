@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://papertek.no/schemas/grammar.schema.json",
-  "title": "Papertek Edu-Framework Grammar Data Schema",
-  "description": "JSON Schema for grammar module data files in the Papertek Edu-Framework. Defines the structure of grammar content organized by lesson with support for multiple grammar module types.",
+  "title": "Papertek Framework for Education Grammar Data Schema",
+  "description": "JSON Schema for grammar module data files in the Papertek Framework for Education. Defines the structure of grammar content organized by lesson with support for multiple grammar module types.",
   "type": "object",
   "additionalProperties": {
     "type": "array",
