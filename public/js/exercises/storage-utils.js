@@ -13,12 +13,18 @@
  * - vg1-tysk1-1-3-true-false-aufgabeC
  * - vg1-tysk1-2-2-matching-ovelse-1
  *
+ * Note: User isolation is handled transparently by safeStorage (via
+ * user-session.js). Exercise code does NOT need to worry about
+ * multi-user namespacing — it's automatic at the storage layer.
+ *
  * Benefits:
  * - Easy to query all exercises for a lesson (prefix matching)
  * - Consistent ordering (alphabetically sorted by lesson)
  * - Simpler reset logic
  * - Easier debugging
  */
+
+import { namespacedKey } from '../core/user-session.js';
 
 /**
  * Generate standardized localStorage key for an exercise
@@ -42,7 +48,8 @@ export function getExerciseStorageKey(curriculum, lessonId, exerciseType, exerci
  */
 export function saveExerciseState(curriculum, lessonId, exerciseType, exerciseId, state) {
     const key = getExerciseStorageKey(curriculum, lessonId, exerciseType, exerciseId);
-    localStorage.setItem(key, JSON.stringify(state));
+    const nsKey = namespacedKey(key);
+    localStorage.setItem(nsKey, JSON.stringify(state));
     console.log(`💾 Saved exercise state: ${key}`);
 }
 
@@ -57,7 +64,8 @@ export function saveExerciseState(curriculum, lessonId, exerciseType, exerciseId
  */
 export function loadExerciseState(curriculum, lessonId, exerciseType, exerciseId, defaultState = null) {
     const key = getExerciseStorageKey(curriculum, lessonId, exerciseType, exerciseId);
-    const stored = localStorage.getItem(key);
+    const nsKey = namespacedKey(key);
+    const stored = localStorage.getItem(nsKey);
     return stored ? JSON.parse(stored) : defaultState;
 }
 
@@ -71,41 +79,33 @@ export function loadExerciseState(curriculum, lessonId, exerciseType, exerciseId
 export function clearLessonExercises(curriculum, lessonId) {
     const keysToRemove = [];
 
-    // Pattern 1: New standardized format
-    // {curriculum}-{lessonId}-{exerciseType}-{exerciseId}
-    // Example: vg1-tysk1-1-1-fill-in-aufgabeA
-    const newFormatPrefix = `${curriculum}-${lessonId}-`;
-
-    // Pattern 2: Old fill-in format (legacy)
-    // {curriculum}-fill-in-{exerciseId}-{lessonId}
-    // Example: vg1-tysk1-fill-in-aufgabeA-1-1
-    const oldFillInPrefix = `${curriculum}-fill-in-`;
+    // All keys are namespaced: {userId}:{curriculum}-{lessonId}-...
+    // We need to match the user-prefixed versions
+    const nsNewFormatPrefix = namespacedKey(`${curriculum}-${lessonId}-`);
+    const nsOldFillInPrefix = namespacedKey(`${curriculum}-fill-in-`);
     const oldFillInSuffix = `-${lessonId}`;
-
-    // Pattern 3: Other old formats
-    // {curriculum}-{exerciseType}-{...}-{lessonId}
     const oldExerciseTypes = ['true-false', 'matching', 'drag-drop', 'writing', 'flashcard', 'quiz', 'jeopardy'];
 
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (!key) continue;
 
-        // Check new standardized format
-        if (key.startsWith(newFormatPrefix)) {
+        // Check new standardized format (namespaced)
+        if (key.startsWith(nsNewFormatPrefix)) {
             keysToRemove.push(key);
             continue;
         }
 
-        // Check old fill-in format: curriculum-fill-in-{...}-lessonId
-        if (key.startsWith(oldFillInPrefix) && key.endsWith(oldFillInSuffix)) {
+        // Check old fill-in format (namespaced)
+        if (key.startsWith(nsOldFillInPrefix) && key.endsWith(oldFillInSuffix)) {
             keysToRemove.push(key);
             continue;
         }
 
-        // Check other old formats: curriculum-exerciseType-{...}-lessonId
+        // Check other old formats (namespaced)
         for (const exerciseType of oldExerciseTypes) {
-            const oldPrefix = `${curriculum}-${exerciseType}-`;
-            if (key.startsWith(oldPrefix) && key.endsWith(oldFillInSuffix)) {
+            const nsOldPrefix = namespacedKey(`${curriculum}-${exerciseType}-`);
+            if (key.startsWith(nsOldPrefix) && key.endsWith(oldFillInSuffix)) {
                 keysToRemove.push(key);
                 break;
             }
@@ -128,12 +128,12 @@ export function clearLessonExercises(curriculum, lessonId) {
  * @returns {string[]} Array of matching keys
  */
 export function getLessonExerciseKeys(curriculum, lessonId) {
-    const prefix = `${curriculum}-${lessonId}-`;
+    const nsPrefix = namespacedKey(`${curriculum}-${lessonId}-`);
     const keys = [];
 
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key && key.startsWith(prefix)) {
+        if (key && key.startsWith(nsPrefix)) {
             keys.push(key);
         }
     }
@@ -157,18 +157,20 @@ export function getLessonExerciseKeys(curriculum, lessonId) {
 export function clearOldExerciseKeys() {
     console.log('🧹 Clearing old exercise storage keys...');
 
+    // Old patterns now need to account for the user namespace prefix.
+    // Keys look like: {userId}:{curriculum}-{exerciseType}-...
+    // The namespace prefix contains a colon, so we match after it.
     const oldPatterns = [
-        // Pattern: curriculum-exerciseType-...
-        // New pattern starts with: curriculum-lessonId-exerciseType
-        // So old keys have exerciseType in 2nd position after first hyphen
-        /^[^-]+-fill-in-/,
-        /^[^-]+-true-false-/,
-        /^[^-]+-matching-/,
-        /^[^-]+-drag-drop-/,
-        /^[^-]+-writing-/,
-        /^[^-]+-flashcard-/,
-        /^[^-]+-quiz-/,
-        /^[^-]+-jeopardy-/
+        /^[^:]+:[^-]+-fill-in-/,
+        /^[^:]+:[^-]+-true-false-/,
+        /^[^:]+:[^-]+-matching-/,
+        /^[^:]+:[^-]+-drag-drop-/,
+        /^[^:]+:[^-]+-writing-/,
+        /^[^:]+:[^-]+-flashcard-/,
+        /^[^:]+:[^-]+-quiz-/,
+        /^[^:]+:[^-]+-jeopardy-/,
+        // Also match legacy keys without namespace prefix (pre-migration)
+        /^[^-:]+-(fill-in|true-false|matching|drag-drop|writing|flashcard|quiz|jeopardy)-/
     ];
 
     const keysToRemove = [];

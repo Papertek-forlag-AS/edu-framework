@@ -19,6 +19,7 @@ import {
 } from './firebase-client.js';
 import { updateAuthUI } from './auth-ui.js';
 import { showErrorToast } from '../error-handler.js';
+import { setActiveUser, clearActiveUser, hasGuestData } from '../core/user-session.js';
 
 /**
  * Initiate FEIDE login flow.
@@ -136,21 +137,11 @@ export async function logout() {
   }
 
   try {
-    // Always clear user-specific localStorage to prevent data leaking between users.
-    // When User A logs out and User B logs in, B should NOT see A's vocabulary progress.
-    // Cloud data is safe — each user's data is fetched fresh from Firestore on login.
-    const userDataPrefixes = ['vocabProfile', 'vg1-', 'us-', 'tysk'];
-    const keysToRemove = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && userDataPrefixes.some(prefix => key.startsWith(prefix))) {
-        keysToRemove.push(key);
-      }
-    }
-    if (keysToRemove.length > 0) {
-      keysToRemove.forEach(key => localStorage.removeItem(key));
-      console.log(`[Logout] Cleared ${keysToRemove.length} user-specific localStorage keys`);
-    }
+    // User data isolation is handled by user-session.js namespacing.
+    // We do NOT wipe localStorage on logout — User A's data stays dormant
+    // under their namespace prefix and is invisible to User B.
+    // When User A logs back in (even offline), their data is instantly available.
+    clearActiveUser();
 
     // Check if user is logged in with FEIDE
     const currentUser = auth.currentUser;
@@ -340,11 +331,19 @@ export function checkAuthStatus() {
   // Set up auth state observer (fires on every auth state change)
   auth.onAuthStateChanged(async (user) => {
     if (user) {
-      // User is signed in.
+      // User is signed in — set the active user for storage namespacing.
+      // Use FEIDE ID if available (consistent across devices), else Firebase UID.
+      const userId = getFeideUserId(user) || user.uid;
+      setActiveUser(userId, {
+        name: getUserFullName(user) || user.displayName || '',
+        email: user.email || '',
+        provider: user.providerData?.[0]?.providerId || 'unknown',
+      });
+
       console.log('Auth state changed - User signed in:', user.email);
       updateAuthUI(user);
     } else {
-      // User is signed out.
+      // User is signed out — revert to guest namespace.
       console.log('Auth state changed - User signed out');
       updateAuthUI(null);
     }

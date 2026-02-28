@@ -11,6 +11,7 @@ import { loginWithFEIDE, logout, exportUserData, deleteUserAccount, checkAuthSta
 import { loginWithGoogle } from './google-auth.js';
 import { isAuthAvailable, getUserFullName, getUserOrganization } from './firebase-client.js';
 import { syncProgressFromCloud, startAutoSync, stopAutoSync } from '../sync/cloud-sync.js';
+import { hasGuestData, claimGuestData } from '../core/user-session.js';
 
 let autoSyncIntervalId = null;
 
@@ -192,6 +193,18 @@ export async function updateAuthUI(user) {
       userOrg.classList.remove('hidden');
     } else {
       userOrg.classList.add('hidden');
+    }
+  }
+
+  // Check if there's unclaimed guest data to migrate
+  if (hasGuestData()) {
+    console.log('📋 Found guest data — offering to claim for authenticated user');
+    // Auto-claim guest data for the authenticated user.
+    // Guest data was created before login, so it belongs to this user.
+    // In a future version, this could show a confirmation dialog.
+    const claimedCount = claimGuestData();
+    if (claimedCount > 0) {
+      console.log(`✅ Claimed ${claimedCount} guest progress entries`);
     }
   }
 

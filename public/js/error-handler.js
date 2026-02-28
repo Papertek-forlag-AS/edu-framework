@@ -4,6 +4,7 @@
  */
 
 import { debug } from './logger.js';
+import { namespacedKey } from './core/user-session.js';
 
 // Error types
 export const ErrorType = {
@@ -95,7 +96,14 @@ export function showErrorToast(message, duration = 5000) {
 }
 
 /**
- * Safe localStorage wrapper with error handling
+ * Safe localStorage wrapper with error handling.
+ *
+ * ALL keys are automatically namespaced by user ID via user-session.js.
+ * This ensures data isolation on shared devices — User A's progress
+ * never bleeds into User B's cloud account.
+ *
+ * Key format: `{userId}:{originalKey}` (e.g., `uid_abc:progressData`)
+ * When no user is logged in, prefix is `guest:`.
  */
 export const safeStorage = {
     set(key, value) {
@@ -103,7 +111,8 @@ export const safeStorage = {
             if (typeof localStorage === 'undefined') {
                 throw new Error('localStorage is not available');
             }
-            localStorage.setItem(key, JSON.stringify(value));
+            const nsKey = namespacedKey(key);
+            localStorage.setItem(nsKey, JSON.stringify(value));
             return true;
         } catch (error) {
             errorLogger.log(error, {
@@ -125,7 +134,8 @@ export const safeStorage = {
             if (typeof localStorage === 'undefined') {
                 return defaultValue;
             }
-            const item = localStorage.getItem(key);
+            const nsKey = namespacedKey(key);
+            const item = localStorage.getItem(nsKey);
             return item ? JSON.parse(item) : defaultValue;
         } catch (error) {
             errorLogger.log(error, {
@@ -140,7 +150,8 @@ export const safeStorage = {
     remove(key) {
         try {
             if (typeof localStorage !== 'undefined') {
-                localStorage.removeItem(key);
+                const nsKey = namespacedKey(key);
+                localStorage.removeItem(nsKey);
                 return true;
             }
         } catch (error) {
