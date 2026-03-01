@@ -1,8 +1,13 @@
 # Papertek — Framework for Education
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18-green.svg)](https://nodejs.org)
+
 An open-source framework for building **offline-first educational web apps** (PWAs). Designed to be built by AI agents — not hand-coded by humans.
 
 Describe your course in natural language. An AI agent builds it. Deploy anywhere.
+
+**See it in action:** [papertek.no/tysk](https://papertek.no/tysk) — a complete German course for Norwegian high school students, built with this framework.
 
 ## Why Papertek?
 
@@ -128,9 +133,17 @@ The `examples/` directory contains proof-of-concept courses:
 | Content | Static JS/JSON data files |
 | Deploy | Any static host (Vercel, Netlify, GitHub Pages) |
 
+## Built with Papertek
+
+| App | Subject | Students | Link |
+|-----|---------|----------|------|
+| Wir sprechen Deutsch | German for Norwegian high school | 100+ | [papertek.no/tysk](https://papertek.no/tysk) |
+
+*Using Papertek in production? Open a PR to add your app here.*
+
 ## Origin
 
-Papertek was extracted from **Wir sprechen Deutsch** (papertek.no), a German language learning app for Norwegian high school students, built by [Papertek Forlag](https://papertek.no). The framework is the engine; the content stays with the publisher.
+Papertek was extracted from **Wir sprechen Deutsch** ([papertek.no/tysk](https://papertek.no/tysk)), a German language learning app for Norwegian high school students, built by [Papertek Forlag](https://papertek.no). The framework is the engine; the content stays with the publisher.
 
 ## License
 

@@ -6,10 +6,23 @@
   "private": true,
   "license": "MIT",
   "author": "Papertek Forlag",
+  "homepage": "https://github.com/Papertek-forlag-AS/edu-framework",
   "repository": {
     "type": "git",
-    "url": "https://github.com/papertek/edu-framework"
+    "url": "https://github.com/Papertek-forlag-AS/edu-framework"
   },
+  "keywords": [
+    "education",
+    "framework",
+    "pwa",
+    "ai-first",
+    "offline-first",
+    "language-learning",
+    "spaced-repetition",
+    "edtech",
+    "vanilla-js",
+    "exercises"
+  ],
   "bin": {
     "create-edu-app": "cli/create-edu-app.js"
   },
