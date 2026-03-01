@@ -31,6 +31,7 @@ import {
 } from './exercises.js';
 import { setupEmbeddedVerbTrainer } from './exercises/embedded-verb-trainer-v2.js';
 import { setupEmbeddedGenderTrainer } from './exercises/embedded-gender-trainer.js';
+import { setupCategorizeTask } from './exercises/categorize.js';
 import { debug } from './logger.js';
 import { setupWordLookups, setupGrammarTermLookups } from './ui.js';
 import { getCurriculumConfig } from './progress/curriculum-registry.js';
@@ -250,7 +251,8 @@ function validateExercise(exercise) {
     'minidialoge': ['id', 'type', 'title', 'scenarios'],
     'embedded-verb-trainer': ['id', 'type', 'title', 'config'],
     'embedded-gender-trainer': ['id', 'type', 'title', 'config'],
-    'chronology': ['id', 'type', 'title', 'items']
+    'chronology': ['id', 'type', 'title', 'items'],
+    'categorize': ['id', 'type', 'title', 'categories']
   };
 
   // Sjekk at type er kjent
@@ -311,6 +313,11 @@ function validateExercise(exercise) {
 
   if (exercise.type === 'minidialoge' && typeof exercise.scenarios !== 'object') {
     console.error(`❌ Validering feilet: "scenarios" må være et objekt i øvelse "${exercise.id}"`, exercise);
+    return false;
+  }
+
+  if (exercise.type === 'categorize' && !Array.isArray(exercise.categories)) {
+    console.error(`❌ Validering feilet: "categories" må være en array i øvelse "${exercise.id}"`, exercise);
     return false;
   }
 
@@ -402,6 +409,8 @@ function generateBody(exercise) {
       return generateEmbeddedGenderTrainerBody(exercise);
     case 'chronology':
       return generateChronologyBody(exercise);
+    case 'categorize':
+      return generateCategorizeBody(exercise);
     default:
       console.error(`Unknown exercise type: ${exercise.type}`);
       return '<p class="text-error-600">Ukjent øvelsestype</p>';
@@ -784,6 +793,29 @@ function generateChronologyBody(exercise) {
 }
 
 /**
+ * Genererer categorize øvelse
+ */
+function generateCategorizeBody(exercise) {
+  return `
+    <!-- Category buckets -->
+    <div class="categorize-buckets grid grid-cols-2 sm:grid-cols-${Math.min(exercise.categories.length, 4)} gap-4 mb-6">
+      <!-- Populated by setupCategorizeTask -->
+    </div>
+
+    <!-- Item pool -->
+    <div class="categorize-pool flex flex-wrap gap-3 justify-center p-4 bg-neutral-50 rounded-lg min-h-[60px]">
+      <!-- Populated by setupCategorizeTask -->
+    </div>
+
+    <p class="feedback-message"></p>
+
+    <div class="mt-6 text-center">
+      <button class="reset bg-neutral-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-neutral-600 transition-colors">Start på nytt</button>
+    </div>
+  `;
+}
+
+/**
  * Returnerer CSS-klasse for task-type
  */
 function getTaskClass(type) {
@@ -799,7 +831,8 @@ function getTaskClass(type) {
     'drag-drop': 'drag-drop-task',
     'minidialoge': 'minidialoge-task',
     'embedded-verb-trainer': 'embedded-verb-trainer-task',
-    'embedded-gender-trainer': 'embedded-gender-trainer-task'
+    'embedded-gender-trainer': 'embedded-gender-trainer-task',
+    'categorize': 'categorize-task'
   };
   return classMap[type] || '';
 }
@@ -886,6 +919,10 @@ function initializeExercise(exercise) {
       import('./exercises/chronology.js').then(module => {
         module.setupChronologyTask(exercise.id, exercise.items);
       });
+      break;
+
+    case 'categorize':
+      setupCategorizeTask(exercise.id, exercise.categories);
       break;
 
     default:
