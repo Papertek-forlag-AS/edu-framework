@@ -120,7 +120,7 @@ export async function loadClassroomDialog(externalConfig) {
                     </p>
                 </div>
                 <div class="mt-8 text-center">
-                    <button class="next-tab-btn bg-neutral-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-neutral-600 transition-colors" data-next-tab="ovelser">
+                    <button class="next-tab-btn bg-neutral-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-neutral-600 transition-colors" data-next-tab="exercises">
                         ← Tilbake til øvelser
                     </button>
                 </div>

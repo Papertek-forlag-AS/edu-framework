@@ -33,8 +33,8 @@ export function repairAchievementMismatch() {
 
             if (!exerciseConfig) return;
 
-            const ovelserCount = lessonProgress.achievements?.ovelser || 0;
-            const ekstraCount = lessonProgress.achievements?.ekstraovelser || 0;
+            const exercisesCount = lessonProgress.achievements?.exercises || 0;
+            const extraCount = lessonProgress.achievements?.extraExercises || 0;
 
             // Ensure exercises object exists
             if (!lessonProgress.exercises) {
@@ -42,26 +42,26 @@ export function repairAchievementMismatch() {
             }
 
             // REPAIR 1: Hvis pencil achievement finnes, men ikke nok regular exercises er fullført
-            if (ovelserCount > 0) {
+            if (exercisesCount > 0) {
                 const exercises = lessonProgress.exercises;
-                const requiredExercises = exerciseConfig.ovelser;
+                const requiredExercises = exerciseConfig.exercises;
 
                 // Count exercises that are explicitly TRUE
                 const completedRegular = Object.entries(exercises)
-                    .filter(([id, completed]) => completed === true && !id.includes('ekstra'))
+                    .filter(([id, completed]) => completed === true && !id.includes('extra-exercise'))
                     .length;
 
                 // Count exercises that are explicitly FALSE (reset)
                 const resetRegular = Object.entries(exercises)
-                    .filter(([id, completed]) => completed === false && !id.includes('ekstra'))
+                    .filter(([id, completed]) => completed === false && !id.includes('extra-exercise'))
                     .length;
 
                 // Count total regular exercises in data
                 const totalRegular = Object.entries(exercises)
-                    .filter(([id, completed]) => !id.includes('ekstra'))
+                    .filter(([id, completed]) => !id.includes('extra-exercise'))
                     .length;
 
-                console.log(`  Lesson ${lessonId}: achievement=${ovelserCount}, completed=${completedRegular}, reset=${resetRegular}, total=${totalRegular}, required=${requiredExercises}`);
+                console.log(`  Lesson ${lessonId}: achievement=${exercisesCount}, completed=${completedRegular}, reset=${resetRegular}, total=${totalRegular}, required=${requiredExercises}`);
 
                 // Check if this is a legitimate reset or active practice state:
                 // 1. ALL existing exercises are explicitly FALSE (post-reset state)
@@ -106,23 +106,23 @@ export function repairAchievementMismatch() {
             }
 
             // REPAIR 2: Hvis star achievement finnes, men ikke nok ekstraøvelser er fullført
-            if (ekstraCount > 0) {
+            if (extraCount > 0) {
                 const exercises = lessonProgress.exercises;
-                const requiredEkstra = exerciseConfig.ekstraovelser;
+                const requiredEkstra = exerciseConfig.extraExercises;
 
                 // Count exercises that are explicitly TRUE
                 const completedEkstra = Object.entries(exercises)
-                    .filter(([id, completed]) => completed === true && id.includes('ekstraovelse'))
+                    .filter(([id, completed]) => completed === true && id.includes('extra-exercise'))
                     .length;
 
                 // Count exercises that are explicitly FALSE (reset)
                 const resetEkstra = Object.entries(exercises)
-                    .filter(([id, completed]) => completed === false && id.includes('ekstraovelse'))
+                    .filter(([id, completed]) => completed === false && id.includes('extra-exercise'))
                     .length;
 
                 // Count total ekstraøvelser in data
                 const totalEkstra = Object.entries(exercises)
-                    .filter(([id, completed]) => id.includes('ekstraovelse'))
+                    .filter(([id, completed]) => id.includes('extra-exercise'))
                     .length;
 
                 // Check if this is a legitimate reset or active practice state
@@ -142,7 +142,7 @@ export function repairAchievementMismatch() {
 
                     // Marker alle ekstraøvelser som fullført
                     for (let i = 1; i <= requiredEkstra; i++) {
-                        const exerciseId = `ekstraovelse-${i}-${lessonId}`;
+                        const exerciseId = `extra-exercise-${i}-${lessonId}`;
                         lessonProgress.exercises[exerciseId] = true;
                     }
                     repaired = true;

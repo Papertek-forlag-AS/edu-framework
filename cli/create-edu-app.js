@@ -564,7 +564,7 @@ function generateContentStubs({ projectRoot, langPreset, curriculumId, chapters,
     // Grammar data stub
     writeFileSync(
       join(projectRoot, `content/${langDir}/grammar-data/chapter-${ch}.js`),
-      `/**\n * Chapter ${ch} — Grammar Modules\n * @see schemas/grammar.schema.json\n */\nexport const grammarModules = {\n  "${ch}": [\n    { type: "tittel", tekst: "Chapter ${ch} Grammar" },\n    { type: "forklaring", tekst: "Grammar explanation goes here." }\n  ]\n};\n`
+      `/**\n * Chapter ${ch} — Grammar Modules\n * @see schemas/grammar.schema.json\n */\nexport const grammarModules = {\n  "${ch}": [\n    { type: "heading", text: "Chapter ${ch} Grammar" },\n    { type: "explanation", text: "Grammar explanation goes here." }\n  ]\n};\n`
     );
   }
 }

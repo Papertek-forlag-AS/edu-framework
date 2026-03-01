@@ -9,67 +9,66 @@
     "description": "Array of grammar modules for a specific lesson (keyed by lesson ID, e.g., '1-1')",
     "items": {
       "oneOf": [
-        { "$ref": "#/$defs/tittel" },
-        { "$ref": "#/$defs/forklaring" },
-        { "$ref": "#/$defs/pronomen-grid" },
-        { "$ref": "#/$defs/regel-tabell" },
-        { "$ref": "#/$defs/liste" },
-        { "$ref": "#/$defs/infoboks" },
-        { "$ref": "#/$defs/egne-notater" }
+        { "$ref": "#/$defs/heading" },
+        { "$ref": "#/$defs/explanation" },
+        { "$ref": "#/$defs/pronoun-grid" },
+        { "$ref": "#/$defs/rule-table" },
+        { "$ref": "#/$defs/list" },
+        { "$ref": "#/$defs/info-box" }
       ]
     }
   },
   "$defs": {
-    "tittel": {
+    "heading": {
       "type": "object",
       "title": "Title/Heading Module",
       "description": "A section heading or title within the grammar content",
       "properties": {
         "type": {
-          "const": "tittel",
+          "const": "heading",
           "description": "Module type identifier"
         },
-        "nivå": {
+        "level": {
           "type": "integer",
           "minimum": 1,
           "maximum": 6,
           "description": "Heading level (3 for h3, 4 for h4, etc.)"
         },
-        "tekst": {
+        "text": {
           "type": "string",
           "description": "The heading text, may contain HTML markup"
         }
       },
-      "required": ["type", "nivå", "tekst"],
+      "required": ["type", "level", "text"],
       "additionalProperties": false
     },
-    "forklaring": {
+    "explanation": {
       "type": "object",
       "title": "Explanation Module",
       "description": "Explanation or descriptive text block",
       "properties": {
         "type": {
-          "const": "forklaring",
+          "const": "explanation",
           "description": "Module type identifier"
         },
-        "tekst": {
+        "text": {
           "type": "string",
           "description": "Explanation text, may contain HTML, grammar-term spans, or word-lookup spans"
         }
       },
-      "required": ["type", "tekst"],
+      "required": ["type", "text"],
       "additionalProperties": false
     },
-    "pronomen-grid": {
+    "pronoun-grid": {
       "type": "object",
       "title": "Pronoun/Vocabulary Grid Module",
       "description": "Grid display for pronouns, vocabulary, or comparable items with translation and optional notes",
       "properties": {
         "type": {
-          "const": "pronomen-grid",
+          "const": "pronoun-grid",
           "description": "Module type identifier"
         },
-        "kolonner": {
+        "columns": {
           "type": "integer",
           "minimum": 1,
           "description": "Number of columns in the grid"
@@ -80,37 +79,37 @@
           "items": {
             "type": "object",
             "properties": {
-              "tysk": {
+              "target": {
                 "type": "string",
                 "description": "Target language content (German in current implementation)"
               },
-              "norsk": {
+              "native": {
                 "type": "string",
                 "description": "Native language content (Norwegian in current implementation). In framework version, will be abstracted to 'native' field."
               },
-              "merknad": {
+              "note": {
                 "type": "string",
                 "description": "Optional note or annotation (e.g., formal vs. informal)"
               }
             },
-            "required": ["tysk", "norsk"],
+            "required": ["target", "native"],
             "additionalProperties": false
           }
         }
       },
-      "required": ["type", "kolonner", "items"],
+      "required": ["type", "columns", "items"],
       "additionalProperties": false
     },
-    "regel-tabell": {
+    "rule-table": {
       "type": "object",
       "title": "Grammar Rule Table Module",
       "description": "Tabular presentation of grammar rules with headers and rows",
       "properties": {
         "type": {
-          "const": "regel-tabell",
+          "const": "rule-table",
           "description": "Module type identifier"
         },
-        "overskrifter": {
+        "headers": {
           "type": "array",
           "description": "Column headers for the table",
           "items": {
@@ -118,7 +117,7 @@
           },
           "minItems": 1
         },
-        "rader": {
+        "rows": {
           "type": "array",
           "description": "Table rows, each row is an array of cells matching header count",
           "items": {
@@ -129,19 +128,19 @@
           }
         }
       },
-      "required": ["type", "overskrifter", "rader"],
+      "required": ["type", "headers", "rows"],
       "additionalProperties": false
     },
-    "liste": {
+    "list": {
       "type": "object",
       "title": "List Module",
       "description": "Bulleted or numbered list of points",
       "properties": {
         "type": {
-          "const": "liste",
+          "const": "list",
           "description": "Module type identifier"
         },
-        "punkter": {
+        "items": {
           "type": "array",
           "description": "Array of list items",
           "items": {
@@ -150,59 +149,33 @@
           "minItems": 1
         }
       },
-      "required": ["type", "punkter"],
+      "required": ["type", "items"],
       "additionalProperties": false
     },
-    "infoboks": {
+    "info-box": {
       "type": "object",
       "title": "Information Box Module",
       "description": "Highlighted information or tip box with title and content",
       "properties": {
         "type": {
-          "const": "infoboks",
+          "const": "info-box",
           "description": "Module type identifier"
         },
-        "boksType": {
+        "boxType": {
           "type": "string",
-          "enum": ["husk", "tips", "advarsel", "info"],
-          "description": "Type of information box (husk=remember, tips=tips, advarsel=warning, info=info). Determines visual styling."
+          "enum": ["remember", "tips", "warning", "info"],
+          "description": "Type of information box (remember=remember, tips=tips, warning=warning, info=info). Determines visual styling."
         },
-        "tittel": {
+        "title": {
           "type": "string",
           "description": "Box title"
         },
-        "innhold": {
+        "content": {
           "type": "string",
           "description": "Box content, may contain HTML markup"
         }
       },
-      "required": ["type", "boksType", "tittel", "innhold"],
-      "additionalProperties": false
-    },
-    "egne-notater": {
-      "type": "object",
-      "title": "Student Notes Area Module",
-      "description": "Designated area for student note-taking, often visible only in print",
-      "properties": {
-        "type": {
-          "const": "egne-notater",
-          "description": "Module type identifier"
-        },
-        "title": {
-          "type": "string",
-          "description": "Title for the notes section"
-        },
-        "lines": {
-          "type": "integer",
-          "minimum": 1,
-          "description": "Number of lines/rows for note-taking"
-        },
-        "printOnly": {
-          "type": "boolean",
-          "description": "If true, only display this section in print view"
-        }
-      },
-      "required": ["type", "title", "lines"],
+      "required": ["type", "boxType", "title", "content"],
       "additionalProperties": false
     }
   }

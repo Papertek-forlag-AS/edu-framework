@@ -152,20 +152,20 @@ export function needsMigration() {
  */
 function calculateAchievements(isAuthenticated, lessonId, migrationDate) {
     const [chapter, lesson] = lessonId.split('-').map(Number);
-    const lessonConfig = EXERCISE_DATABASE[lessonId] || { ovelser: 0, ekstraovelser: 0 };
+    const lessonConfig = EXERCISE_DATABASE[lessonId] || { exercises: 0, extraExercises: 0 };
 
     // Green achievements only for authenticated users, chapters 1-5 (lessons 1-1 through 5-3)
     const shouldHaveGreenAchievements = isAuthenticated && chapter >= 1 && chapter <= 5;
 
-    // Green star only for lessons 2-1 through 5-3 with ekstraøvelser
+    // Green star only for lessons 2-1 through 5-3 with extraExercises
     const shouldHaveGreenStar = shouldHaveGreenAchievements &&
         chapter >= 2 &&
-        lessonConfig.ekstraovelser > 0;
+        lessonConfig.extraExercises > 0;
 
     return {
         leksjon: shouldHaveGreenAchievements ? 1 : 0, // 📗 Book icon
-        ovelser: shouldHaveGreenAchievements ? 1 : 0, // ✏️ Green pencil
-        ekstraovelser: shouldHaveGreenStar ? 1 : 0,   // ⭐ Green star
+        exercises: shouldHaveGreenAchievements ? 1 : 0, // ✏️ Green pencil
+        extraExercises: shouldHaveGreenStar ? 1 : 0,   // ⭐ Green star
         earnedDate: shouldHaveGreenAchievements ? migrationDate : null
     };
 }
@@ -278,8 +278,8 @@ export function migrateProgressData(isAuthenticated) {
         for (const lessonId in newData.progressByCurriculum['tysk1-vg1']) {
             const achievements = newData.progressByCurriculum['tysk1-vg1'][lessonId].achievements;
             if (achievements.leksjon) totalBooks++;
-            if (achievements.ovelser > 0) totalPencils++;
-            if (achievements.ekstraovelser > 0) totalStars++;
+            if (achievements.exercises > 0) totalPencils++;
+            if (achievements.extraExercises > 0) totalStars++;
         }
 
         console.log('✅ Migrering fullført!');

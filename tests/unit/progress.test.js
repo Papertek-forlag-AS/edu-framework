@@ -53,8 +53,8 @@ describe('Progress Tracking', () => {
   describe('EXERCISE_DATABASE', () => {
     it('should have correct structure for lesson 1-1', () => {
       expect(EXERCISE_DATABASE['1-1']).toBeDefined();
-      expect(EXERCISE_DATABASE['1-1']).toHaveProperty('ovelser');
-      expect(EXERCISE_DATABASE['1-1']).toHaveProperty('ekstraovelser');
+      expect(EXERCISE_DATABASE['1-1']).toHaveProperty('exercises');
+      expect(EXERCISE_DATABASE['1-1']).toHaveProperty('extraExercises');
       expect(EXERCISE_DATABASE['1-1']).toHaveProperty('tests');
     });
 
@@ -62,11 +62,11 @@ describe('Progress Tracking', () => {
       Object.keys(EXERCISE_DATABASE).forEach(lessonId => {
         const lesson = EXERCISE_DATABASE[lessonId];
 
-        expect(lesson.ovelser).toBeTypeOf('number');
-        expect(lesson.ovelser).toBeGreaterThanOrEqual(0);
+        expect(lesson.exercises).toBeTypeOf('number');
+        expect(lesson.exercises).toBeGreaterThanOrEqual(0);
 
-        expect(lesson.ekstraovelser).toBeTypeOf('number');
-        expect(lesson.ekstraovelser).toBeGreaterThanOrEqual(0);
+        expect(lesson.extraExercises).toBeTypeOf('number');
+        expect(lesson.extraExercises).toBeGreaterThanOrEqual(0);
 
         expect(lesson.tests).toBeInstanceOf(Array);
         expect(lesson.tests.length).toBeGreaterThan(0);

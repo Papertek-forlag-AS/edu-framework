@@ -10,7 +10,7 @@
   "examples": [
     {
       "1-1": {
-        "germanTitle": "Hallo! Wie heißt du?",
+        "targetTitle": "Hallo! Wie heißt du?",
         "learningGoals": [
           "Hilse på noen på tysk",
           "Si hva du heter"
@@ -24,11 +24,11 @@
           "lines": [
             {
               "person": "lukas",
-              "tekst": "Hallo! Ich <span class=\"word-lookup\" data-type=\"verb\" data-verb=\"heißen\">heiße</span> Lukas."
+              "text": "Hallo! Ich <span class=\"word-lookup\" data-type=\"verb\" data-verb=\"heißen\">heiße</span> Lukas."
             },
             {
               "person": "olivia",
-              "tekst": "Hallo Lukas! Ich <span class=\"word-lookup\" data-type=\"verb\" data-verb=\"heißen\">heiße</span> Olivia."
+              "text": "Hallo Lukas! Ich <span class=\"word-lookup\" data-type=\"verb\" data-verb=\"heißen\">heiße</span> Olivia."
             }
           ]
         },
@@ -45,16 +45,16 @@
       "title": "Lesson Entry",
       "description": "A single lesson entry keyed by lesson ID (e.g., '1-1', '3-2')",
       "required": [
-        "germanTitle",
+        "targetTitle",
         "learningGoals",
         "dialog",
         "checklist"
       ],
       "properties": {
-        "germanTitle": {
+        "targetTitle": {
           "type": "string",
-          "title": "German Title",
-          "description": "The lesson title in the target language (German)",
+          "title": "Target Language Title",
+          "description": "The lesson title in the target language",
           "minLength": 1
         },
         "learningGoals": {
@@ -146,7 +146,7 @@
       "description": "A single line spoken by a character in the dialog",
       "required": [
         "person",
-        "tekst"
+        "text"
       ],
       "properties": {
         "person": {
@@ -155,7 +155,7 @@
           "description": "Character key identifying who speaks this line (referenced from characters data file)",
           "minLength": 1
         },
-        "tekst": {
+        "text": {
           "type": "string",
           "title": "Text",
           "description": "The dialog text (may contain HTML word-lookup spans with data-type, data-verb, data-word, or data-noun attributes)",
@@ -171,13 +171,13 @@
       "additionalProperties": {
         "type": "object",
         "required": [
-          "germanTitle"
+          "targetTitle"
         ],
         "properties": {
-          "germanTitle": {
+          "targetTitle": {
             "type": "string",
-            "title": "German Title",
-            "description": "The lesson title in German",
+            "title": "Target Language Title",
+            "description": "The lesson title in the target language",
             "minLength": 1
           },
           "spanishTitle": {
@@ -192,10 +192,10 @@
             "description": "The lesson title in French (optional, for multilingual support)",
             "minLength": 1
           },
-          "hasEkstraovelser": {
+          "hasExtraExercises": {
             "type": "boolean",
             "title": "Has Extra Exercises",
-            "description": "Whether this lesson includes extra exercises (ekstraøvelser)",
+            "description": "Whether this lesson includes extra exercises",
             "default": false
           },
           "hasDialog": {

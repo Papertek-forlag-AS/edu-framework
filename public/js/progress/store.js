@@ -130,8 +130,8 @@ export function getLessonProgress(lessonId) {
             tests: [],
             achievements: {
                 leksjon: false,
-                ovelser: 0,           // Integer: completion count (0 = not earned)
-                ekstraovelser: 0,     // Integer: completion count (0 = not earned)
+                exercises: 0,           // Integer: completion count (0 = not earned)
+                extraExercises: 0,     // Integer: completion count (0 = not earned)
                 earnedDate: null
             }
         };
@@ -139,11 +139,11 @@ export function getLessonProgress(lessonId) {
 
     // Migration: Convert old boolean values to integers
     const lesson = data.progressByCurriculum[curriculum][lessonId];
-    if (typeof lesson.achievements.ovelser === 'boolean') {
-        lesson.achievements.ovelser = lesson.achievements.ovelser ? 1 : 0;
+    if (typeof lesson.achievements.exercises === 'boolean') {
+        lesson.achievements.exercises = lesson.achievements.exercises ? 1 : 0;
     }
-    if (typeof lesson.achievements.ekstraovelser === 'boolean') {
-        lesson.achievements.ekstraovelser = lesson.achievements.ekstraovelser ? 1 : 0;
+    if (typeof lesson.achievements.extraExercises === 'boolean') {
+        lesson.achievements.extraExercises = lesson.achievements.extraExercises ? 1 : 0;
     }
 
     return lesson;
@@ -202,7 +202,7 @@ export function logProgress(lessonId, type, value) {
         }
 
         // Sjekk om alle påkrevde faner er besøkt og oppdater achievement
-        const requiredTabs = ['leksjon', 'ordforrad', 'grammatikk', 'ovelser'];
+        const requiredTabs = ['lesson', 'vocabulary', 'grammar', 'exercises'];
         const allTabsVisited = requiredTabs.every(tab => lessonProgress.tabs.includes(tab));
 
         if (allTabsVisited && !lessonProgress.achievements.leksjon) {

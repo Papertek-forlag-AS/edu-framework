@@ -42,7 +42,7 @@ public/js/
 │   ├── index.js                   Barrel re-export (public API)
 │   ├── store.js                   Low-level localStorage (saveData / loadData)
 │   ├── achievements.js            Exercise completion → achievement counters
-│   ├── config.js                  EXERCISE_DATABASE (exercise counts per lesson)
+│   ├── config.js                  EXERCISE_DATABASE (exercises/extraExercises per lesson)
 │   ├── progress-hub.js            ProgressHub pub/sub (§2.2)
 │   ├── total-progress-bar.js      Global progress bar widget (§2.3)
 │   ├── ui.js                      Lesson list icons, progress page
@@ -405,7 +405,7 @@ import { registerGrammarTool } from './grammar-renderer.js';
 registerGrammarTool('subjunctive-trainer', './grammar-modules/subjunctive.js');
 ```
 
-Built-in tools: `separable-verbs`, `dativ-trainer`, `cases-prepositions`, `akkusativ-prepositions`, `dativ-prepositions`.
+Built-in tools: `separable-verbs`, `dative-trainer`, `cases-prepositions`, `accusative-prepositions`, `dative-prepositions`.
 
 ### 5.4 Auth Provider Registry
 

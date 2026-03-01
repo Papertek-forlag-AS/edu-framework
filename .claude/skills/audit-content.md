@@ -52,6 +52,7 @@ For each curriculum, check:
 - [ ] Exercise IDs follow naming convention
 - [ ] No duplicate exercise IDs within a chapter
 - [ ] Exercise types are varied (no 3+ consecutive same type)
+- [ ] Extra exercise IDs use `extra-exercise-` prefix (not `ekstraovelse-`)
 
 #### Grammar
 - [ ] Every chapter that introduces new grammar has a grammar file
@@ -69,8 +70,8 @@ Verify that `public/js/progress/config.js` matches actual content:
 
 ```javascript
 // For each lesson in EXERCISE_DATABASE:
-// - Check ovelser count matches exercises.length
-// - Check ekstraovelser count matches extraExercises.length
+// - Check exercises count matches exercises.length
+// - Check extraExercises count matches extraExercises.length
 // - Check tests array is valid
 ```
 

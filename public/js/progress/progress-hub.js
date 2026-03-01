@@ -71,7 +71,7 @@ export function computeProgressSnapshot() {
 
     for (const lessonId of lessonIds) {
         const db = EXERCISE_DATABASE[lessonId];
-        const lessonTotal = db.ovelser + db.ekstraovelser;
+        const lessonTotal = db.exercises + db.extraExercises;
         exercisesTotal += lessonTotal;
 
         const lessonProgress = progressData[lessonId];

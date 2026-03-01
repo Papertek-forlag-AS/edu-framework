@@ -95,7 +95,7 @@ Before creating exercises, scan previous lessons to avoid:
 ```javascript
 "extraExercises": [
   {
-    "id": "ekstraovelse-1-{chapter}-{lesson}",
+    "id": "extra-exercise-1-{chapter}-{lesson}",
     "type": "fill-in",
     "title": "Extra Exercise 1: [Title]",
     "badges": [
@@ -136,7 +136,7 @@ After creating exercises:
 ### Step 1: Update EXERCISE_DATABASE
 Edit `public/js/progress/config.js`:
 ```javascript
-'{chapter}-{lesson}': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon'] }
+'{chapter}-{lesson}': { exercises: 6, extraExercises: 10, tests: ['lesson'] }
 ```
 
 ### Step 2: Copy to Equivalent Curricula (if applicable)
@@ -147,7 +147,7 @@ Check the curriculum registry for shared content mappings.
 node -e "
   const m = await import('./content/{languageDir}/exercises-data/{curriculum}/chapter-{N}.js');
   const d = m.exercisesData['{chapter}-{lesson}'];
-  console.log('Exercises:', d.exercises.length, 'Extra:', d.extraExercises.length);
+  console.log('Exercises:', d.exercises.length, 'ExtraExercises:', d.extraExercises.length);
 "
 ```
 

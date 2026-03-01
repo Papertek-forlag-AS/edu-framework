@@ -51,7 +51,7 @@ All content must conform to JSON schemas in `schemas/`:
 | `exercise.schema.json` | Exercise data (17 types, fill-in, matching, quiz, etc.) |
 | `vocabulary.schema.json` | Vocabulary banks, translations, curriculum manifests |
 | `lesson.schema.json` | Lesson data (dialog, goals, checklist) + metadata |
-| `grammar.schema.json` | Grammar modules (7 types: tittel, forklaring, tabell, etc.) |
+| `grammar.schema.json` | Grammar modules (7 types: heading, explanation, rule-table, etc.) |
 | `curriculum.schema.json` | Curriculum registry + exercise database config |
 | `question-bank.schema.json` | Test questions (fill-in, drag-drop, multiple-choice) |
 | `language.schema.json` | Language-specific config (gender, cases, characters) |
@@ -81,7 +81,7 @@ All content must conform to JSON schemas in `schemas/`:
 ## Naming Conventions
 
 - **Exercise IDs**: `{type}-{number}-{chapterId}` (e.g., `fill-in-1-3-2`)
-- **Extra exercise IDs**: `ekstraovelse-{N}-{chapterId}` (e.g., `ekstraovelse-1-3-1`)
+- **Extra exercise IDs**: `extra-exercise-{N}-{chapterId}` (e.g., `extra-exercise-1-3-1`)
 - **Storage keys**: `{curriculum}-{lessonId}-{exerciseType}-{exerciseId}`
 - **Lesson IDs**: `{chapter}-{lesson}` (e.g., `3-1`, `5-2`)
 - **Lesson files**: `{prefix}-{chapter}-{lesson}.html` (e.g., `vg1-3-2.html`)

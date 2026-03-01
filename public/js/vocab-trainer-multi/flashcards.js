@@ -306,9 +306,9 @@ export function renderFlashcards(container, context, mode = 'normal') {
                     'bg-success-50 text-success-700 border-success-100'
                 }">${word.artikel}</span>` : ''}
 
-                            ${word.forklaring ? `
+                            ${word.explanation ? `
                                 <div class="mt-2 p-4 bg-neutral-50 rounded-xl text-left max-w-lg border border-neutral-100 w-full">
-                                    <p class="text-sm text-neutral-600 leading-relaxed">${word.forklaring}</p>
+                                    <p class="text-sm text-neutral-600 leading-relaxed">${word.explanation}</p>
                                 </div>
                             ` : ''}
                         </div>

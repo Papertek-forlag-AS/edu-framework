@@ -32,15 +32,15 @@ export function renderAllLessonProgress() {
         const lessonProgress = progress[lessonId];
 
         // Hent default values hvis leksjonen ikke eksisterer ennå
-        const achievements = lessonProgress?.achievements || { leksjon: false, ovelser: 0, ekstraovelser: 0 };
+        const achievements = lessonProgress?.achievements || { leksjon: false, exercises: 0, extraExercises: 0 };
         const tests = lessonProgress?.tests || [];
 
         // Migrer gamle boolean-verdier til integers (sikkerhetssjekk)
-        const ovelserCount = typeof achievements.ovelser === 'boolean' ? (achievements.ovelser ? 1 : 0) : (achievements.ovelser || 0);
-        const ekstraCount = typeof achievements.ekstraovelser === 'boolean' ? (achievements.ekstraovelser ? 1 : 0) : (achievements.ekstraovelser || 0);
+        const exercisesCount = typeof achievements.exercises === 'boolean' ? (achievements.exercises ? 1 : 0) : (achievements.exercises || 0);
+        const extraCount = typeof achievements.extraExercises === 'boolean' ? (achievements.extraExercises ? 1 : 0) : (achievements.extraExercises || 0);
 
-        const exerciseData = EXERCISE_DATABASE[lessonId] || { ovelser: 0, ekstraovelser: 0, tests: [] };
-        const hasExtraTab = exerciseData.ekstraovelser > 0;
+        const exerciseData = EXERCISE_DATABASE[lessonId] || { exercises: 0, extraExercises: 0, tests: [] };
+        const hasExtraTab = exerciseData.extraExercises > 0;
 
         // Sjekk om alle påkrevde tester er fullført
         const testsCompleted = exerciseData.tests.every(testType =>
@@ -53,7 +53,7 @@ export function renderAllLessonProgress() {
 
         // ✏️ Progressiv blyant: Vis earned achievement-nivå
         // Simplified: Just show the earned achievement level (no "next level" logic)
-        const pencilDisplayLevel = ovelserCount;
+        const pencilDisplayLevel = exercisesCount;
         const pencilColor = getAchievementColor(pencilDisplayLevel);
         const pencilTitle = pencilDisplayLevel > 0 ? `Øvelser fullført ${pencilDisplayLevel} ${pencilDisplayLevel === 1 ? 'gang' : 'ganger'}` : 'Øvelser ikke fullført';
         iconsHTML += `<span title="${pencilTitle}"><span class="${pencilColor}">${pencilIconSVG}</span></span>`;
@@ -61,7 +61,7 @@ export function renderAllLessonProgress() {
         // ⭐ Progressiv stjerne: Vis earned achievement-nivå
         // Simplified: Just show the earned achievement level (no "next level" logic)
         if (hasExtraTab) {
-            const starDisplayLevel = ekstraCount;
+            const starDisplayLevel = extraCount;
             const starColor = getAchievementColor(starDisplayLevel);
             const starTitle = starDisplayLevel > 0 ? `Ekstraøvelser fullført ${starDisplayLevel} ${starDisplayLevel === 1 ? 'gang' : 'ganger'}` : 'Ekstraøvelser ikke fullført';
             iconsHTML += `<span title="${starTitle}"><span class="${starColor}">${starIconSVG}</span></span>`;
@@ -196,7 +196,7 @@ export function renderLessonList(lessonsData, chapterTitles) {
                         </div>
 
                         <div class="flex-grow">
-                            <h3 class="text-xl font-bold text-neutral-800">${lesson.germanTitle || lesson.dialog?.title || 'Uten tittel'}</h3>
+                            <h3 class="text-xl font-bold text-neutral-800">${lesson.targetTitle || lesson.dialog?.title || 'Uten tittel'}</h3>
                             <p class="text-neutral-600 mt-1">${lesson.learningGoals ? lesson.learningGoals[0] : (lesson.dialog?.description || '')}</p>
 
                             <div class="progress-icons-mobile flex md:hidden items-center gap-3 mt-3">

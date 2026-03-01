@@ -144,7 +144,7 @@ export function setupDragDropSentenceTask(containerId, sentences) {
                             return savedState[key]?.isCompleted === true;
                         });
                         if (allCompleted) {
-                            const parentContainer = ctx.container.closest('[id^="ekstraovelse"]');
+                            const parentContainer = ctx.container.closest('[id^="extra-exercise"]');
                             const exerciseId = parentContainer ? parentContainer.id : containerId;
                             trackExerciseCompletion(exerciseId);
                         }
@@ -167,7 +167,7 @@ export function setupDragDropSentenceTask(containerId, sentences) {
                     const wasCompleted = savedState[sentenceKey]?.isCompleted;
                     const performReset = () => {
                         if (wasCompleted) {
-                            const parentContainer = ctx.container.closest('[id^="ekstraovelse"]');
+                            const parentContainer = ctx.container.closest('[id^="extra-exercise"]');
                             const exerciseId = parentContainer ? parentContainer.id : containerId;
                             removeExerciseCompletion(exerciseId);
                         }

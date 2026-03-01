@@ -236,7 +236,7 @@ function loadDialog(dialog) {
   if (replikkContainer && dialog.lines && dialog.lines.length > 0) {
     const html = dialog.lines.map(r => {
       const characterName = getCharacterNameHelper(r.person);
-      const taggedText = autoTagVocabulary(r.tekst);
+      const taggedText = autoTagVocabulary(r.text);
       if (r.person === 'narrator') {
         return `<p class="italic">${taggedText}</p>`;
       }
@@ -292,7 +292,7 @@ function loadAdditionalTexts(additionalTexts) {
       html += '<div class="bg-neutral-100 p-6 rounded-lg space-y-3">';
       html += text.lines.map(r => {
         const characterName = getCharacterNameHelper(r.person);
-        const taggedText = autoTagVocabulary(r.tekst);
+        const taggedText = autoTagVocabulary(r.text);
         if (r.person === 'narrator') {
           return `<p class="italic">${taggedText}</p>`;
         }

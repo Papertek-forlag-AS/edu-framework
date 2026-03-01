@@ -29,7 +29,7 @@ Stores lesson-specific data:
 {
   "1-1": {
     title: "Hallo! Wie heißt du?",
-    hasEkstraovelser: false,
+    hasExtraExercises: false,
     hasDialog: false,
     nextLesson: "1-2"
   }
@@ -94,7 +94,7 @@ node public/js/lesson-template/template-generator.js all
    ```javascript
    "13-1": {
      title: "New Lesson Title",
-     hasEkstraovelser: true,
+     hasExtraExercises: true,
      hasDialog: false,
      nextLesson: "13-2"
    }
@@ -121,7 +121,7 @@ node public/js/lesson-template/template-generator.js all
 ## Future Enhancements
 
 - [ ] CLI with better options (`--lesson=1-1`, `--curriculum=vg1`)
-- [ ] Automatic detection of ekstraovelser from EXERCISE_DATABASE
+- [ ] Automatic detection of extra exercises from EXERCISE_DATABASE
 - [ ] Automatic detection of dialog content from chapter data files
 - [ ] Git pre-commit hook to regenerate files if metadata changed
 - [ ] Validation: Check all placeholders are replaced

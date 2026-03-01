@@ -65,7 +65,6 @@
             "writing",
             "drag-drop",
             "minidialog",
-            "minidialoge",
             "dilemma",
             "image-matching",
             "chronology",
@@ -95,10 +94,6 @@
           "items": {
             "$ref": "#/$defs/badge"
           }
-        },
-        "printInstructions": {
-          "type": "string",
-          "description": "Alternative instructions specifically for print output. May contain HTML markup."
         }
       },
       "required": ["id", "type", "title"],
@@ -162,14 +157,6 @@
         {
           "if": {
             "properties": { "type": { "const": "minidialog" } }
-          },
-          "then": {
-            "$ref": "#/$defs/minidialogExercise"
-          }
-        },
-        {
-          "if": {
-            "properties": { "type": { "const": "minidialoge" } }
           },
           "then": {
             "$ref": "#/$defs/minidialogExercise"
@@ -518,9 +505,9 @@
           "type": "boolean",
           "description": "Whether the statement is true (true) or false (false)."
         },
-        "tysk": {
+        "target": {
           "type": "string",
-          "description": "Optional German original text for reference/comparison."
+          "description": "Optional target language original text for reference/comparison."
         },
         "img": {
           "type": "string",
@@ -565,9 +552,9 @@
           "type": "string",
           "description": "URL or path to the image file."
         },
-        "tysk": {
+        "target": {
           "type": "string",
-          "description": "Optional German original text for reference/comparison."
+          "description": "Optional target language original text for reference/comparison."
         }
       },
       "required": ["q", "a", "img"]
@@ -708,12 +695,12 @@
     },
     "dragDropSentence": {
       "title": "Drag-Drop Sentence",
-      "description": "Single sentence task for drag-drop exercise. Words can be in 'words' or 'ord' property.",
+      "description": "Single sentence task for drag-drop exercise. Words can be in 'words' property.",
       "type": "object",
       "properties": {
         "q": {
           "type": "string",
-          "description": "Norwegian translation or context for the sentence (shown as guidance)."
+          "description": "Native language translation or context for the sentence (shown as guidance)."
         },
         "words": {
           "type": "array",
@@ -723,21 +710,13 @@
           },
           "minItems": 2
         },
-        "ord": {
-          "type": "array",
-          "description": "Array of words in correct order (Norwegian field name, alias for 'words').",
-          "items": {
-            "type": "string"
-          },
-          "minItems": 2
-        },
-        "svar": {
+        "answer": {
           "type": "string",
           "description": "Optional: the complete correct sentence as a reference."
         },
-        "norsk": {
+        "native": {
           "type": "string",
-          "description": "Norwegian translation (alternative/duplicate of 'q')."
+          "description": "Native language translation (alternative/duplicate of 'q')."
         },
         "punctuation": {
           "type": "string",
@@ -746,8 +725,7 @@
       },
       "required": ["q"],
       "anyOf": [
-        { "required": ["words"] },
-        { "required": ["ord"] }
+        { "required": ["words"] }
       ]
     },
     "minidialogExercise": {

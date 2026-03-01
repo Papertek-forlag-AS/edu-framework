@@ -27,11 +27,11 @@ export function handleReset(containerId, performReset, wasCompleted = null) {
   let willRemovePencil = false;
 
   // Sjekk om vi fjerner stjerne (ekstraøvelser)
-  if (containerId.includes('ekstraovelse') && wasCompleted) {
-    const requiredExtra = EXERCISE_DATABASE[lessonId]?.ekstraovelser || 0;
+  if (containerId.includes('extra-exercise') && wasCompleted) {
+    const requiredExtra = EXERCISE_DATABASE[lessonId]?.extraExercises || 0;
     // Count exercises that are explicitly TRUE (not just keys)
     const completedExtraCount = Object.entries(lessonProgress.exercises)
-      .filter(([id, completed]) => completed === true && id.includes('ekstraovelse'))
+      .filter(([id, completed]) => completed === true && id.includes('extra-exercise'))
       .length;
 
     console.log('⭐ Checking star removal:', {
@@ -46,11 +46,11 @@ export function handleReset(containerId, performReset, wasCompleted = null) {
   }
 
   // Sjekk om vi fjerner blyant (vanlige øvelser)
-  if (!containerId.includes('ekstraovelse') && wasCompleted) {
-    const requiredRegular = EXERCISE_DATABASE[lessonId]?.ovelser || 0;
+  if (!containerId.includes('extra-exercise') && wasCompleted) {
+    const requiredRegular = EXERCISE_DATABASE[lessonId]?.exercises || 0;
     // Count exercises that are explicitly TRUE (not just keys)
     const completedRegularCount = Object.entries(lessonProgress.exercises)
-      .filter(([id, completed]) => completed === true && !id.includes('ekstraovelse'))
+      .filter(([id, completed]) => completed === true && !id.includes('extra-exercise'))
       .length;
 
     console.log('✏️ Checking pencil removal:', {

@@ -29,28 +29,26 @@ export function renderModule(module, context = {}) {
   context.nativeKey = keys.native;
 
   switch (module.type) {
-    case 'tittel':
-      return renderTittel(module, context);
-    case 'forklaring':
-      return renderForklaring(module, context);
-    case 'liste':
-      return renderListe(module, context);
-    case 'pronomen-grid':
-      return renderPronomenGrid(module, context);
+    case 'heading':
+      return renderHeading(module, context);
+    case 'explanation':
+      return renderExplanation(module, context);
+    case 'list':
+      return renderList(module, context);
+    case 'pronoun-grid':
+      return renderPronounGrid(module, context);
     case 'verbtabell':
       return renderVerbtabell(module, context);
     case 'regel-boks':
-    case 'regel-tabell':
-      return renderRegelTabell(module, context);
-    case 'infoboks':
-      return renderInfoboks(module, context);
+    case 'rule-table':
+      return renderRuleTable(module, context);
+    case 'info-box':
+      return renderInfoBox(module, context);
     case 'eksempel-boks':
     case 'eksempel':
-      return renderEksempel(module, context);
+      return renderExample(module, context);
     case 'custom-html':
       return renderCustomHtml(module, context);
-    case 'egne-notater':
-      return null;
     case 'custom-tool':
       return renderCustomTool(module, context);
     default:
@@ -153,10 +151,10 @@ export function renderCustomTool(module, context) {
 }
 
 /**
-   * Render title (h2 or h3)
+   * Render heading (h2 or h3)
    */
-export function renderTittel(module, context) {
-  const tag = module.nivå === 3 ? 'h3' : 'h2';
+export function renderHeading(module, context) {
+  const tag = module.level === 3 ? 'h3' : 'h2';
   const element = document.createElement(tag);
 
   if (tag === 'h2') {
@@ -165,30 +163,30 @@ export function renderTittel(module, context) {
     element.className = 'text-xl font-bold text-neutral-800 mb-2 mt-6';
   }
 
-  element.innerHTML = module.tekst;
+  element.innerHTML = module.text;
   return element;
 }
 
 /**
  * Render explanation paragraph
  */
-export function renderForklaring(module, context) {
+export function renderExplanation(module, context) {
   const p = document.createElement('p');
   p.className = 'mb-4';
-  p.innerHTML = module.tekst;
+  p.innerHTML = module.text;
   return p;
 }
 
 /**
  * Render list
  */
-export function renderListe(module, context) {
+export function renderList(module, context) {
   const ul = document.createElement('ul');
   ul.className = 'list-disc list-inside space-y-2 text-neutral-700 mb-4';
 
-  module.punkter.forEach(punkt => {
+  module.items.forEach(item => {
     const li = document.createElement('li');
-    li.innerHTML = punkt;
+    li.innerHTML = item;
     ul.appendChild(li);
   });
 
@@ -196,13 +194,13 @@ export function renderListe(module, context) {
 }
 
 /**
- * Render pronomen grid (as a table for accusative pronouns)
+ * Render pronoun grid (as a table for accusative pronouns)
  */
-export function renderPronomenGrid(module, context) {
+export function renderPronounGrid(module, context) {
   const { targetKey, nativeKey } = context;
 
-  // Check if this is a pronoun table with overskrifter and personer
-  if (module.overskrifter && module.personer) {
+  // Check if this is a pronoun table with headers and persons
+  if (module.headers && module.persons) {
     const container = document.createElement('div');
     container.className = 'overflow-x-auto mt-4 mb-6';
 
@@ -214,7 +212,7 @@ export function renderPronomenGrid(module, context) {
     thead.className = 'bg-neutral-100';
     const headerRow = document.createElement('tr');
 
-    module.overskrifter.forEach(header => {
+    module.headers.forEach(header => {
       const th = document.createElement('th');
       th.className = 'p-3 text-left font-semibold';
       th.innerHTML = header;
@@ -227,9 +225,9 @@ export function renderPronomenGrid(module, context) {
     // Body
     const tbody = document.createElement('tbody');
 
-    module.personer.forEach((person, index) => {
+    module.persons.forEach((person, index) => {
       const tr = document.createElement('tr');
-      if (index < module.personer.length - 1) {
+      if (index < module.persons.length - 1) {
         tr.className = 'border-b';
       }
 
@@ -249,7 +247,7 @@ export function renderPronomenGrid(module, context) {
       // Native column
       const td3 = document.createElement('td');
       td3.className = 'p-3 text-neutral-600';
-      td3.textContent = person[nativeKey] || person.native || person.norsk || '';
+      td3.textContent = person[nativeKey] || person.native || '';
       tr.appendChild(td3);
 
       tbody.appendChild(tr);
@@ -263,30 +261,30 @@ export function renderPronomenGrid(module, context) {
 
   // Fallback: original grid layout for simple items
   const gridDiv = document.createElement('div');
-  gridDiv.className = `grid md:grid-cols-${module.kolonner} gap-4 my-6`;
+  gridDiv.className = `grid md:grid-cols-${module.columns} gap-4 my-6`;
 
   module.items.forEach(item => {
     const cell = document.createElement('div');
     cell.className = 'bg-neutral-100 p-4 rounded-lg text-center';
 
-    const targetText = item[targetKey] || item.tysk;
-    const nativeText = item[nativeKey] || item.norsk;
+    const targetText = item[targetKey] || item.target;
+    const nativeText = item[nativeKey] || item.native;
 
-    const tysk = document.createElement('p');
-    tysk.className = 'text-xl font-bold';
-    tysk.textContent = targetText;
-    cell.appendChild(tysk);
+    const target = document.createElement('p');
+    target.className = 'text-xl font-bold';
+    target.textContent = targetText;
+    cell.appendChild(target);
 
-    const norsk = document.createElement('p');
-    norsk.className = 'text-lg text-neutral-600';
-    norsk.textContent = nativeText;
-    cell.appendChild(norsk);
+    const native = document.createElement('p');
+    native.className = 'text-lg text-neutral-600';
+    native.textContent = nativeText;
+    cell.appendChild(native);
 
-    if (item.merknad) {
-      const merknad = document.createElement('p');
-      merknad.className = 'text-sm mt-1';
-      merknad.textContent = item.merknad;
-      cell.appendChild(merknad);
+    if (item.note) {
+      const note = document.createElement('p');
+      note.className = 'text-sm mt-1';
+      note.textContent = item.note;
+      cell.appendChild(note);
     }
 
     // Add ring for polite/formal form (language-agnostic: check if native text indicates formality)
@@ -395,7 +393,7 @@ export function renderVerbtabell(module, context) {
 /**
  * Render rule table
  */
-export function renderRegelTabell(module, context) {
+export function renderRuleTable(module, context) {
   const container = document.createElement('div');
   container.className = 'overflow-x-auto mt-4';
 
@@ -403,13 +401,13 @@ export function renderRegelTabell(module, context) {
   table.className = 'min-w-full bg-surface border border-neutral-200';
 
   // Header
-  // Some regel-tables might miss overskrifter (e.g. simple lists)
-  if (module.overskrifter && Array.isArray(module.overskrifter)) {
+  // Some rule-tables might miss headers (e.g. simple lists)
+  if (module.headers && Array.isArray(module.headers)) {
     const thead = document.createElement('thead');
     thead.className = 'bg-neutral-100';
     const headerRow = document.createElement('tr');
 
-    module.overskrifter.forEach(header => {
+    module.headers.forEach(header => {
       const th = document.createElement('th');
       th.className = 'p-3 text-left font-semibold';
       th.innerHTML = header;
@@ -423,10 +421,10 @@ export function renderRegelTabell(module, context) {
   // Body
   const tbody = document.createElement('tbody');
 
-  if (module.rader && Array.isArray(module.rader)) {
-    module.rader.forEach((row, index) => {
+  if (module.rows && Array.isArray(module.rows)) {
+    module.rows.forEach((row, index) => {
       const tr = document.createElement('tr');
-      if (index < module.rader.length - 1) {
+      if (index < module.rows.length - 1) {
         tr.className = 'border-b';
       }
 
@@ -450,13 +448,13 @@ export function renderRegelTabell(module, context) {
 /**
  * Render info box
  */
-export function renderInfoboks(module, context) {
+export function renderInfoBox(module, context) {
   const div = document.createElement('div');
   div.className = 'mt-4 p-4 rounded-lg';
 
   // Set background color based on box type
-  switch (module.boksType) {
-    case 'husk':
+  switch (module.boxType) {
+    case 'remember':
       div.classList.add('bg-primary-100/60');
       break;
     case 'nb':
@@ -468,7 +466,7 @@ export function renderInfoboks(module, context) {
     case 'eksempel':
       div.classList.add('bg-info-100/60');
       break;
-    case 'advarsel':
+    case 'warning':
       div.classList.add('bg-error-100/60');
       break;
     case 'grammarekspert':
@@ -483,12 +481,12 @@ export function renderInfoboks(module, context) {
   // Title
   const h4 = document.createElement('h4');
   h4.className = 'font-bold mb-2';
-  h4.innerHTML = module.tittel;
+  h4.innerHTML = module.title;
   div.appendChild(h4);
 
   // Content
   const contentDiv = document.createElement('div');
-  contentDiv.innerHTML = module.innhold;
+  contentDiv.innerHTML = module.content;
   div.appendChild(contentDiv);
 
   return div;
@@ -506,17 +504,17 @@ export function renderCustomHtml(module, context) {
 /**
  * Render example sentences
  */
-export function renderEksempel(module, context) {
+export function renderExample(module, context) {
   const container = document.createElement('div');
   container.className = 'my-4';
 
   const { targetKey, nativeKey } = context;
 
   // Optional heading
-  if (module.tittel) {
+  if (module.title) {
     const heading = document.createElement('p');
     heading.className = 'font-semibold text-neutral-700 mb-2';
-    heading.textContent = module.tittel;
+    heading.textContent = module.title;
     container.appendChild(heading);
   }
 
@@ -525,7 +523,7 @@ export function renderEksempel(module, context) {
   if (items && Array.isArray(items)) {
     const grid = document.createElement('div');
     // Support 2 or 3 columns: 3 cols at md+, 2 cols at sm, 1 col on mobile
-    const cols = module.kolonner === 3
+    const cols = module.columns === 3
       ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-2'
       : 'grid grid-cols-1 md:grid-cols-2 gap-3 mt-2';
     grid.className = cols;
@@ -534,8 +532,8 @@ export function renderEksempel(module, context) {
       const box = document.createElement('div');
       box.className = 'border-l-4 border-primary-400 bg-primary-50/30 p-3 rounded-r-lg';
 
-      const targetText = setning[targetKey] || setning.tysk;
-      const nativeText = setning[nativeKey] || setning.norsk;
+      const targetText = setning[targetKey] || setning.target;
+      const nativeText = setning[nativeKey] || setning.native;
 
       // Target sentence
       const targetP = document.createElement('p');

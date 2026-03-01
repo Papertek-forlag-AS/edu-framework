@@ -164,7 +164,7 @@ function getLessonExerciseStatus(lessonId) {
     const progress = getProgressData();
     const lessonProgress = progress[lessonId] || {};
     const exercises = lessonProgress.exercises || {};
-    const exerciseData = EXERCISE_DATABASE[lessonId] || { ovelser: 0, ekstraovelser: 0 };
+    const exerciseData = EXERCISE_DATABASE[lessonId] || { exercises: 0, extraExercises: 0 };
 
     // Count completed regular exercises (exercises is now an object: { "ovelse-1-3-1": true, ... })
     const completedRegular = Object.entries(exercises)
@@ -172,9 +172,9 @@ function getLessonExerciseStatus(lessonId) {
             completed === true && !exerciseId.includes('ekstra')
         ).length;
 
-    const requiredRegular = exerciseData.ovelser || 0;
-    const hasExtraTabConfigured = (exerciseData.ekstraovelser || 0) > 0;
-    const hasExtraTabElement = Boolean(document.getElementById('ekstraovelser'));
+    const requiredRegular = exerciseData.exercises || 0;
+    const hasExtraTabConfigured = (exerciseData.extraExercises || 0) > 0;
+    const hasExtraTabElement = Boolean(document.getElementById('extra-exercises'));
     const hasExtraTab = hasExtraTabConfigured && hasExtraTabElement;
     const isUnlocked = requiredRegular === 0 || completedRegular >= requiredRegular;
 
@@ -195,10 +195,10 @@ function isTeacherMode() {
 }
 
 function applyExtraTabLock(lessonId) {
-    const extraTabButton = document.querySelector(".tab-button[data-tab-id='ekstraovelser']");
-    const extraTabContent = document.getElementById('ekstraovelser');
-    const nextButton = document.querySelector(".next-tab-btn[data-next-tab='ekstraovelser']");
-    const ovelserTab = document.getElementById('ovelser');
+    const extraTabButton = document.querySelector(".tab-button[data-tab-id='extra-exercises']");
+    const extraTabContent = document.getElementById('extra-exercises');
+    const nextButton = document.querySelector(".next-tab-btn[data-next-tab='extra-exercises']");
+    const ovelserTab = document.getElementById('exercises');
 
     if (!extraTabButton || !extraTabContent) {
         if (nextButton) {
@@ -230,7 +230,7 @@ function applyExtraTabLock(lessonId) {
     }
 
     if (shouldUnlock) {
-        console.log(`🔓 Unlocking ekstraøvelser UI elements for lesson ${lessonId}`);
+        console.log(`🔓 Unlocking extra exercises UI elements for lesson ${lessonId}`);
         extraTabButton.classList.remove('hidden');
         delete extraTabButton.dataset.locked;
         delete extraTabContent.dataset.locked;
@@ -245,14 +245,14 @@ function applyExtraTabLock(lessonId) {
             }
         }
 
-        // Remove lock message from øvelser tab if it exists
+        // Remove lock message from exercises tab if it exists
         if (ovelserTab) {
             const existingLockMessage = ovelserTab.querySelector('.extra-tab-lock-message');
             if (existingLockMessage) {
                 existingLockMessage.remove();
             }
 
-            // Add navigation button(s) to ekstraøvelser tab
+            // Add navigation button(s) to extra exercises tab
             const existingNavButton = ovelserTab.querySelector('.extra-tab-nav-button');
             if (!existingNavButton) {
                 const hasJeopardy = !!document.getElementById('jeopardy-game-container');
@@ -270,7 +270,7 @@ function applyExtraTabLock(lessonId) {
                                         <span>${t('msg_need_more_practice')}</span>
                                     </div>
                                 </div>
-                                <button data-next-tab="ekstraovelser" class="next-tab-btn w-full bg-info-500 text-white font-bold py-3 px-5 rounded-lg hover:bg-info-600 transition-colors">
+                                <button data-next-tab="extra-exercises" class="next-tab-btn w-full bg-info-500 text-white font-bold py-3 px-5 rounded-lg hover:bg-info-600 transition-colors">
                                     ${t('btn_next_extra_exercises')}
                                 </button>
                             </div>
@@ -288,10 +288,10 @@ function applyExtraTabLock(lessonId) {
                         </div>
                     `;
                 } else {
-                    // Show only ekstraøvelser button (centered)
+                    // Show only extra exercises button (centered)
                     navButton.classList.add('text-center');
                     navButton.innerHTML = `
-                        <button data-next-tab="ekstraovelser" class="next-tab-btn bg-info-500 text-white font-bold py-3 px-5 rounded-lg hover:bg-info-600 transition-colors">
+                        <button data-next-tab="extra-exercises" class="next-tab-btn bg-info-500 text-white font-bold py-3 px-5 rounded-lg hover:bg-info-600 transition-colors">
                             ${t('btn_next_extra_exercises')}
                         </button>
                     `;
@@ -385,8 +385,8 @@ function applyExtraTabLock(lessonId) {
         }
 
         const activeButton = document.querySelector('.tab-button.active');
-        if (activeButton && activeButton.dataset.tabId === 'ekstraovelser') {
-            const fallbackTab = document.getElementById('ovelser') ? 'ovelser' : 'leksjon';
+        if (activeButton && activeButton.dataset.tabId === 'extra-exercises') {
+            const fallbackTab = document.getElementById('exercises') ? 'exercises' : 'leksjon';
             showTab(fallbackTab, false);
         }
     }
@@ -491,12 +491,12 @@ function showPreviouslyCompletedBanner(chapterId) {
 
     if (!lessonProgress) return;
 
-    const achievements = lessonProgress.achievements || { leksjon: false, ovelser: false, ekstraovelser: false };
+    const achievements = lessonProgress.achievements || { leksjon: false, exercises: false, extraExercises: false };
     const exercises = lessonProgress.exercises || {};
     const earnedDate = achievements.earnedDate;
 
     // Sjekk om noen achievements er opptjent
-    const hasAnyAchievement = achievements.leksjon || achievements.ovelser || achievements.ekstraovelser;
+    const hasAnyAchievement = achievements.leksjon || achievements.exercises || achievements.extraExercises;
 
     if (!hasAnyAchievement) return;
 
@@ -541,14 +541,14 @@ function showPreviouslyCompletedBanner(chapterId) {
         return 'gull';
     };
 
-    if (achievements.ovelser) {
-        const ovelserCount = typeof achievements.ovelser === 'boolean' ? 1 : (achievements.ovelser || 0);
-        const colorName = getColorName(ovelserCount);
-        achievementsList.push(`✏️ ${colorName.charAt(0).toUpperCase() + colorName.slice(1)} blyant (øvelser fullført ${ovelserCount} ${ovelserCount === 1 ? 'gang' : 'ganger'})`);
+    if (achievements.exercises) {
+        const exercisesCount = typeof achievements.exercises === 'boolean' ? 1 : (achievements.exercises || 0);
+        const colorName = getColorName(exercisesCount);
+        achievementsList.push(`✏️ ${colorName.charAt(0).toUpperCase() + colorName.slice(1)} blyant (øvelser fullført ${exercisesCount} ${exercisesCount === 1 ? 'gang' : 'ganger'})`);
     }
 
-    if (achievements.ekstraovelser) {
-        const ekstraCount = typeof achievements.ekstraovelser === 'boolean' ? 1 : (achievements.ekstraovelser || 0);
+    if (achievements.extraExercises) {
+        const ekstraCount = typeof achievements.extraExercises === 'boolean' ? 1 : (achievements.extraExercises || 0);
         const colorName = getColorName(ekstraCount);
         achievementsList.push(`⭐ ${colorName.charAt(0).toUpperCase() + colorName.slice(1)} stjerne (ekstraøvelser fullført ${ekstraCount} ${ekstraCount === 1 ? 'gang' : 'ganger'})`);
     }
@@ -575,14 +575,14 @@ function showPreviouslyCompletedBanner(chapterId) {
     `;
 
     // Sett inn banner i Øvelser tab (ikke i Leksjon/Ordforråd/Grammatikk tabs)
-    const ovelserTab = document.getElementById('ovelser');
-    if (ovelserTab) {
-        ovelserTab.insertAdjacentHTML('afterbegin', bannerHTML);
+    const exercisesTab = document.getElementById('exercises');
+    if (exercisesTab) {
+        exercisesTab.insertAdjacentHTML('afterbegin', bannerHTML);
     }
 
     // Hvis ekstraøvelser achievement finnes, vis også i Ekstraøvelser tab
-    if (achievements.ekstraovelser) {
-        const ekstraTab = document.getElementById('ekstraovelser');
+    if (achievements.extraExercises) {
+        const ekstraTab = document.getElementById('extra-exercises');
         if (ekstraTab) {
             ekstraTab.insertAdjacentHTML('afterbegin', bannerHTML);
         }
@@ -609,8 +609,8 @@ export function renderPageHeader() {
         'ordforrad': t('tab_vocabulary'),
         'grammatikk': t('tab_grammar'),
         'dialog': t('tab_dialog'),
-        'ovelser': t('tab_exercises'),
-        'ekstraovelser': t('tab_extra_exercises'),
+        'exercises': t('tab_exercises'),
+        'extra-exercises': t('tab_extra_exercises'),
         'larer': t('tab_teacher')
     };
 
@@ -628,8 +628,8 @@ export function renderPageHeader() {
         const shouldHideDialog = (tabId === 'dialog') && !dialogPreviouslyAccessed;
         // Hide Teacher tab button UNLESS teacher mode is active
         const shouldHideTeacher = (tabId === 'larer') && !teacherModeActive;
-        // Hide Ekstraøvelser tab button by default (will be shown by applyExtraTabLock if unlocked)
-        const shouldHideEkstra = (tabId === 'ekstraovelser');
+        // Hide Extra Exercises tab button by default (will be shown by applyExtraTabLock if unlocked)
+        const shouldHideEkstra = (tabId === 'extra-exercises');
         const hiddenClass = (shouldHideDialog || shouldHideTeacher || shouldHideEkstra) ? ' hidden' : '';
         tabButtonsHTML += `<button class="tab-button${hiddenClass} text-lg font-semibold p-4 border-b-4 border-transparent hover:text-primary-600" data-tab-id="${tabId}">${tabName}</button>`;
     });
@@ -957,15 +957,15 @@ export function showTab(tabId, shouldSave = false) {
         activeButton.classList.add('active');
     }
 
-    if (lessonId && ['leksjon', 'ordforrad', 'grammatikk', 'ovelser', 'ekstraovelser'].includes(tabId)) {
+    if (lessonId && ['leksjon', 'ordforrad', 'grammatikk', 'exercises', 'extra-exercises'].includes(tabId)) {
         logProgress(lessonId, 'tabs', tabId);
     }
 
     // Dispatch event for other components to react (e.g., refresh flashcards)
     document.dispatchEvent(new CustomEvent('tab-changed', { detail: { tabId } }));
 
-    // Show completion icons when visiting øvelser or ekstraovelser tabs
-    if (tabId === 'ovelser' || tabId === 'ekstraovelser') {
+    // Show completion icons when visiting exercises or extra-exercises tabs
+    if (tabId === 'exercises' || tabId === 'extra-exercises') {
         // Import and call the function dynamically to avoid circular imports
         import('./progress/index.js').then(module => {
             module.renderExerciseCompletionIcons();
@@ -1020,11 +1020,11 @@ export function loadLastLocation() {
             return;
         }
 
-        if (lastLocation.tab === 'ekstraovelser') {
-            const fallbackButton = document.querySelector(`.tab-button[data-tab-id='ovelser']`);
+        if (lastLocation.tab === 'extra-exercises') {
+            const fallbackButton = document.querySelector(`.tab-button[data-tab-id='exercises']`);
             const fallbackLocked = fallbackButton && (fallbackButton.dataset.locked === 'true' || fallbackButton.classList.contains('hidden'));
             if (!fallbackLocked) {
-                showTab('ovelser', false);
+                showTab('exercises', false);
                 return;
             }
         }

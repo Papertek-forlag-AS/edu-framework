@@ -14,14 +14,14 @@
       "description": "A single question object in the question bank",
       "type": "object",
       "required": [
-        "leksjon",
-        "kapittel",
+        "lesson",
+        "chapter",
         "type",
-        "sporsmal",
-        "svar"
+        "question",
+        "answer"
       ],
       "properties": {
-        "leksjon": {
+        "lesson": {
           "title": "Lesson Reference",
           "description": "Lesson identifier in format 'chapter.lesson' (e.g., '1.1', '2.3')",
           "type": "string",
@@ -33,9 +33,9 @@
             "5.2"
           ]
         },
-        "kapittel": {
+        "chapter": {
           "title": "Chapter",
-          "description": "Chapter identifier, typically a numeric string matching the first part of leksjon",
+          "description": "Chapter identifier, typically a numeric string matching the first part of lesson",
           "type": "string",
           "pattern": "^\\d+$",
           "examples": [
@@ -55,7 +55,7 @@
             "multiple-choice"
           ]
         },
-        "sporsmal": {
+        "question": {
           "title": "Question Text",
           "description": "The question prompt. Can contain HTML tags (e.g., <br>, <em>) for formatting.",
           "type": "string",
@@ -66,7 +66,7 @@
             "Hva betyr «Schule» på norsk?"
           ]
         },
-        "svar": {
+        "answer": {
           "title": "Answer",
           "description": "The correct answer. Format depends on question type.",
           "type": "string",
@@ -90,12 +90,12 @@
           "then": {
             "title": "Fill-In Question",
             "description": "A fill-in-the-blank question with a single correct answer string",
-            "$comment": "Fill-in questions require: leksjon, kapittel, type, sporsmal, svar. No additional properties required.",
+            "$comment": "Fill-in questions require: lesson, chapter, type, question, answer. No additional properties required.",
             "properties": {
               "type": {
                 "const": "fill-in"
               },
-              "svar": {
+              "answer": {
                 "title": "Correct Answer",
                 "description": "The correct word or phrase to fill in the blank",
                 "type": "string",
@@ -116,13 +116,13 @@
             "title": "Drag-and-Drop Question",
             "description": "A word ordering question where students arrange words into correct sequence",
             "required": [
-              "ord"
+              "words"
             ],
             "properties": {
               "type": {
                 "const": "drag-and-drop"
               },
-              "ord": {
+              "words": {
                 "title": "Words to Order",
                 "description": "Array of words that students must arrange in correct order",
                 "type": "array",
@@ -145,7 +145,7 @@
                   ]
                 ]
               },
-              "svar": {
+              "answer": {
                 "title": "Correct Sentence",
                 "description": "The correct sentence formed by arranging the words in order",
                 "type": "string",
@@ -166,13 +166,13 @@
             "title": "Multiple-Choice Question",
             "description": "A multiple-choice question with multiple answer options",
             "required": [
-              "alternativer"
+              "options"
             ],
             "properties": {
               "type": {
                 "const": "multiple-choice"
               },
-              "alternativer": {
+              "options": {
                 "title": "Answer Options",
                 "description": "Array of answer choices. The correct answer must be one of these options.",
                 "type": "array",
@@ -196,22 +196,22 @@
                   ]
                 ]
               },
-              "svar": {
+              "answer": {
                 "title": "Correct Answer",
-                "description": "The correct answer, which must be one of the options in alternativer",
+                "description": "The correct answer, which must be one of the options in options",
                 "type": "string",
                 "minLength": 1
               }
             },
             "dependentSchemas": {
-              "svar": {
+              "answer": {
                 "properties": {
-                  "svar": true,
-                  "alternativer": true
+                  "answer": true,
+                  "options": true
                 },
                 "allOf": [
                   {
-                    "$comment": "Validate that svar is one of the alternativer options"
+                    "$comment": "Validate that answer is one of the options in options"
                   }
                 ]
               }

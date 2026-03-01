@@ -272,10 +272,10 @@ export function initCommonExercises() {
 
     // Drag-drop sentence tasks (check for global variables)
     if (typeof window.dragDropSentences !== 'undefined') {
-        setupDragDropSentenceTask('ekstraovelse-6-2-1', window.dragDropSentences);
+        setupDragDropSentenceTask('extra-exercise-6-2-1', window.dragDropSentences);
     }
     if (typeof window.schoolDragDropSentences !== 'undefined') {
-        setupDragDropSentenceTask('ekstraovelse-9-2-1', window.schoolDragDropSentences);
+        setupDragDropSentenceTask('extra-exercise-9-2-1', window.schoolDragDropSentences);
     }
     if (typeof window.shoppingDragDropSentences !== 'undefined') {
         setupDragDropSentenceTask('drag-drop-shopping-task', window.shoppingDragDropSentences);
@@ -313,23 +313,23 @@ export function initCommonExercises() {
     document.querySelectorAll('.writing-task').forEach(task => setupWritingTask(task.id));
 
     // Setup specific fill-in tasks for lesson 3-1
-    if (document.getElementById('ekstraovelse-1-familie')) {
-        setupFillInTask('ekstraovelse-1-familie');
+    if (document.getElementById('extra-exercise-1-familie')) {
+        setupFillInTask('extra-exercise-1-familie');
     }
-    if (document.getElementById('ekstraovelse-2-skole')) {
-        setupFillInTask('ekstraovelse-2-skole');
+    if (document.getElementById('extra-exercise-2-skole')) {
+        setupFillInTask('extra-exercise-2-skole');
     }
-    if (document.getElementById('ekstraovelse-9a-kaufen')) {
-        setupFillInTask('ekstraovelse-9a-kaufen');
+    if (document.getElementById('extra-exercise-9a-kaufen')) {
+        setupFillInTask('extra-exercise-9a-kaufen');
     }
-    if (document.getElementById('ekstraovelse-9b-brauchen')) {
-        setupFillInTask('ekstraovelse-9b-brauchen');
+    if (document.getElementById('extra-exercise-9b-brauchen')) {
+        setupFillInTask('extra-exercise-9b-brauchen');
     }
-    if (document.getElementById('ekstraovelse-10-mogen')) {
-        setupFillInTask('ekstraovelse-10-mogen');
+    if (document.getElementById('extra-exercise-10-mogen')) {
+        setupFillInTask('extra-exercise-10-mogen');
     }
-    if (document.getElementById('ekstraovelse-11-shopping')) {
-        setupWritingTask('ekstraovelse-11-shopping');
+    if (document.getElementById('extra-exercise-11-shopping')) {
+        setupWritingTask('extra-exercise-11-shopping');
     }
 }
 

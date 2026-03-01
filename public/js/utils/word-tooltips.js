@@ -608,8 +608,8 @@ export function setupGrammarTermLookups() {
             tooltipElement.dataset.currentWordId = termKey;
 
             const contentHTML = `
-                <div class="tooltip-title">${definition.tittel}</div>
-                <div>${definition.forklaring}</div>
+                <div class="tooltip-title">${definition.title}</div>
+                <div>${definition.explanation}</div>
             `;
             tooltipElement.innerHTML = contentHTML;
 

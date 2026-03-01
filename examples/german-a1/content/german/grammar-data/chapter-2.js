@@ -4,17 +4,17 @@
  */
 export const grammarModules = {
   "2": [
-    { type: "tittel", tekst: "Possessivpronomen: mein/dein", nivå: 2 },
+    { type: "heading", text: "Possessivpronomen: mein/dein", level: 2 },
 
     {
-      type: "forklaring",
-      tekst: "Possessivpronomen viser hvem noe tilhører. <strong>Mein</strong> betyr «min» og <strong>dein</strong> betyr «din». Endelsen avhenger av substantivets kjønn."
+      type: "explanation",
+      text: "Possessivpronomen viser hvem noe tilhører. <strong>Mein</strong> betyr «min» og <strong>dein</strong> betyr «din». Endelsen avhenger av substantivets kjønn."
     },
 
     {
-      type: "regel-tabell",
-      overskrifter: ["Kjønn", "mein", "dein", "Eksempel"],
-      rader: [
+      type: "rule-table",
+      headers: ["Kjønn", "mein", "dein", "Eksempel"],
+      rows: [
         ["Maskulin (der)", "<strong>mein</strong>", "<strong>dein</strong>", "mein Vater"],
         ["Feminin (die)", "<strong>meine</strong>", "<strong>deine</strong>", "meine Mutter"],
         ["Nøytrum (das)", "<strong>mein</strong>", "<strong>dein</strong>", "mein Kind"],
@@ -24,33 +24,33 @@ export const grammarModules = {
 
     {
       type: "eksempel",
-      tittel: "Eksempler med mein/dein",
+      title: "Eksempler med mein/dein",
       setninger: [
-        { tysk: "Das ist <strong>mein</strong> Bruder.", norsk: "Det er broren min." },
-        { tysk: "Das ist <strong>meine</strong> Schwester.", norsk: "Det er søsteren min." },
-        { tysk: "Wie heißt <strong>dein</strong> Vater?", norsk: "Hva heter faren din?" },
-        { tysk: "Ist das <strong>deine</strong> Mutter?", norsk: "Er det moren din?" }
+        { target: "Das ist <strong>mein</strong> Bruder.", native: "Det er broren min." },
+        { target: "Das ist <strong>meine</strong> Schwester.", native: "Det er søsteren min." },
+        { target: "Wie heißt <strong>dein</strong> Vater?", native: "Hva heter faren din?" },
+        { target: "Ist das <strong>deine</strong> Mutter?", native: "Er det moren din?" }
       ]
     },
 
     {
-      type: "infoboks",
-      boksType: "husk",
-      tittel: "Husk!",
-      innhold: "Regelen er enkel: <strong>mein/dein</strong> for maskulin og nøytrum, <strong>meine/deine</strong> for feminin og flertall. Det er samme mønster som artikkelendelsene!"
+      type: "info-box",
+      boxType: "remember",
+      title: "Husk!",
+      content: "Regelen er enkel: <strong>mein/dein</strong> for maskulin og nøytrum, <strong>meine/deine</strong> for feminin og flertall. Det er samme mønster som artikkelendelsene!"
     },
 
-    { type: "tittel", tekst: "Tallene 1-20", nivå: 3 },
+    { type: "heading", text: "Tallene 1-20", level: 3 },
 
     {
-      type: "forklaring",
-      tekst: "De tyske tallene 1-12 er unike ord du må lære utenat. Tallene 13-19 er bygget opp av <strong>enertall + zehn</strong> (f.eks. drei + zehn = dreizehn). 20 er <strong>zwanzig</strong>."
+      type: "explanation",
+      text: "De tyske tallene 1-12 er unike ord du må lære utenat. Tallene 13-19 er bygget opp av <strong>enertall + zehn</strong> (f.eks. drei + zehn = dreizehn). 20 er <strong>zwanzig</strong>."
     },
 
     {
-      type: "regel-tabell",
-      overskrifter: ["Tall", "Tysk", "Tall", "Tysk"],
-      rader: [
+      type: "rule-table",
+      headers: ["Tall", "Tysk", "Tall", "Tysk"],
+      rows: [
         ["1", "eins", "11", "elf"],
         ["2", "zwei", "12", "zwölf"],
         ["3", "drei", "13", "dreizehn"],
@@ -65,19 +65,19 @@ export const grammarModules = {
     },
 
     {
-      type: "infoboks",
-      boksType: "tips",
-      tittel: "Tips",
-      innhold: "Legg merke til at <strong>sechzehn</strong> mister s-en i sechs, og <strong>siebzehn</strong> mister en-endelsen i sieben. Det er de to unntakene!"
+      type: "info-box",
+      boxType: "tips",
+      title: "Tips",
+      content: "Legg merke til at <strong>sechzehn</strong> mister s-en i sechs, og <strong>siebzehn</strong> mister en-endelsen i sieben. Det er de to unntakene!"
     },
 
     {
       type: "eksempel",
-      tittel: "Snakke om alder",
+      title: "Snakke om alder",
       setninger: [
-        { tysk: "Wie alt <strong>bist</strong> du?", norsk: "Hvor gammel er du?" },
-        { tysk: "Ich <strong>bin</strong> sechzehn Jahre alt.", norsk: "Jeg er seksten år gammel." },
-        { tysk: "Mein Bruder <strong>ist</strong> zwölf.", norsk: "Broren min er tolv." }
+        { target: "Wie alt <strong>bist</strong> du?", native: "Hvor gammel er du?" },
+        { target: "Ich <strong>bin</strong> sechzehn Jahre alt.", native: "Jeg er seksten år gammel." },
+        { target: "Mein Bruder <strong>ist</strong> zwölf.", native: "Broren min er tolv." }
       ]
     }
   ]

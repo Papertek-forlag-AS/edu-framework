@@ -8,45 +8,45 @@
  */
 
 /**
- * Database over antall øvelser per leksjon og fane
- * Struktur: { leksjonId: { ovelser: antall, ekstraovelser: antall, tests: array } }
+ * Exercise count database per lesson
+ * Structure: { lessonId: { exercises: count, extraExercises: count, tests: array } }
  */
 export const EXERCISE_DATABASE = {
-    '1-1': { ovelser: 4, ekstraovelser: 10, tests: ['leksjon'] },
-    '1-2': { ovelser: 4, ekstraovelser: 10, tests: ['leksjon'] },
-    '1-3': { ovelser: 4, ekstraovelser: 10, tests: ['leksjon', 'kapittel'] },
-    '2-1': { ovelser: 6, ekstraovelser: 9, tests: ['leksjon'] },
-    '2-2': { ovelser: 6, ekstraovelser: 6, tests: ['leksjon'] },
-    '2-3': { ovelser: 5, ekstraovelser: 6, tests: ['leksjon', 'kapittel', 'kumulativ'] },
-    '3-1': { ovelser: 4, ekstraovelser: 12, tests: ['leksjon'] },
-    '3-2': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon'] },
-    '3-3': { ovelser: 6, ekstraovelser: 9, tests: ['leksjon', 'kapittel', 'kumulativ'] },
-    '4-1': { ovelser: 5, ekstraovelser: 10, tests: ['leksjon'] },
-    '4-2': { ovelser: 5, ekstraovelser: 10, tests: ['leksjon'] },
-    '4-3': { ovelser: 5, ekstraovelser: 10, tests: ['leksjon', 'kapittel', 'kumulativ'] },
-    '5-1': { ovelser: 4, ekstraovelser: 0, tests: ['leksjon'] },
-    '5-2': { ovelser: 4, ekstraovelser: 10, tests: ['leksjon'] },
-    '5-3': { ovelser: 4, ekstraovelser: 10, tests: ['leksjon', 'kapittel', 'kumulativ'] },
-    '6-1': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon'] },
-    '6-2': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon'] },
-    '6-3': { ovelser: 5, ekstraovelser: 10, tests: ['leksjon', 'kapittel', 'kumulativ'] },
-    '7-1': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon'] },
-    '7-2': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon'] },
-    '7-3': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon', 'kapittel', 'kumulativ'] },
-    '8-1': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon'] },
-    '8-2': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon'] },
-    '8-3': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon', 'kapittel', 'kumulativ'] },
-    '9-1': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon'] },
-    '9-2': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon'] },
-    '9-3': { ovelser: 6, ekstraovelser: 10, tests: ['leksjon', 'kapittel', 'kumulativ'] },
-    '10-1': { ovelser: 3, ekstraovelser: 0, tests: ['leksjon'] },
-    '10-2': { ovelser: 3, ekstraovelser: 0, tests: ['leksjon'] },
-    '10-3': { ovelser: 3, ekstraovelser: 0, tests: ['leksjon', 'kapittel', 'kumulativ'] }
+    '1-1': { exercises: 4, extraExercises: 10, tests: ['lesson'] },
+    '1-2': { exercises: 4, extraExercises: 10, tests: ['lesson'] },
+    '1-3': { exercises: 4, extraExercises: 10, tests: ['lesson', 'chapter'] },
+    '2-1': { exercises: 6, extraExercises: 9, tests: ['lesson'] },
+    '2-2': { exercises: 6, extraExercises: 6, tests: ['lesson'] },
+    '2-3': { exercises: 5, extraExercises: 6, tests: ['lesson', 'chapter', 'cumulative'] },
+    '3-1': { exercises: 4, extraExercises: 12, tests: ['lesson'] },
+    '3-2': { exercises: 6, extraExercises: 10, tests: ['lesson'] },
+    '3-3': { exercises: 6, extraExercises: 9, tests: ['lesson', 'chapter', 'cumulative'] },
+    '4-1': { exercises: 5, extraExercises: 10, tests: ['lesson'] },
+    '4-2': { exercises: 5, extraExercises: 10, tests: ['lesson'] },
+    '4-3': { exercises: 5, extraExercises: 10, tests: ['lesson', 'chapter', 'cumulative'] },
+    '5-1': { exercises: 4, extraExercises: 0, tests: ['lesson'] },
+    '5-2': { exercises: 4, extraExercises: 10, tests: ['lesson'] },
+    '5-3': { exercises: 4, extraExercises: 10, tests: ['lesson', 'chapter', 'cumulative'] },
+    '6-1': { exercises: 6, extraExercises: 10, tests: ['lesson'] },
+    '6-2': { exercises: 6, extraExercises: 10, tests: ['lesson'] },
+    '6-3': { exercises: 5, extraExercises: 10, tests: ['lesson', 'chapter', 'cumulative'] },
+    '7-1': { exercises: 6, extraExercises: 10, tests: ['lesson'] },
+    '7-2': { exercises: 6, extraExercises: 10, tests: ['lesson'] },
+    '7-3': { exercises: 6, extraExercises: 10, tests: ['lesson', 'chapter', 'cumulative'] },
+    '8-1': { exercises: 6, extraExercises: 10, tests: ['lesson'] },
+    '8-2': { exercises: 6, extraExercises: 10, tests: ['lesson'] },
+    '8-3': { exercises: 6, extraExercises: 10, tests: ['lesson', 'chapter', 'cumulative'] },
+    '9-1': { exercises: 6, extraExercises: 10, tests: ['lesson'] },
+    '9-2': { exercises: 6, extraExercises: 10, tests: ['lesson'] },
+    '9-3': { exercises: 6, extraExercises: 10, tests: ['lesson', 'chapter', 'cumulative'] },
+    '10-1': { exercises: 3, extraExercises: 0, tests: ['lesson'] },
+    '10-2': { exercises: 3, extraExercises: 0, tests: ['lesson'] },
+    '10-3': { exercises: 3, extraExercises: 0, tests: ['lesson', 'chapter', 'cumulative'] }
 };
 
 /**
  * Event name for regular exercises completion
- * Dispatched when all regular exercises are completed to unlock ekstraøvelser tab
+ * Dispatched when all regular exercises are completed to unlock extra exercises tab
  */
 export const REGULAR_EXERCISES_EVENT = 'regular-exercises-updated';
 

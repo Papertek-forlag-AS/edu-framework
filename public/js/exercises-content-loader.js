@@ -118,7 +118,7 @@ export async function loadExercisesContent(externalConfig) {
     }
 
     // Last ekstraøvelser - call even if empty to show "Coming Soon" message if needed
-    if (document.getElementById('ekstraovelser-content')) {
+    if (document.getElementById('extra-exercises-content')) {
       loadExtraExercises(data.extraExercises || []);
     }
 
@@ -138,14 +138,14 @@ export async function loadExercisesContent(externalConfig) {
  */
 function loadExercises(exercises) {
   debug('  📖 Loading exercises...', exercises);
-  const container = document.getElementById('ovelser');
+  const container = document.getElementById('exercises');
 
   if (!container) {
-    console.error('  ❌ Element #ovelser not found in DOM!');
+    console.error('  ❌ Element #exercises not found in DOM!');
     return;
   }
 
-  debug('  ✓ Found #ovelser container');
+  debug('  ✓ Found #exercises container');
 
   // Finn sjekkliste-elementet (mer kompatibel måte)
   const checklist = document.getElementById('checklist');
@@ -186,10 +186,10 @@ function loadExercises(exercises) {
  */
 function loadExtraExercises(extraExercises) {
   debug('  📖 Loading extra exercises...');
-  const container = document.getElementById('ekstraovelser-content');
+  const container = document.getElementById('extra-exercises-content');
 
   if (!container) {
-    console.error('  ❌ Element #ekstraovelser-content not found in DOM!');
+    console.error('  ❌ Element #extra-exercises-content not found in DOM!');
     return;
   }
 

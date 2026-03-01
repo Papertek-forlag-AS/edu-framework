@@ -36,14 +36,14 @@ The grammar renderer supports 7 module types:
 
 | Type | Key | Purpose |
 |---|---|---|
-| Title | `tittel` | Section heading |
-| Explanation | `forklaring` | Text paragraph explaining a concept |
-| List | `liste` | Bulleted list of rules or examples |
-| Pronoun Grid | `pronomen-grid` | Pronoun/case table |
-| Verb Table | `verbtabell` | Verb conjugation display |
-| Rule Table | `regel-tabell` | Grammar rule with structured rows |
-| Info Box | `infoboks` | Highlighted tip, warning, or memory aid |
-| Example | `eksempel` | Side-by-side example sentences |
+| Heading | `heading` | Section heading |
+| Explanation | `explanation` | Text paragraph explaining a concept |
+| List | `list` | Bulleted list of rules or examples |
+| Pronoun Grid | `pronoun-grid` | Pronoun/case table |
+| Verb Table | `verb-table` | Verb conjugation display |
+| Rule Table | `rule-table` | Grammar rule with structured rows |
+| Info Box | `info-box` | Highlighted tip, warning, or memory aid |
+| Example | `example` | Side-by-side example sentences |
 | Custom Tool | `custom-tool` | Interactive grammar exercise |
 
 ### 4. Module Data Format
@@ -51,17 +51,17 @@ The grammar renderer supports 7 module types:
 ```javascript
 export const grammarModules = {
   "{chapter}": [
-    // Title
-    { "type": "tittel", "tekst": "Grammar Topic Name", "nivå": 2 },
+    // Heading
+    { "type": "heading", "text": "Grammar Topic Name", "level": 2 },
 
     // Explanation
-    { "type": "forklaring", "tekst": "Clear explanation of the grammar point." },
+    { "type": "explanation", "text": "Clear explanation of the grammar point." },
 
     // Rule table
     {
-      "type": "regel-tabell",
-      "overskrifter": ["Rule", "Example", "Translation"],
-      "rader": [
+      "type": "rule-table",
+      "headers": ["Rule", "Example", "Translation"],
+      "rows": [
         ["Rule 1", "<strong>example</strong>", "meaning"],
         ["Rule 2", "<strong>example</strong>", "meaning"]
       ]
@@ -69,32 +69,32 @@ export const grammarModules = {
 
     // Example sentences (2-column layout)
     {
-      "type": "eksempel",
-      "tittel": "Examples",
-      "setninger": [
-        { "tysk": "Target language sentence", "norsk": "Translation" },
-        { "tysk": "Another sentence", "norsk": "Translation" }
+      "type": "example",
+      "title": "Examples",
+      "sentences": [
+        { "target": "Target language sentence", "native": "Translation" },
+        { "target": "Another sentence", "native": "Translation" }
       ]
     },
 
     // Info box
     {
-      "type": "infoboks",
-      "boksType": "husk",    // husk | tips | nb | info | advarsel | grammarekspert
-      "tittel": "Remember!",
-      "innhold": "Important point to remember."
+      "type": "info-box",
+      "boxType": "remember",    // remember | tip | note | info | warning | expert
+      "title": "Remember!",
+      "content": "Important point to remember."
     },
 
     // Verb table (renders from verbbank data)
-    { "type": "verbtabell", "verb": "spielen" },
+    { "type": "verb-table", "verb": "spielen" },
 
     // Pronoun grid
     {
-      "type": "pronomen-grid",
-      "kolonner": 3,
+      "type": "pronoun-grid",
+      "columns": 3,
       "items": [
-        { "tysk": "ich", "norsk": "jeg" },
-        { "tysk": "du", "norsk": "du" }
+        { "target": "ich", "native": "jeg" },
+        { "target": "du", "native": "du" }
       ]
     },
 
@@ -112,12 +112,12 @@ export const grammarModules = {
 
 | Type | Use | Color |
 |---|---|---|
-| `husk` | "Remember!" memory aids | Primary (blue) |
-| `tips` | Helpful tips and shortcuts | Success (green) |
-| `nb` | "Note:" important exceptions | Error (red) |
+| `remember` | "Remember!" memory aids | Primary (blue) |
+| `tip` | Helpful tips and shortcuts | Success (green) |
+| `note` | "Note:" important exceptions | Error (red) |
 | `info` | General information | Info (blue) |
-| `advarsel` | Warnings about common mistakes | Error (red) |
-| `grammarekspert` | Advanced grammar notes | Accent (purple) |
+| `warning` | Warnings about common mistakes | Error (red) |
+| `expert` | Advanced grammar notes | Accent (purple) |
 
 ### 6. Grammar Progression Guidelines
 

@@ -35,7 +35,7 @@ export function resetChapterExercises(chapterNumber) {
 
         if (!lessonProgress) return;
 
-        const achievements = lessonProgress.achievements || { leksjon: false, ovelser: 0, ekstraovelser: 0 };
+        const achievements = lessonProgress.achievements || { leksjon: false, exercises: 0, extraExercises: 0 };
         const exerciseConfig = EXERCISE_DATABASE[lessonId];
 
         if (!exerciseConfig) return;
@@ -105,7 +105,7 @@ export function renderChapterResetButtons() {
             hasAnyLessons = true;
 
             // Sjekk om leksjonen har regular exercises
-            const regularExerciseCount = exerciseConfig.ovelser || 0;
+            const regularExerciseCount = exerciseConfig.exercises || 0;
 
             // Hvis leksjonen har regular exercises, sjekk om alle er fullført
             if (regularExerciseCount > 0) {

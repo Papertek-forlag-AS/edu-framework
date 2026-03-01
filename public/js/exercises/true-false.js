@@ -37,7 +37,7 @@ export function setupTrueFalseGame(containerId, statements) {
 
     const exercise = createExercise(containerId, {
         onMount(ctx) {
-            const exerciseContainer = ctx.container.closest('[id^="ekstraovelse"]');
+            const exerciseContainer = ctx.container.closest('[id^="extra-exercise"]');
             const exerciseId = exerciseContainer ? exerciseContainer.id : containerId;
 
             const statementsContainer = ctx.$('.statements-container');

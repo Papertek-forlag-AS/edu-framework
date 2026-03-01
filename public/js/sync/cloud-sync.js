@@ -664,9 +664,9 @@ export async function syncProgressFromCloud() {
           exercises: {},
           tests: [],
           achievements: {
-            leksjon: false,
-            ovelser: 0,
-            ekstraovelser: 0,
+            lesson: false,
+            exercises: 0,
+            extraExercises: 0,
             earnedDate: null
           }
         };
@@ -705,12 +705,12 @@ export async function syncProgressFromCloud() {
           localAch.leksjon = true;
           mergedCount++;
         }
-        if (typeof cloudAch.ovelser === 'number' && cloudAch.ovelser > (localAch.ovelser || 0)) {
-          localAch.ovelser = cloudAch.ovelser;
+        if (typeof cloudAch.exercises === 'number' && cloudAch.exercises > (localAch.exercises || 0)) {
+          localAch.exercises = cloudAch.exercises;
           mergedCount++;
         }
-        if (typeof cloudAch.ekstraovelser === 'number' && cloudAch.ekstraovelser > (localAch.ekstraovelser || 0)) {
-          localAch.ekstraovelser = cloudAch.ekstraovelser;
+        if (typeof cloudAch.extraExercises === 'number' && cloudAch.extraExercises > (localAch.extraExercises || 0)) {
+          localAch.extraExercises = cloudAch.extraExercises;
           mergedCount++;
         }
         if (cloudAch.earnedDate && !localAch.earnedDate) {

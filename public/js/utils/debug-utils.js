@@ -28,25 +28,25 @@ export const testOldDataStructure = {
         // No achievements field
         const oldProgress = {
             '1-1': {
-                tabs: ['leksjon', 'ovelser'],
-                exercises: ['ovelse-1-1-1', 'ovelse-2-1-1', 'aufgabeA', 'aufgabeB'],  // Array format!
-                tests: [{ type: 'leksjon', score: 85, date: '2025-12-15', passed: true }]
+                tabs: ['lesson', 'exercises'],
+                exercises: ['exercise-1-1-1', 'exercise-2-1-1', 'aufgabeA', 'aufgabeB'],  // Array format!
+                tests: [{ type: 'lesson', score: 85, date: '2025-12-15', passed: true }]
             },
             '1-2': {
-                tabs: ['leksjon', 'ovelser'],
+                tabs: ['lesson', 'exercises'],
                 exercises: ['aufgabeA', 'aufgabeB', 'aufgabeC'],
-                tests: [{ type: 'leksjon', score: 90, date: '2025-12-16', passed: true }]
+                tests: [{ type: 'lesson', score: 90, date: '2025-12-16', passed: true }]
             },
             '1-3': {
-                tabs: ['leksjon', 'ovelser'],
+                tabs: ['lesson', 'exercises'],
                 exercises: ['aufgabeA', 'aufgabeB', 'aufgabeC', 'aufgabeD'],
                 tests: [
-                    { type: 'leksjon', score: 88, date: '2025-12-17', passed: true },
-                    { type: 'kapittel', score: 92, date: '2025-12-18', passed: true }
+                    { type: 'lesson', score: 88, date: '2025-12-17', passed: true },
+                    { type: 'chapter', score: 92, date: '2025-12-18', passed: true }
                 ]
             },
             '2-1': {
-                tabs: ['leksjon'],
+                tabs: ['lesson'],
                 exercises: ['aufgabeA', 'aufgabeB'],
                 tests: []
             }

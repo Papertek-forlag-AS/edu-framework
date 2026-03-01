@@ -78,19 +78,19 @@ export function trackExerciseCompletion(exerciseId) {
     // Tell hvor mange øvelser som er fullførte
     const completedExerciseIds = Object.keys(lessonProgress.exercises).filter(id => lessonProgress.exercises[id] === true);
 
-    if (exerciseId.includes('ekstraovelse')) {
+    if (exerciseId.includes('extra-exercise')) {
         // Håndter ekstraøvelse
-        const exerciseData = EXERCISE_DATABASE[lessonId] || { ekstraovelser: 0 };
-        const requiredExtra = exerciseData.ekstraovelser;
-        const completedExtra = completedExerciseIds.filter(ex => ex.includes('ekstraovelse')).length;
+        const exerciseData = EXERCISE_DATABASE[lessonId] || { extraExercises: 0 };
+        const requiredExtra = exerciseData.extraExercises;
+        const completedExtra = completedExerciseIds.filter(ex => ex.includes('extra-exercise')).length;
 
         if (requiredExtra > 0 && completedExtra === requiredExtra) {
             // Alle ekstraøvelser fullført - inkrementer achievement og vis feiring
-            const currentCount = lessonProgress.achievements.ekstraovelser || 0;
+            const currentCount = lessonProgress.achievements.extraExercises || 0;
             const displayLevel = currentCount + 1;
 
             // INCREMENT THE ACHIEVEMENT COUNTER!
-            lessonProgress.achievements.ekstraovelser = displayLevel;
+            lessonProgress.achievements.extraExercises = displayLevel;
 
             if (!lessonProgress.achievements.earnedDate) {
                 lessonProgress.achievements.earnedDate = new Date().toISOString().split('T')[0];
@@ -114,10 +114,10 @@ export function trackExerciseCompletion(exerciseId) {
     }
 
     // Håndter vanlige øvelser
-    const exerciseData = EXERCISE_DATABASE[lessonId] || { ovelser: 0, ekstraovelser: 0 };
-    const requiredRegular = exerciseData.ovelser || 0;
-    const hasExtraTab = (exerciseData.ekstraovelser || 0) > 0;
-    const completedRegular = completedExerciseIds.filter(ex => !ex.includes('ekstra')).length;
+    const exerciseData = EXERCISE_DATABASE[lessonId] || { exercises: 0, extraExercises: 0 };
+    const requiredRegular = exerciseData.exercises || 0;
+    const hasExtraTab = (exerciseData.extraExercises || 0) > 0;
+    const completedRegular = completedExerciseIds.filter(ex => !ex.includes('extra-exercise')).length;
 
     if (requiredRegular === 0) {
         saveLessonProgress(lessonId, lessonProgress);
@@ -136,11 +136,11 @@ export function trackExerciseCompletion(exerciseId) {
 
     if (completedRegular === requiredRegular) {
         // Alle vanlige øvelser fullført - inkrementer achievement og vis feiring
-        const currentCount = lessonProgress.achievements.ovelser || 0;
+        const currentCount = lessonProgress.achievements.exercises || 0;
         const displayLevel = currentCount + 1;
 
         // INCREMENT THE ACHIEVEMENT COUNTER!
-        lessonProgress.achievements.ovelser = displayLevel;
+        lessonProgress.achievements.exercises = displayLevel;
 
         if (!lessonProgress.achievements.earnedDate) {
             lessonProgress.achievements.earnedDate = new Date().toISOString().split('T')[0];
@@ -197,12 +197,12 @@ export function removeExerciseCompletion(exerciseId) {
         // Tell hvor mange øvelser som er fullførte nå
         const completedExerciseIds = Object.keys(lessonProgress.exercises).filter(id => lessonProgress.exercises[id] === true);
 
-        if (!exerciseId.includes('ekstraovelse')) {
+        if (!exerciseId.includes('extra-exercise')) {
             // Sjekk om vi må fjerne achievement for vanlige øvelser
-            const exerciseData = EXERCISE_DATABASE[lessonId] || { ovelser: 0, ekstraovelser: 0 };
-            const requiredRegular = exerciseData.ovelser || 0;
-            const hasExtraTab = (exerciseData.ekstraovelser || 0) > 0;
-            const completedRegular = completedExerciseIds.filter(ex => !ex.includes('ekstra')).length;
+            const exerciseData = EXERCISE_DATABASE[lessonId] || { exercises: 0, extraExercises: 0 };
+            const requiredRegular = exerciseData.exercises || 0;
+            const hasExtraTab = (exerciseData.extraExercises || 0) > 0;
+            const completedRegular = completedExerciseIds.filter(ex => !ex.includes('extra-exercise')).length;
 
             // ACHIEVEMENT PRESERVATION LOGIC (intentional design):
             // - Achievements only decrement when ALL exercises are reset to false
@@ -211,10 +211,10 @@ export function removeExerciseCompletion(exerciseId) {
             // - To fully "start over", the user must reset every exercise in the lesson
             const allExercisesFalse = completedRegular === 0;
 
-            if (completedRegular < requiredRegular && lessonProgress.achievements.ovelser > 0 && allExercisesFalse) {
+            if (completedRegular < requiredRegular && lessonProgress.achievements.exercises > 0 && allExercisesFalse) {
                 // Only decrement if no exercises are completed (true reset, not active practice)
-                lessonProgress.achievements.ovelser = Math.max(0, lessonProgress.achievements.ovelser - 1);
-                console.log(`⬇️ Decremented ovelser achievement: ${lessonProgress.achievements.ovelser + 1} → ${lessonProgress.achievements.ovelser}`);
+                lessonProgress.achievements.exercises = Math.max(0, lessonProgress.achievements.exercises - 1);
+                console.log(`⬇️ Decremented exercises achievement: ${lessonProgress.achievements.exercises + 1} → ${lessonProgress.achievements.exercises}`);
             } else if (completedRegular < requiredRegular && !allExercisesFalse) {
                 console.log(`⏭️ Preserving achievement during active practice (${completedRegular}/${requiredRegular} complete)`);
             }
@@ -233,19 +233,19 @@ export function removeExerciseCompletion(exerciseId) {
             }
         } else {
             // Sjekk om vi må fjerne achievement for ekstraøvelser
-            const exerciseData = EXERCISE_DATABASE[lessonId] || { ekstraovelser: 0 };
-            const requiredExtra = exerciseData.ekstraovelser;
-            const completedExtra = completedExerciseIds.filter(ex => ex.includes('ekstraovelse')).length;
+            const exerciseData = EXERCISE_DATABASE[lessonId] || { extraExercises: 0 };
+            const requiredExtra = exerciseData.extraExercises;
+            const completedExtra = completedExerciseIds.filter(ex => ex.includes('extra-exercise')).length;
 
             // Same achievement preservation logic as regular exercises (see comments above)
             const allExtraExercisesFalse = completedExtra === 0;
 
-            if (completedExtra < requiredExtra && lessonProgress.achievements.ekstraovelser > 0 && allExtraExercisesFalse) {
+            if (completedExtra < requiredExtra && lessonProgress.achievements.extraExercises > 0 && allExtraExercisesFalse) {
                 // Only decrement if no extra exercises are completed (true reset, not active practice)
-                lessonProgress.achievements.ekstraovelser = Math.max(0, lessonProgress.achievements.ekstraovelser - 1);
-                console.log(`⬇️ Decremented ekstraovelser achievement: ${lessonProgress.achievements.ekstraovelser + 1} → ${lessonProgress.achievements.ekstraovelser}`);
+                lessonProgress.achievements.extraExercises = Math.max(0, lessonProgress.achievements.extraExercises - 1);
+                console.log(`⬇️ Decremented extraExercises achievement: ${lessonProgress.achievements.extraExercises + 1} → ${lessonProgress.achievements.extraExercises}`);
             } else if (completedExtra < requiredExtra && !allExtraExercisesFalse) {
-                console.log(`⏭️ Preserving ekstraovelser achievement during active practice (${completedExtra}/${requiredExtra} complete)`);
+                console.log(`⏭️ Preserving extraExercises achievement during active practice (${completedExtra}/${requiredExtra} complete)`);
             }
         }
 
@@ -281,24 +281,24 @@ export function areChaptersCompleted(chapters, lessonsPerChapter = 3) {
 
     for (const lessonId of requiredLessons) {
         const lessonProgress = progress[lessonId];
-        const exerciseData = EXERCISE_DATABASE[lessonId] || { ovelser: 0, ekstraovelser: 0, tests: [] };
+        const exerciseData = EXERCISE_DATABASE[lessonId] || { exercises: 0, extraExercises: 0, tests: [] };
 
         // Hvis leksjonen ikke eksisterer, er den ikke fullført
         if (!lessonProgress) return false;
 
-        const achievements = lessonProgress.achievements || { leksjon: false, ovelser: 0, ekstraovelser: 0 };
+        const achievements = lessonProgress.achievements || { leksjon: false, exercises: 0, extraExercises: 0 };
 
         // Check green book (achievement.leksjon)
         if (!achievements.leksjon) return false;
 
-        // Check green pencil (achievement.ovelser) - should have at least 1 completion
-        const ovelserCount = typeof achievements.ovelser === 'boolean' ? (achievements.ovelser ? 1 : 0) : (achievements.ovelser || 0);
-        if (ovelserCount === 0) return false;
+        // Check green pencil (achievement.exercises) - should have at least 1 completion
+        const exercisesCount = typeof achievements.exercises === 'boolean' ? (achievements.exercises ? 1 : 0) : (achievements.exercises || 0);
+        if (exercisesCount === 0) return false;
 
-        // Check yellow star (achievement.ekstraovelser where applicable) - should have at least 1 completion
-        const hasExtraTab = exerciseData.ekstraovelser > 0;
-        const ekstraCount = typeof achievements.ekstraovelser === 'boolean' ? (achievements.ekstraovelser ? 1 : 0) : (achievements.ekstraovelser || 0);
-        if (hasExtraTab && ekstraCount === 0) return false;
+        // Check yellow star (achievement.extraExercises where applicable) - should have at least 1 completion
+        const hasExtraTab = exerciseData.extraExercises > 0;
+        const extraCount = typeof achievements.extraExercises === 'boolean' ? (achievements.extraExercises ? 1 : 0) : (achievements.extraExercises || 0);
+        if (hasExtraTab && extraCount === 0) return false;
 
         // Check green scheme (all tests completed)
         const completedTests = lessonProgress.tests || [];

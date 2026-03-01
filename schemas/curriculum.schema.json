@@ -323,17 +323,17 @@
       "description": "Configuration for exercises in a specific lesson (chapter-lesson)",
       "required": [],
       "properties": {
-        "ovelser": {
+        "exercises": {
           "type": "integer",
           "title": "Number of Regular Exercises",
-          "description": "Number of standard exercises (øvelser) in the lesson",
+          "description": "Number of standard exercises in the lesson",
           "minimum": 0,
           "maximum": 100
         },
-        "ekstraovelser": {
+        "extraExercises": {
           "type": "integer",
           "title": "Number of Extra Exercises",
-          "description": "Number of extra exercises (ekstraøvelser) in the lesson. Use 0 to disable extra exercises tab",
+          "description": "Number of extra exercises in the lesson. Use 0 to disable extra exercises tab",
           "minimum": 0,
           "maximum": 200
         },
@@ -344,10 +344,10 @@
           "items": {
             "type": "string",
             "enum": [
-              "leksjon",
-              "kapittel",
-              "repetisjonstest",
-              "avsluttende"
+              "lesson",
+              "chapter",
+              "review",
+              "final"
             ],
             "title": "Test Type"
           },
