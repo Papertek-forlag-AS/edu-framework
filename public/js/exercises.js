@@ -14,6 +14,7 @@ export { setupFlashcards } from './exercises/interactive-flashcards.js';
 export { setupNumberGrid, setupNumberGrid3_3 } from './exercises/number-grids.js';
 export { setupColorPicker } from './exercises/color-picker.js';
 export { setupChecklist } from './exercises/checklist.js';
+export { setupCategorizeTask } from './exercises/categorize.js';
 export { setupInteractiveMap } from './exercises/interactive-map.js';
 export { setupInteractiveClock } from './exercises/interactive-clock.js';
 export { setupInteractiveClock23 } from './exercises/interactive-clock-2-3.js';

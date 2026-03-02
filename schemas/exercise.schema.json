@@ -75,7 +75,8 @@
             "color-picker",
             "embedded-verb-trainer",
             "embedded-gender-trainer",
-            "true-false-pictures"
+            "true-false-pictures",
+            "categorize"
           ],
           "description": "The exercise type. Determines which type-specific properties are required."
         },
@@ -240,6 +241,14 @@
           },
           "then": {
             "$ref": "#/$defs/embeddedGenderTrainerExercise"
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "categorize" } }
+          },
+          "then": {
+            "$ref": "#/$defs/categorizeExercise"
           }
         }
       ]
@@ -1163,6 +1172,42 @@
         }
       },
       "required": ["noun", "gender"]
+    },
+    "categorizeExercise": {
+      "title": "Categorize Exercise Type",
+      "description": "Sorting/classification exercise. Students drag or click items to sort them into the correct category buckets.",
+      "type": "object",
+      "properties": {
+        "categories": {
+          "type": "array",
+          "description": "Array of category definitions, each with a label and the items that belong to it.",
+          "items": {
+            "$ref": "#/$defs/categorizeCategory"
+          },
+          "minItems": 2
+        }
+      },
+      "required": ["categories"]
+    },
+    "categorizeCategory": {
+      "title": "Categorize Category",
+      "description": "A single category bucket with its label and items that belong to it.",
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Display label for this category (e.g., 'der', 'die', 'das', 'Verben', 'Adjektive')."
+        },
+        "items": {
+          "type": "array",
+          "description": "Array of items that belong to this category.",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["label", "items"]
     }
   }
 }
