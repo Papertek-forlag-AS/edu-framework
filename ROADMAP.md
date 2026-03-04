@@ -228,16 +228,23 @@ We're looking for contributors of all kinds during the March–June sprint:
 3. Look for issues labeled **"good first issue"** — especially ExerciseBase migrations
 4. Join the discussion on GitHub Discussions
 
-### Writing Tests (Best First Contribution)
+### Best First Contributions
 
-With 19 of 21 exercise modules already migrated to ExerciseBase, the biggest need is **test coverage**. Writing unit tests for exercise types is a great way to learn the codebase:
+**Write tests** — With 19 of 21 exercise modules already migrated to ExerciseBase, the biggest need is **test coverage**:
 
 1. Read the existing tests in `tests/unit/` for patterns
 2. Pick an exercise type from `public/js/exercises/` that has no tests yet
 3. Write Vitest unit tests following the project conventions
 4. Open a PR
 
-For the 2 remaining ExerciseBase migrations (embedded-gender-trainer, interactive-clock):
+**Propose new exercise types** — Have an idea for an exercise that would work well in an educational app? We welcome proposals:
+
+1. Open a GitHub issue describing the exercise type, how it works, and what it teaches
+2. Reference the [exercise catalog](docs/exercise-catalog.md) to see existing types and avoid overlap
+3. If you want to build it, follow the ExerciseBase pattern in `public/js/exercises/exercise-base.js`
+4. Add a matching schema entry and open a PR
+
+**Migrate remaining exercises** — 2 modules still need ExerciseBase migration (embedded-gender-trainer, interactive-clock):
 
 1. Read the [migration guide in ARCHITECTURE.md](ARCHITECTURE.md#how-to-migrate-a-legacy-exercise)
 2. Compare any migrated module with the legacy module
