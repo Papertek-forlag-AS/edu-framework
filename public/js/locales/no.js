@@ -27,7 +27,6 @@ export const no = {
     "tab_exercises": "Øvelser",
     "tab_extra_exercises": "Ekstraøvelser",
     "tab_dialog": "Dialog",
-    "tab_teacher": "👨‍🏫 Lærer",
 
     // Lesson content
     "goals_title": "Læringsmål",
@@ -89,13 +88,7 @@ export const no = {
     "shell_my_progress_desc": "Se dine lagrede testresultater.",
     "shell_review_center": "Repetisjonssenter",
     "shell_review_center_desc": "Skreddersy dine egne tester.",
-    "shell_teacher_login": "👨‍🏫 Lærerinnlogging",
     "shell_debug_achievement": "🔍 Debug: Achievement Data",
-
-    // Teacher Mode
-    "teacher_mode_active": "👨‍🏫 Lærermodus aktivert",
-    "teacher_dashboard": "Dashboard",
-    "teacher_logout": "Logg ut",
 
     // Star Warning Modal
     "modal_important_notice": "Viktig varsel",

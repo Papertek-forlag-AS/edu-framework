@@ -18,7 +18,7 @@ import { loadLessonContent } from './lessons-content-loader.js';
 import { loadGrammatikkInnhold } from './grammar-content-loader.js';
 import { loadExercisesContent } from './exercises-content-loader.js';
 import { loadClassroomDialog } from './dialog/classroom-dialog-loader.js';
-import { loadTeacherContent } from './teacher-mode/teacher-content-loader.js';
+
 import { configureTooltips } from './utils/word-tooltips.js';
 import { getCurriculumConfig } from './progress/curriculum-registry.js';
 import { getActiveCurriculum } from './progress/store.js';
@@ -168,11 +168,6 @@ export async function initLessonPage() {
     logDebug('📦 About to call loadClassroomDialog()...');
     safeExecute(() => loadClassroomDialog(config), { type: ErrorType.EXERCISE, showToast: false });
     logDebug('📦 loadClassroomDialog() call completed');
-
-    // Load dynamic teacher content
-    logDebug('📦 About to call loadTeacherContent()...');
-    safeExecute(() => loadTeacherContent(config), { type: ErrorType.EXERCISE, showToast: false });
-    logDebug('📦 loadTeacherContent() call completed');
 
     setupTabs();
     loadLastLocation();

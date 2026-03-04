@@ -56,16 +56,6 @@ export const PAGE_SOURCE_MAP = {
         components: ['chapter-selector', 'test-launcher', 'review-options']
     },
 
-    '/teacher-dashboard.html': {
-        description: 'Teacher dashboard',
-        mainFiles: [
-            'js/teacher/dashboard.js',
-            'js/teacher/class-management.js',
-            'js/sync/cloud-sync.js'
-        ],
-        components: ['class-list', 'student-progress', 'insights', 'invite-link']
-    },
-
     '/landeskunde.html': {
         description: 'Culture/civics content (Landeskunde)',
         mainFiles: [

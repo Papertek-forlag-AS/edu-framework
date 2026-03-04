@@ -181,19 +181,6 @@ function getLessonExerciseStatus(lessonId) {
     return { exercises, completedRegular, requiredRegular, hasExtraTab, isUnlocked };
 }
 
-/**
- * Check if teacher mode is enabled (bypasses all locks)
- * TO ENABLE TEACHER MODE IN THE FUTURE:
- * - Add a login system that sets localStorage item: 'teacher-mode' = true
- * - Or check a global variable set by authentication
- * - This will automatically unlock all content for teachers
- */
-function isTeacherMode() {
-    // Check if teacher mode is enabled in localStorage
-    const teacherMode = localStorage.getItem('tysk08_teacherMode');
-    return teacherMode === 'true';
-}
-
 function applyExtraTabLock(lessonId) {
     const extraTabButton = document.querySelector(".tab-button[data-tab-id='extra-exercises']");
     const extraTabContent = document.getElementById('extra-exercises');
@@ -214,8 +201,7 @@ function applyExtraTabLock(lessonId) {
 
     const { hasExtraTab, isUnlocked } = getLessonExerciseStatus(lessonId);
 
-    // Teacher mode bypasses all locks
-    const shouldUnlock = isTeacherMode() || isUnlocked;
+    const shouldUnlock = isUnlocked;
 
     if (!hasExtraTab) {
         extraTabButton.classList.add('hidden');
@@ -610,48 +596,25 @@ export function renderPageHeader() {
         'grammatikk': t('tab_grammar'),
         'dialog': t('tab_dialog'),
         'exercises': t('tab_exercises'),
-        'extra-exercises': t('tab_extra_exercises'),
-        'larer': t('tab_teacher')
+        'extra-exercises': t('tab_extra_exercises')
     };
 
     // Check if dialog tab was previously accessed for this lesson
     const dialogAccessKey = `dialog-accessed-${chapterId}`;
     const dialogPreviouslyAccessed = loadData(dialogAccessKey);
 
-    // Check if teacher mode is active
-    const teacherModeActive = isTeacherMode();
-
     existingTabs.forEach(tab => {
         const tabId = tab.id;
         const tabName = tabNames[tabId] || tabId;
+        // Skip removed tabs
+        if (tabId === 'larer') return;
         // Hide Dialog tab button by default UNLESS it was previously accessed
         const shouldHideDialog = (tabId === 'dialog') && !dialogPreviouslyAccessed;
-        // Hide Teacher tab button UNLESS teacher mode is active
-        const shouldHideTeacher = (tabId === 'larer') && !teacherModeActive;
         // Hide Extra Exercises tab button by default (will be shown by applyExtraTabLock if unlocked)
         const shouldHideEkstra = (tabId === 'extra-exercises');
-        const hiddenClass = (shouldHideDialog || shouldHideTeacher || shouldHideEkstra) ? ' hidden' : '';
+        const hiddenClass = (shouldHideDialog || shouldHideEkstra) ? ' hidden' : '';
         tabButtonsHTML += `<button class="tab-button${hiddenClass} text-lg font-semibold p-4 border-b-4 border-transparent hover:text-primary-600" data-tab-id="${tabId}">${tabName}</button>`;
     });
-
-    // Teacher mode indicator
-    const teacherModeIndicator = teacherModeActive ? `
-        <div class="inline-flex items-center gap-3 ml-4 bg-success-100 text-success-900 px-4 py-2 rounded-full text-sm shadow-sm border border-success-200">
-            <span class="font-bold flex items-center gap-2">${t('teacher_mode_active')}</span>
-            <div class="h-4 w-px bg-success-300"></div>
-            <button id="copy-deep-link" class="text-success-700 hover:text-success-900 hover:underline font-semibold transition-colors flex items-center gap-1" title="Kopier lenke til denne fanen">
-                🔗 Kopier lenke
-            </button>
-            <div class="h-4 w-px bg-success-300"></div>
-            <a href="/teacher-dashboard.html" class="text-success-700 hover:text-success-900 hover:underline font-semibold transition-colors" title="${t('teacher_dashboard')}">
-                ${t('teacher_dashboard')}
-            </a>
-            <div class="h-4 w-px bg-success-300"></div>
-            <button id="deactivate-teacher-mode" class="text-success-700 hover:text-success-900 hover:underline font-semibold transition-colors" title="${t('teacher_logout')}">
-                ${t('teacher_logout')}
-            </button>
-        </div>
-    ` : '';
 
     const config = getCurriculumConfig(document.body.dataset.curriculumId || getActiveCurriculum());
 
@@ -671,7 +634,6 @@ export function renderPageHeader() {
     const headerHTML = `
         <nav class="mb-8 flex items-center justify-between flex-wrap">
             <a href="${homeLink}" class="text-primary-600 hover:text-primary-800">${t('nav_back_to_home')}</a>
-            ${teacherModeIndicator}
         </nav>
         <header class="text-center mb-8">
             <h1 class="text-4xl md:text-5xl font-bold text-neutral-900">${t('tab_lesson')} ${lessonNumber}: ${lessonTitle}</h1>
@@ -682,48 +644,6 @@ export function renderPageHeader() {
     `;
 
     placeholder.innerHTML = headerHTML;
-
-    // Add event listener for teacher mode deactivation
-    if (teacherModeActive) {
-        const deactivateBtn = document.getElementById('deactivate-teacher-mode');
-        if (deactivateBtn) {
-            deactivateBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                localStorage.removeItem('tysk08_teacherMode');
-                window.location.reload();
-            });
-        }
-
-        // Add event listener for deep link copy button
-        const copyLinkBtn = document.getElementById('copy-deep-link');
-        if (copyLinkBtn) {
-            copyLinkBtn.addEventListener('click', async (e) => {
-                e.preventDefault();
-                const activeTab = document.querySelector('.tab-button.active');
-                const currentTab = activeTab ? activeTab.dataset.tabId : 'leksjon';
-
-                // Build the deep link URL
-                const baseUrl = window.location.origin + window.location.pathname;
-                const deepLink = `${baseUrl}?tab=${currentTab}`;
-
-                try {
-                    await navigator.clipboard.writeText(deepLink);
-                    // Show success feedback
-                    const originalText = copyLinkBtn.innerHTML;
-                    copyLinkBtn.innerHTML = '✓ Kopiert!';
-                    copyLinkBtn.classList.add('text-success-900');
-                    setTimeout(() => {
-                        copyLinkBtn.innerHTML = originalText;
-                        copyLinkBtn.classList.remove('text-success-900');
-                    }, 2000);
-                } catch (err) {
-                    console.error('Failed to copy link:', err);
-                    // Fallback: show the link in a prompt
-                    prompt('Kopier denne lenken:', deepLink);
-                }
-            });
-        }
-    }
 
     // Add event listener for classroom dialog button
     const dialogBtn = document.querySelector('.classroom-dialog-btn');

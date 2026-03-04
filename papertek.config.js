@@ -97,14 +97,12 @@ export default {
   features: {
     offlineMode: true,
     cloudSync: false,
-    teacherDashboard: false,
     classroomGames: false,
     vocabTrainer: true,
     spacedRepetition: true,
     wordTooltips: true,
     specialCharKeyboard: true,
     celebrations: true,
-    glossaryTest: false,
   },
 
   // ──────────────────────────────────────────────

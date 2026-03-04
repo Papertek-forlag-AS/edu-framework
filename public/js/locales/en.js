@@ -27,7 +27,6 @@ export const en = {
     "tab_exercises": "Exercises",
     "tab_extra_exercises": "Extra Exercises",
     "tab_dialog": "Dialog",
-    "tab_teacher": "👨‍🏫 Teacher",
 
     // Lesson content
     "goals_title": "Learning Goals",
@@ -89,13 +88,7 @@ export const en = {
     "shell_my_progress_desc": "View your saved test results.",
     "shell_review_center": "Review Center",
     "shell_review_center_desc": "Customize your own tests.",
-    "shell_teacher_login": "👨‍🏫 Teacher login",
     "shell_debug_achievement": "🔍 Debug: Achievement Data",
-
-    // Teacher Mode
-    "teacher_mode_active": "👨‍🏫 Teacher mode active",
-    "teacher_dashboard": "Dashboard",
-    "teacher_logout": "Log out",
 
     // Star Warning Modal
     "modal_important_notice": "Important notice",
