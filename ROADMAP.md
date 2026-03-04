@@ -244,6 +244,12 @@ We're looking for contributors of all kinds during the March–June sprint:
 3. If you want to build it, follow the ExerciseBase pattern in `public/js/exercises/exercise-base.js`
 4. Add a matching schema entry and open a PR
 
+**Suggest architectural improvements** — If you spot patterns that could be cleaner, abstractions that would help, or infrastructure gaps:
+
+1. Read [ARCHITECTURE.md](ARCHITECTURE.md) to understand current design decisions
+2. Open a GitHub issue with the problem, proposed change, and trade-offs
+3. Discuss before implementing — architectural changes affect the whole framework
+
 **Migrate remaining exercises** — 2 modules still need ExerciseBase migration (embedded-gender-trainer, interactive-clock):
 
 1. Read the [migration guide in ARCHITECTURE.md](ARCHITECTURE.md#how-to-migrate-a-legacy-exercise)
