@@ -8,20 +8,23 @@
 
 ## Where We Are
 
-Papertek is an open-source framework for building offline-first educational web apps (PWAs), designed to be built by AI agents. The engine — 17 exercise types, spaced repetition vocabulary training, progress tracking, offline support — was extracted from **Wir sprechen Deutsch** ([papertek.no/tysk](https://papertek.no/tysk)), a German language learning app used by 100+ Norwegian high school students.
+Papertek is an open-source framework for building offline-first educational web apps (PWAs), designed to be built by AI agents. The engine — 22 exercise types, spaced repetition vocabulary training, progress tracking, offline support — was extracted from **Wir sprechen Deutsch** ([papertek.no/tysk](https://papertek.no/tysk)), a German language learning app used by 100+ Norwegian high school students.
 
 **What works today:**
-- Full engine with 17 exercise types and 5-mode vocabulary trainer
+- Full engine with 22 exercise types and 5-mode vocabulary trainer
+- 19 of 21 exercise modules migrated to ExerciseBase lifecycle pattern
 - CLI scaffolder (`node cli/create-edu-app.js`)
 - 8 AI skills for content creation (`/create-lesson`, `/create-exercises`, etc.)
 - 7 JSON schemas for content validation
 - Offline-first PWA architecture
 - Language-agnostic design (proven with German + Math examples)
+- Backend adapters for Firebase and Supabase (disabled, ready to enable)
+- Built-in feedback system (widget, error capture, context collector)
 
 **What's not ready yet:**
-- 21 of 22 exercise modules use a legacy pattern (no lifecycle cleanup)
-- Limited test coverage
-- No CI/CD pipeline
+- 2 exercise modules still use a legacy pattern (embedded-gender-trainer, interactive-clock)
+- Limited test coverage (3 unit tests, 1 E2E test)
+- Minimal CI/CD pipeline (vocabulary validation only)
 - Several features disabled (teacher dashboard, cloud sync, classroom games)
 - Not published to npm
 
@@ -50,49 +53,54 @@ The framework is public on GitHub. It works, but it's alpha — not production-r
 - [x] 8 AI skills for content creation
 - [x] Example courses (German A1, Math Basics)
 - [x] Roadmap (this document)
-- [ ] GitHub issue templates (bug report, feature request, exercise migration)
+- [x] GitHub issue templates (bug report, feature request)
+- [ ] GitHub issue template for exercise migration
 - [ ] GitHub Discussions enabled
-- [ ] "Good first issue" labels on ExerciseBase migration tasks
+- [ ] "Good first issue" labels on remaining migration tasks
 - [ ] Launch announcement (blog post, social media)
 
 ### Phase 2: Engine Quality (March–April 2026)
 
 *The foundation must be solid before building on top of it.*
 
-**ExerciseBase migration** — Migrate all 21 legacy exercise modules to the ExerciseBase factory pattern. This eliminates memory leaks from orphaned event listeners and timers, and gives every exercise a proper lifecycle (`mount` → `render` → `destroy`). Each module is an independent task — ideal for contributors.
+**ExerciseBase migration** — Migrate legacy exercise modules to the ExerciseBase factory pattern. This eliminates memory leaks from orphaned event listeners and timers, and gives every exercise a proper lifecycle (`mount` → `render` → `destroy`).
 
-- [ ] Migrate fill-in exercise
-- [ ] Migrate matching game
-- [ ] Migrate true/false
-- [ ] Migrate quiz
-- [ ] Migrate writing
-- [ ] Migrate drag & drop
-- [ ] Migrate mini dialog
-- [ ] Migrate dilemma
-- [ ] Migrate image matching
-- [ ] Migrate chronology
-- [ ] Migrate checklist
-- [ ] Migrate interactive flashcards
-- [ ] Migrate interactive map
-- [ ] Migrate number grids
-- [ ] Migrate color picker
+- [x] Migrate fill-in exercise
+- [x] Migrate matching game
+- [x] Migrate true/false
+- [x] Migrate quiz
+- [x] Migrate writing
+- [x] Migrate drag & drop
+- [x] Migrate mini dialog
+- [x] Migrate dilemma
+- [x] Migrate image matching
+- [x] Migrate chronology
+- [x] Migrate checklist
+- [x] Migrate interactive flashcards
+- [x] Migrate interactive map
+- [x] Migrate number grids
+- [x] Migrate color picker
+- [x] Migrate interactive clock (lesson 2.3 version)
+- [x] Migrate categorize
+- [x] Remove legacy `embedded-verb-trainer.js` (v2 already migrated, v1 removed)
 - [ ] Migrate embedded gender trainer
-- [ ] Migrate interactive clock (both versions)
-- [ ] Migrate categorize
-- [ ] Migrate true/false pictures
-- [ ] Remove legacy `embedded-verb-trainer.js` (v2 already migrated)
+- [ ] Migrate interactive clock (original version)
+- [ ] Add true/false pictures module (or confirm handled by true-false.js)
 
-**Testing**
+**Testing** — *This is the critical bottleneck for v1.0. Test infrastructure (Vitest + Playwright) is configured but coverage is minimal.*
 
 - [ ] Unit tests for all exercise types (Vitest)
-- [ ] Unit tests for progress system
+- [x] Unit tests for progress system (`tests/unit/progress.test.js`)
 - [ ] Unit tests for SM-2 spaced repetition algorithm
-- [ ] E2E tests for core user flows (Playwright)
+- [x] Unit tests for error handler (`tests/unit/error-handler.test.js`)
+- [x] Unit tests for service worker logic (`tests/unit/sw-logic.test.js`)
+- [ ] E2E tests for core user flows (Playwright) — 1 basic test exists (`tests/e2e/homepage.spec.js`)
 - [ ] Schema validation tests (all examples pass)
 
 **CI/CD**
 
 - [ ] GitHub Actions: lint + format check on PR
+- [x] GitHub Actions: vocabulary validation on PR (`validate-vocabulary.yml`)
 - [ ] GitHub Actions: schema validation on PR
 - [ ] GitHub Actions: unit tests on PR
 - [ ] GitHub Actions: E2E tests on PR
@@ -107,11 +115,12 @@ The framework is public on GitHub. It works, but it's alpha — not production-r
 - [ ] Student progress overview
 - [ ] Vocabulary test assignment
 
-**Cloud Sync**
+**Cloud Sync** — *Backend adapters exist for both Firebase and Supabase.*
 - [ ] Enable and stabilize Firebase/Firestore sync
+- [ ] Enable and stabilize Supabase sync
 - [ ] Conflict resolution (localStorage vs cloud)
 - [ ] Sync status indicator in UI
-- [ ] Documentation for Firebase setup
+- [ ] Documentation for backend setup (Firebase and Supabase)
 
 **Classroom Games**
 - [ ] Enable and stabilize classroom games
@@ -206,7 +215,7 @@ We're looking for contributors of all kinds during the March–June sprint:
 
 | Role | How you can help |
 |------|-----------------|
-| **Developers** | Migrate exercise modules to ExerciseBase, write tests, build CI/CD, enable features |
+| **Developers** | Write tests, build CI/CD, migrate remaining exercise modules, enable features |
 | **Educators** | Test the AI skills, build example courses, give feedback on exercise types |
 | **Designers** | Accessibility audit, UI polish, responsive design testing |
 | **Translators** | Add UI languages beyond Norwegian and English |
@@ -219,14 +228,20 @@ We're looking for contributors of all kinds during the March–June sprint:
 3. Look for issues labeled **"good first issue"** — especially ExerciseBase migrations
 4. Join the discussion on GitHub Discussions
 
-### ExerciseBase Migration (Best First Contribution)
+### Writing Tests (Best First Contribution)
 
-Each of the 21 legacy exercise modules is an independent migration task. It's mechanical, well-documented, and a great way to learn the codebase:
+With 19 of 21 exercise modules already migrated to ExerciseBase, the biggest need is **test coverage**. Writing unit tests for exercise types is a great way to learn the codebase:
+
+1. Read the existing tests in `tests/unit/` for patterns
+2. Pick an exercise type from `public/js/exercises/` that has no tests yet
+3. Write Vitest unit tests following the project conventions
+4. Open a PR
+
+For the 2 remaining ExerciseBase migrations (embedded-gender-trainer, interactive-clock):
 
 1. Read the [migration guide in ARCHITECTURE.md](ARCHITECTURE.md#how-to-migrate-a-legacy-exercise)
-2. Compare `embedded-verb-trainer.js` (legacy) with `embedded-verb-trainer-v2.js` (migrated)
-3. Pick an unclaimed module from the list above
-4. Open a PR
+2. Compare any migrated module with the legacy module
+3. Open a PR
 
 ---
 
