@@ -117,7 +117,27 @@ export default {
   },
 
   // ──────────────────────────────────────────────
-  // Firebase (optional — null to disable)
+  // Backend provider (auth + database)
   // ──────────────────────────────────────────────
-  firebase: null,
+  // Supported: 'firebase' | 'supabase' | 'none'
+  // Set to 'none' for offline-only mode (default).
+  backend: {
+    provider: 'none',
+
+    // Firebase config (when provider === 'firebase'):
+    // firebase: {
+    //   apiKey: '...',
+    //   authDomain: '...',
+    //   projectId: '...',
+    //   storageBucket: '...',
+    //   messagingSenderId: '...',
+    //   appId: '...'
+    // },
+
+    // Supabase config (when provider === 'supabase'):
+    // supabase: {
+    //   url: 'https://your-project.supabase.co',
+    //   anonKey: 'eyJ...'
+    // },
+  },
 };
