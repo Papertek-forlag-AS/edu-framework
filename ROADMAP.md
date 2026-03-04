@@ -100,7 +100,6 @@ The framework is public on GitHub. It works, but it's alpha — not production-r
 **CI/CD**
 
 - [x] GitHub Actions: lint + format check on PR (`ci.yml`)
-- [x] GitHub Actions: vocabulary validation on PR (`validate-vocabulary.yml`)
 - [x] GitHub Actions: schema validation on PR (`ci.yml`)
 - [x] GitHub Actions: unit tests on PR (`ci.yml`)
 - [ ] GitHub Actions: E2E tests on PR
