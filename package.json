@@ -35,6 +35,7 @@
     "dev": "npx http-server public -p 8000 -c-1",
     "generate:lessons": "node public/js/lesson-template/template-generator.js",
     "verify:lessons": "node public/js/lesson-template/verify-generated.js",
+    "validate": "node scripts/validate-schemas.js && node scripts/config-parser.js",
     "validate:schemas": "node scripts/validate-schemas.js",
     "validate:config": "node scripts/config-parser.js",
     "lint": "eslint .",
@@ -54,6 +55,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "http-server": "^14.1.1",
+    "jsdom": "^28.1.0",
     "prettier": "^3.6.2",
     "vitest": "^3.2.4"
   },

@@ -5,7 +5,7 @@ Thank you for your interest in contributing! This framework is designed to be bu
 ## Getting Started
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/your-username/edu-framework.git`
+2. Clone your fork: `git clone https://github.com/your-username/papertek-framework.git`
 3. Install dependencies: `npm install`
 4. Start the dev server: `npm run dev`
 

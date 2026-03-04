@@ -8,11 +8,11 @@
 
 ## Where We Are
 
-Papertek is an open-source framework for building offline-first educational web apps (PWAs), designed to be built by AI agents. The engine — 22 exercise types, spaced repetition vocabulary training, progress tracking, offline support — was extracted from **Wir sprechen Deutsch** ([papertek.no/tysk](https://papertek.no/tysk)), a German language learning app used by 100+ Norwegian high school students.
+Papertek is an open-source framework for building offline-first educational web apps (PWAs), designed to be built by AI agents. The engine — 19 exercise types, spaced repetition vocabulary training, progress tracking, offline support — was extracted from **Wir sprechen Deutsch** ([papertek.no/tysk](https://papertek.no/tysk)), a German language learning app used by 100+ Norwegian high school students.
 
 **What works today:**
-- Full engine with 22 exercise types and 5-mode vocabulary trainer
-- 19 of 21 exercise modules migrated to ExerciseBase lifecycle pattern
+- Full engine with 19 exercise types and 5-mode vocabulary trainer
+- 17 of 19 exercise modules migrated to ExerciseBase lifecycle pattern
 - CLI scaffolder (`node cli/create-edu-app.js`)
 - 8 AI skills for content creation (`/create-lesson`, `/create-exercises`, etc.)
 - 7 JSON schemas for content validation
@@ -22,7 +22,7 @@ Papertek is an open-source framework for building offline-first educational web 
 - Built-in feedback system (widget, error capture, context collector)
 
 **What's not ready yet:**
-- 2 exercise modules still use a legacy pattern (embedded-gender-trainer, interactive-clock)
+- 2 exercise modules still use a legacy pattern (embedded-gender-trainer, interactive-clock-original)
 - Limited test coverage (3 unit tests, 1 E2E test)
 - Minimal CI/CD pipeline (vocabulary validation only)
 - Several features disabled (teacher dashboard, cloud sync, classroom games)
@@ -99,10 +99,10 @@ The framework is public on GitHub. It works, but it's alpha — not production-r
 
 **CI/CD**
 
-- [ ] GitHub Actions: lint + format check on PR
+- [x] GitHub Actions: lint + format check on PR (`ci.yml`)
 - [x] GitHub Actions: vocabulary validation on PR (`validate-vocabulary.yml`)
-- [ ] GitHub Actions: schema validation on PR
-- [ ] GitHub Actions: unit tests on PR
+- [x] GitHub Actions: schema validation on PR (`ci.yml`)
+- [x] GitHub Actions: unit tests on PR (`ci.yml`)
 - [ ] GitHub Actions: E2E tests on PR
 
 ### Phase 3: Feature Completion (April–May 2026)
@@ -230,7 +230,7 @@ We're looking for contributors of all kinds during the March–June sprint:
 
 ### Best First Contributions
 
-**Write tests** — With 19 of 21 exercise modules already migrated to ExerciseBase, the biggest need is **test coverage**:
+**Write tests** — With 17 of 19 exercise modules already migrated to ExerciseBase, the biggest need is **test coverage**:
 
 1. Read the existing tests in `tests/unit/` for patterns
 2. Pick an exercise type from `public/js/exercises/` that has no tests yet

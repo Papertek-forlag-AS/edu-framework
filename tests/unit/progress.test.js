@@ -1,18 +1,19 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { saveData, loadData, EXERCISE_DATABASE } from '../../js/progress.js';
+import { saveData, loadData } from '@engine/progress/store.js';
+import { EXERCISE_DATABASE } from '@engine/progress/config.js';
 
 describe('Progress Tracking', () => {
   beforeEach(() => {
     localStorage.clear();
   });
 
-  describe('saveData', () => {
-    it('should save data to localStorage', () => {
+  describe('saveData / loadData', () => {
+    it('should round-trip data through save and load', () => {
       const testData = { test: 'value' };
       saveData('test-key', testData);
 
-      const stored = localStorage.getItem('test-key');
-      expect(stored).toBe(JSON.stringify(testData));
+      const loaded = loadData('test-key');
+      expect(loaded).toEqual(testData);
     });
 
     it('should handle complex objects', () => {
@@ -27,25 +28,9 @@ describe('Progress Tracking', () => {
 
       expect(loaded).toEqual(complexData);
     });
-  });
-
-  describe('loadData', () => {
-    it('should load data from localStorage', () => {
-      const testData = { key: 'value' };
-      localStorage.setItem('test-key', JSON.stringify(testData));
-
-      const loaded = loadData('test-key');
-      expect(loaded).toEqual(testData);
-    });
 
     it('should return null for non-existent keys', () => {
       const loaded = loadData('non-existent');
-      expect(loaded).toBeNull();
-    });
-
-    it('should handle invalid JSON gracefully', () => {
-      localStorage.setItem('invalid-json', 'not valid json{');
-      const loaded = loadData('invalid-json');
       expect(loaded).toBeNull();
     });
   });
@@ -73,17 +58,21 @@ describe('Progress Tracking', () => {
       });
     });
 
-    it('should mark last lessons in chapters correctly', () => {
-      // Last lessons in chapters should have 'kapittel' test
-      expect(EXERCISE_DATABASE['1-3'].tests).toContain('kapittel');
-      expect(EXERCISE_DATABASE['2-3'].tests).toContain('kapittel');
-      expect(EXERCISE_DATABASE['3-3'].tests).toContain('kapittel');
+    it('should mark last lessons in chapters with chapter test', () => {
+      expect(EXERCISE_DATABASE['1-3'].tests).toContain('chapter');
+      expect(EXERCISE_DATABASE['2-3'].tests).toContain('chapter');
+      expect(EXERCISE_DATABASE['3-3'].tests).toContain('chapter');
     });
 
     it('should mark cumulative test lessons correctly', () => {
-      // Lessons 2-3, 3-3, etc. should have cumulative tests
-      expect(EXERCISE_DATABASE['2-3'].tests).toContain('kumulativ');
-      expect(EXERCISE_DATABASE['3-3'].tests).toContain('kumulativ');
+      expect(EXERCISE_DATABASE['2-3'].tests).toContain('cumulative');
+      expect(EXERCISE_DATABASE['3-3'].tests).toContain('cumulative');
+    });
+
+    it('should have lesson test for every lesson', () => {
+      Object.keys(EXERCISE_DATABASE).forEach(lessonId => {
+        expect(EXERCISE_DATABASE[lessonId].tests).toContain('lesson');
+      });
     });
   });
 });

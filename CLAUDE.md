@@ -48,7 +48,7 @@ All content must conform to JSON schemas in `schemas/`:
 
 | Schema | Validates |
 |---|---|
-| `exercise.schema.json` | Exercise data (17 types, fill-in, matching, quiz, etc.) |
+| `exercise.schema.json` | Exercise data (19 types, fill-in, matching, quiz, etc.) |
 | `vocabulary.schema.json` | Vocabulary banks, translations, curriculum manifests |
 | `lesson.schema.json` | Lesson data (dialog, goals, checklist) + metadata |
 | `grammar.schema.json` | Grammar modules (7 types: heading, explanation, rule-table, etc.) |
@@ -56,7 +56,7 @@ All content must conform to JSON schemas in `schemas/`:
 | `question-bank.schema.json` | Test questions (fill-in, drag-drop, multiple-choice) |
 | `language.schema.json` | Language-specific config (gender, cases, characters) |
 
-## Exercise Types (17)
+## Exercise Types (19)
 
 | Type | Key | Description |
 |---|---|---|
@@ -77,6 +77,8 @@ All content must conform to JSON schemas in `schemas/`:
 | Number Grids | `number-grids` | Number practice |
 | Color Picker | `color-picker` | Color identification |
 | Verb Trainer | `embedded-verb-trainer` | Conjugation drills |
+| Gender Trainer | `embedded-gender-trainer` | Grammatical gender practice |
+| Categorize | `categorize` | Sorting items into category buckets |
 
 ## Naming Conventions
 
@@ -115,7 +117,7 @@ npm run build:vocab           # Full vocab pipeline (fetch + enrich + copy)
 
 ```
 public/js/
-  exercises/          # ExerciseBase factory + 17 exercise type renderers
+  exercises/          # ExerciseBase factory + 19 exercise type renderers
   progress/           # ProgressHub, achievements, celebrations, store
   vocab-trainer-multi/# 5-mode vocabulary trainer (flashcards, write, match, test, gender)
   core/               # SM-2 spaced repetition, VocabProfileService

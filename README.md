@@ -13,7 +13,7 @@ Describe your course in natural language. An AI agent builds it. Deploy anywhere
 
 Most educational apps require a team of developers. Papertek flips that: the **AI is the developer**. An educator describes what they want, and an AI agent (Claude Code, Cursor, etc.) reads the framework's CLAUDE.md, schemas, and skills to build a complete, working app.
 
-The framework provides the engine — 17 exercise types, spaced repetition vocabulary training, progress tracking, offline support, and more. You just provide the content.
+The framework provides the engine — 19 exercise types, spaced repetition vocabulary training, progress tracking, offline support, and more. You just provide the content.
 
 **Key properties:**
 
@@ -118,7 +118,7 @@ The `examples/` directory contains proof-of-concept courses:
 | [AGENTS.md](AGENTS.md) | AI agents | AAIF standard agent protocol |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Developers | Engine internals and abstraction layer |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contributors | How to add exercise types, skills, content |
-| [docs/exercise-catalog.md](docs/exercise-catalog.md) | Content authors | All 17 exercise types with data formats |
+| [docs/exercise-catalog.md](docs/exercise-catalog.md) | Content authors | All 19 exercise types with data formats |
 | [schemas/](schemas/) | AI + developers | JSON schemas for content validation |
 
 ## Tech Stack

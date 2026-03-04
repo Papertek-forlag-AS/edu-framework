@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { safeStorage, safeExecute, ErrorType, errorLogger } from '../../js/error-handler.js';
+import { safeStorage, safeExecute, ErrorType, errorLogger } from '@engine/error-handler.js';
 
 describe('Error Handler', () => {
   beforeEach(() => {

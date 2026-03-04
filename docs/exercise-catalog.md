@@ -1,6 +1,6 @@
 # Exercise Type Catalog
 
-This document shows all 17 exercise types supported by the Papertek Framework for Education, with data format examples and descriptions of how each renders.
+This document shows all 19 exercise types supported by the Papertek Framework for Education, with data format examples and descriptions of how each renders.
 
 ## Quick Reference
 
@@ -23,6 +23,8 @@ This document shows all 17 exercise types supported by the Papertek Framework fo
 | 15 | Number Grids | `number-grids` | Grid input | Number practice |
 | 16 | Color Picker | `color-picker` | Color selection | Color vocabulary |
 | 17 | Verb Trainer | `embedded-verb-trainer` | Dynamic drill | Conjugation practice |
+| 18 | Gender Trainer | `embedded-gender-trainer` | Drag/select | Grammatical gender practice |
+| 19 | Categorize | `categorize` | Drag to sort | Sorting, classification |
 
 ---
 
@@ -376,6 +378,58 @@ Dynamic conjugation drills that pull verbs from the verbbank.
 ```
 
 The verb trainer automatically loads conjugation data from the vocabulary system and generates random drill questions. Set `strongOnly: true` to focus on irregular verbs.
+
+---
+
+## 18. Gender Trainer (`embedded-gender-trainer`)
+
+Dedicated grammatical gender (der/die/das) practice. Students select the correct article for each noun.
+
+**Data format:**
+```javascript
+{
+  "type": "embedded-gender-trainer",
+  "nouns": [
+    { "noun": "Haus", "gender": "das", "translation": "house" },
+    { "noun": "Schule", "gender": "die", "translation": "school" }
+  ],
+  "config": {
+    "chapters": [1, 2],
+    "questionCount": 10
+  }
+}
+```
+
+Can use inline nouns or load from the vocabulary system via `dataSource`. Supports modes like `all-genders`, `masculine-only`, and `with-adjectives`.
+
+---
+
+## 19. Categorize (`categorize`)
+
+Sorting/classification exercise. Students drag or click items to sort them into the correct category buckets.
+
+**Data format:**
+```javascript
+{
+  "type": "categorize",
+  "categories": [
+    {
+      "label": "Masculine (der)",
+      "items": ["Tisch", "Stuhl", "Hund"]
+    },
+    {
+      "label": "Feminine (die)",
+      "items": ["Lampe", "Katze", "Schule"]
+    },
+    {
+      "label": "Neuter (das)",
+      "items": ["Haus", "Kind", "Buch"]
+    }
+  ]
+}
+```
+
+Requires at least 2 categories. Items are shuffled and students sort them into the correct buckets.
 
 ---
 
