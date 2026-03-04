@@ -4,7 +4,7 @@
  * Replaces hardcoded HTML in index.html files.
  */
 
-import { renderTeacherModal, renderDebugModal, setupTeacherLogin, setupDebugTools } from './modals.js';
+import { renderDebugModal, setupDebugTools } from './modals.js';
 import { getCurriculumConfig } from '../progress/curriculum-registry.js';
 import { getActiveCurriculum, setActiveCurriculum } from '../progress/store.js';
 import { t } from '../utils/i18n.js';
@@ -48,14 +48,12 @@ export class AppShell {
 
         // Only render full header and install button on index/home pages, not lesson pages
         if (!this.isLessonPage) {
-            this.renderTeacherIndicator();
             this.renderHeader();
             this.renderInstallButton();
             this.renderToolsSection();
             this.renderFooterButtons();
 
             // Setup functionality
-            setupTeacherLogin();
             setupDebugTools();
 
             // Initialize Curriculum Selector logic
@@ -280,57 +278,13 @@ export class AppShell {
         }
 
         // Inject Modals relative to body
-        const teacherModalHTML = renderTeacherModal(this.rootPath);
         const debugModalHTML = renderDebugModal();
 
         // Append modals to body if not present
-        if (!document.getElementById('teacher-modal')) {
-            const div = document.createElement('div');
-            div.innerHTML = teacherModalHTML;
-            body.appendChild(div.firstElementChild);
-        }
         if (!document.getElementById('debug-modal')) {
             const div = document.createElement('div');
             div.innerHTML = debugModalHTML;
             body.appendChild(div.firstElementChild);
-        }
-    }
-
-    /**
-     * Renders a teacher mode indicator bar at the top of the index page
-     * when teacher mode is active (matching the lesson page experience).
-     */
-    renderTeacherIndicator() {
-        const TEACHER_MODE_KEY = 'tysk08_teacherMode';
-        if (localStorage.getItem(TEACHER_MODE_KEY) !== 'true') return;
-
-        const container = document.querySelector('.container');
-        if (!container) return;
-
-        const indicator = document.createElement('div');
-        indicator.id = 'teacher-mode-bar';
-        indicator.className = 'flex items-center justify-center gap-3 bg-success-100 text-success-900 px-4 py-2 rounded-full text-sm shadow-sm border border-success-200 mb-4 flex-wrap';
-        indicator.innerHTML = `
-            <span class="font-bold flex items-center gap-2">${t('teacher_mode_active')}</span>
-            <div class="h-4 w-px bg-success-300"></div>
-            <a href="${this.rootPath}teacher-dashboard.html" class="text-success-700 hover:text-success-900 hover:underline font-semibold transition-colors">
-                ${t('teacher_dashboard')}
-            </a>
-            <div class="h-4 w-px bg-success-300"></div>
-            <button id="index-deactivate-teacher-mode" class="text-success-700 hover:text-success-900 hover:underline font-semibold transition-colors">
-                ${t('teacher_logout')}
-            </button>
-        `;
-
-        container.insertBefore(indicator, container.firstChild);
-
-        // Setup deactivate button
-        const deactivateBtn = document.getElementById('index-deactivate-teacher-mode');
-        if (deactivateBtn) {
-            deactivateBtn.addEventListener('click', () => {
-                localStorage.removeItem(TEACHER_MODE_KEY);
-                window.location.reload();
-            });
         }
     }
 
@@ -668,9 +622,6 @@ export class AppShell {
         const footer = document.createElement('div');
         footer.className = "text-center mt-12 mb-6 flex flex-col gap-2";
         footer.innerHTML = `
-            <button id="teacher-login-btn" class="hidden text-neutral-400 hover:text-neutral-600 text-sm transition-colors">
-                ${t('shell_teacher_login')}
-            </button>
             <button id="debug-achievements-btn" class="text-neutral-300 hover:text-neutral-500 text-xs transition-colors">
                 ${t('shell_debug_achievement')}
             </button>

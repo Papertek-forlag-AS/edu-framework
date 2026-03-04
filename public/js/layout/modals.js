@@ -1,40 +1,11 @@
 /**
  * modals.js
- * Handles rendering and logic for Teacher Login and Debug modals.
+ * Handles rendering and logic for Debug modals.
  */
 
 import { getProgressData, getFullProgressData } from '../progress/store.js';
 import { EXERCISE_DATABASE } from '../progress/config.js';
 import { getAchievementColor } from '../progress/achievements.js';
-
-export function renderTeacherModal(rootPath = './') {
-    return `
-    <div id="teacher-modal" class="hidden fixed inset-0 bg-neutral-900 bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-surface rounded-xl shadow-2xl p-8 max-w-md w-full mx-4">
-            <h2 class="text-2xl font-bold text-neutral-800 mb-4">👨‍🏫 Lærerinnlogging</h2>
-            <p class="text-neutral-600 mb-6">
-                Skriv inn lærerkoden for å aktivere lærerressurser i alle leksjoner.
-            </p>
-            <form id="teacher-form" autocomplete="off">
-                <input type="password" id="teacher-password" placeholder="Skriv inn kode"
-                    class="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:outline-none mb-4" />
-                <div id="teacher-error" class="hidden text-error-600 text-sm mb-4">
-                    ❌ Feil kode. Prøv igjen eller kontakt utvikleren.
-                </div>
-                <div class="flex gap-3">
-                    <button type="submit" id="teacher-submit"
-                        class="flex-1 bg-primary-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-700 transition-colors">
-                        Logg inn
-                    </button>
-                    <button type="button" id="teacher-cancel"
-                        class="flex-1 bg-neutral-300 text-neutral-700 font-bold py-3 px-6 rounded-lg hover:bg-neutral-400 transition-colors">
-                        Avbryt
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>`;
-}
 
 export function renderDebugModal() {
     return `
@@ -49,86 +20,6 @@ export function renderDebugModal() {
             </div>
         </div>
     </div>`;
-}
-
-export function setupTeacherLogin() {
-    // Teacher mode constants
-    const TEACHER_PASSWORD = '365';
-    const TEACHER_MODE_KEY = 'tysk08_teacherMode';
-
-    const teacherLoginBtn = document.getElementById('teacher-login-btn');
-    const teacherModal = document.getElementById('teacher-modal');
-    const teacherForm = document.getElementById('teacher-form');
-    const teacherPasswordInput = document.getElementById('teacher-password');
-    const teacherCancelBtn = document.getElementById('teacher-cancel');
-    const teacherError = document.getElementById('teacher-error');
-
-    // Show modal content if clicked
-    teacherLoginBtn?.addEventListener('click', () => {
-        if (localStorage.getItem(TEACHER_MODE_KEY) === 'true') return;
-        teacherModal.classList.remove('hidden');
-        teacherPasswordInput.value = '';
-        teacherError.classList.add('hidden');
-        setTimeout(() => teacherPasswordInput.focus(), 100);
-    });
-
-    function closeModal() {
-        teacherModal.classList.add('hidden');
-        teacherPasswordInput.value = '';
-        teacherError.classList.add('hidden');
-    }
-
-    teacherCancelBtn?.addEventListener('click', closeModal);
-
-    teacherModal?.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
-    });
-
-    teacherForm?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const password = teacherPasswordInput.value.trim();
-        if (password === TEACHER_PASSWORD) {
-            localStorage.setItem(TEACHER_MODE_KEY, 'true');
-            updateTeacherButtonState(teacherLoginBtn);
-            closeModal();
-            showSuccessMessage();
-        } else {
-            teacherError.classList.remove('hidden');
-            teacherPasswordInput.value = '';
-            teacherPasswordInput.focus();
-        }
-    });
-
-    // Initial State Check
-    if (localStorage.getItem(TEACHER_MODE_KEY) === 'true') {
-        updateTeacherButtonState(teacherLoginBtn);
-    }
-}
-
-function updateTeacherButtonState(btn) {
-    if (!btn) return;
-    btn.innerHTML = '👨‍🏫 Lærermodus aktivert ✓';
-    btn.classList.add('text-success-600', 'font-bold');
-    btn.classList.remove('hidden');
-    btn.style.cursor = 'default';
-
-    // Add dashboard link after the button
-    const existingLink = btn.parentElement?.querySelector('.teacher-dashboard-link');
-    if (!existingLink) {
-        const dashboardLink = document.createElement('a');
-        dashboardLink.href = '/teacher-dashboard.html';
-        dashboardLink.className = 'teacher-dashboard-link block mt-2 text-sm text-success-600 hover:text-success-800 hover:underline';
-        dashboardLink.innerHTML = '📊 Åpne lærerdashboard →';
-        btn.parentElement?.appendChild(dashboardLink);
-    }
-}
-
-function showSuccessMessage() {
-    const successMsg = document.createElement('div');
-    successMsg.className = 'fixed top-4 right-4 bg-success-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-    successMsg.innerHTML = '✓ Lærermodus aktivert!';
-    document.body.appendChild(successMsg);
-    setTimeout(() => successMsg.remove(), 3000);
 }
 
 export function setupDebugTools() {

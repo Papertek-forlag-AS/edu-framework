@@ -189,11 +189,6 @@ if (!SW_ENABLED) {
     './js/grammar-modules/prepositions/akkusativ-prepositions.js',
     './js/grammar-modules/prepositions/dativ-prepositions.js',
 
-    // Teacher mode modules
-    './js/teacher-mode/teacher-content-loader.js',
-    './js/teacher-mode/class-manager.js',
-    './js/teacher-mode/dashboard-ui.js',
-
     // Layout and page initialization
     './js/layout/shell.js',
     './js/page-init.js',
@@ -215,9 +210,6 @@ if (!SW_ENABLED) {
     './js/feedback/index.js',
     './js/feedback/feedback-widget.js',
     './js/feedback/context-collector.js',
-
-    // Class management
-    './js/classes/student-class-service.js',
 
     // Localization
     './js/locales/no.js',
