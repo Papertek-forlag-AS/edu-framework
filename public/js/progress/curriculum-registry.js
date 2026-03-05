@@ -182,6 +182,22 @@ export const CURRICULUM_REGISTRY = {
         },
         languageConfig: GERMAN_LANGUAGE_CONFIG
     },
+    'german-a1': {
+        id: 'german-a1',
+        filePrefix: 'a1',
+        folderName: 'german-a1',
+        chapters: 2,
+        lessonsPerChapter: 2,
+        title: 'German A1 — Beginners',
+        description: 'CEFR A1 level German for Norwegian speakers',
+        contentPath: '../../content/german',
+        languageDir: 'german',
+        perChapterContent: true,
+        paths: {
+            homeLink: '../index.html'
+        },
+        languageConfig: GERMAN_LANGUAGE_CONFIG
+    },
     'spansk1-vg1': {
         id: 'spansk1-vg1',
         filePrefix: 'spa1',

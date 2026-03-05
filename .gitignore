@@ -19,6 +19,12 @@ public/audiofiles/info-*.mp3
 *.xcuserstate
 xcuserdata/
 
+# Demo build output
+dist/
+
+# NDLA API cache (re-fetched on demand)
+scripts/ndla/.cache/
+
 # Build artifacts — fetched from Papertek Vocabulary API at build time
 # Run `npm run fetch:vocabulary` to populate these
 shared/vocabulary/

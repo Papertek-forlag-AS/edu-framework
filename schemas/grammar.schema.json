@@ -14,7 +14,8 @@
         { "$ref": "#/$defs/pronoun-grid" },
         { "$ref": "#/$defs/rule-table" },
         { "$ref": "#/$defs/list" },
-        { "$ref": "#/$defs/info-box" }
+        { "$ref": "#/$defs/info-box" },
+        { "$ref": "#/$defs/eksempel" }
       ]
     }
   },
@@ -176,6 +177,49 @@
         }
       },
       "required": ["type", "boxType", "title", "content"],
+      "additionalProperties": false
+    },
+    "eksempel": {
+      "type": "object",
+      "title": "Example Sentences Module",
+      "description": "Example sentences showing target language with native translation, displayed in a grid layout",
+      "properties": {
+        "type": {
+          "const": "eksempel",
+          "description": "Module type identifier"
+        },
+        "title": {
+          "type": "string",
+          "description": "Optional title for the example section"
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3,
+          "description": "Number of columns in the grid layout (default: 1)"
+        },
+        "setninger": {
+          "type": "array",
+          "description": "Array of example sentences",
+          "items": {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "string",
+                "description": "Sentence in the target language, may contain HTML markup"
+              },
+              "native": {
+                "type": "string",
+                "description": "Translation in the native language"
+              }
+            },
+            "required": ["target", "native"],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["type", "setninger"],
       "additionalProperties": false
     }
   }

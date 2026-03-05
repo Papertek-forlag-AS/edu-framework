@@ -1,0 +1,44 @@
+{
+  "subject": "Naturfag VG1",
+  "description": "Grunnleggende biologi og fysikk: celler, fotosyntese og energi",
+  "license": "CC-BY-SA-4.0",
+  "attribution": "Innhold hentet fra NDLA (Nasjonal digital læringsarena) — ndla.no",
+  "chapters": [
+    {
+      "chapter": 1,
+      "title": "Celler og celledeling",
+      "lessons": [
+        {
+          "lesson": 1,
+          "articleId": 6454,
+          "title": "Celler og celledeling",
+          "sections": ["Vanlig celledeling – mitose", "Cellas vekstfase", "Cellas delingsfase"]
+        },
+        {
+          "lesson": 2,
+          "articleId": 6454,
+          "title": "Meiose og arvestoff",
+          "sections": ["Produksjon av kjønnsceller – meiose", "Arvestoffet styrer"]
+        }
+      ]
+    },
+    {
+      "chapter": 2,
+      "title": "Fotosyntese og energi",
+      "lessons": [
+        {
+          "lesson": 1,
+          "articleId": 9806,
+          "title": "Fotosyntesen",
+          "sections": ["Mulig med liv på land", "Produserer sukker", "Klorofyllkorn eller grønnkorn"]
+        },
+        {
+          "lesson": 2,
+          "articleId": 38328,
+          "title": "Hva er energi?",
+          "sections": ["Energi får noe til å skje", "Energikilder", "Energiformer", "Energi er konstant"]
+        }
+      ]
+    }
+  ]
+}
