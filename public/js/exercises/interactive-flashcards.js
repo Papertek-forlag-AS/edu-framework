@@ -15,7 +15,7 @@ import { getLessonVocabulary } from '../vocab-trainer-multi/vocabulary-loader.js
 
 let currentExercise = null;
 
-export function setupFlashcards(wordBanks = {}) {
+export async function setupFlashcards(wordBanks = {}) {
     // Destroy previous instance (called repeatedly on tab-change / vocab-updated)
     if (currentExercise) {
         currentExercise.destroy();
@@ -34,7 +34,7 @@ export function setupFlashcards(wordBanks = {}) {
         adjektivbank: wordBanks.adjectiveBank || {},
     };
 
-    const vocabulary = getLessonVocabulary(lessonId, mappedBanks);
+    const vocabulary = await getLessonVocabulary(lessonId, mappedBanks);
     const knownWords = new Set(loadKnownWordsFromStorage());
 
     const exercise = createExercise('flashcard-container', {

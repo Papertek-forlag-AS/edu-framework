@@ -88,7 +88,7 @@ export async function setupVocabTrainerSingleLesson(containerId, lessonId) {
     const chapterNumber = parseInt(lessonId.split('.')[0]);
 
     // Get vocabulary for selected lesson
-    const vocabulary = getLessonVocabulary(lessonId, { ordbank, verbbank, substantivbank, adjektivbank });
+    const vocabulary = await getLessonVocabulary(lessonId, { ordbank, verbbank, substantivbank, adjektivbank });
 
     if (vocabulary.length === 0) {
         mainContainer.innerHTML = `<p class="text-neutral-500 text-center py-8">${vt('no_words_lessons')}</p>`;
@@ -234,7 +234,7 @@ export async function setupVocabTrainerMultiChapter(containerId, chapters, optio
     }
 
     // Get vocabulary for selected chapters
-    const vocabulary = getMultiChapterVocabulary(chapters, { ordbank, verbbank, substantivbank, adjektivbank });
+    const vocabulary = await getMultiChapterVocabulary(chapters, { ordbank, verbbank, substantivbank, adjektivbank });
 
     if (vocabulary.length === 0) {
         // If we are in the specialized verb trainer column (allowedModes is empty), 

@@ -24,7 +24,7 @@ import { getTranslationLangCode } from './i18n-helper.js';
  * @param {Object} banks - Word banks
  * @returns {Array} - Array of vocabulary items
  */
-export function getLessonVocabulary(lessonId, banks = {}) {
+export async function getLessonVocabulary(lessonId, banks = {}) {
     // Default to imported banks if not provided in args
     const {
         ordbank: o = {},
@@ -44,7 +44,7 @@ export function getLessonVocabulary(lessonId, banks = {}) {
  * @param {Object} banks - Word banks
  * @returns {Array} - Array of vocabulary items
  */
-export function getMultiChapterVocabulary(chapterNumbers, banks = {}) {
+export async function getMultiChapterVocabulary(chapterNumbers, banks = {}) {
     // Convert chapter numbers to lesson IDs (e.g., [1, 2] -> ['1.1', '1.2', '1.3', '2.1', '2.2', '2.3'])
     const lessonIds = [];
     chapterNumbers.forEach(chapterNum => {
@@ -76,25 +76,28 @@ import { formatNoun } from '../utils/language-formatter.js';
  * @returns {Array} - Processed vocabulary
  */
 
-// Fetch curricula manifests from external API at module init time
+// Lazy-load curricula manifests on demand (avoids 404s for unused curricula)
 import { fetchCurriculum } from '../vocabulary/vocab-api-client.js';
 
-const CURRICULUM_IDS = ['tysk1-vg1', 'spansk1-vg1', 'us-9', 'us-8', 'us-10', 'tysk1-vg2', 'tysk2-vg2', 'tysk2-vg1'];
-const manifestEntries = await Promise.all(
-    CURRICULUM_IDS.map(async id => [id, await fetchCurriculum(id)])
-);
-const MANIFESTS = Object.fromEntries(manifestEntries);
-MANIFESTS['default'] = MANIFESTS['tysk1-vg1'];
+const MANIFESTS = {};
+const EMPTY_MANIFEST = { lessons: {} };
 
+/** Async — fetches manifest if not cached */
+async function getManifest(curriculumId) {
+    if (MANIFESTS[curriculumId] !== undefined) return MANIFESTS[curriculumId] || EMPTY_MANIFEST;
+    const manifest = await fetchCurriculum(curriculumId);
+    MANIFESTS[curriculumId] = manifest;
+    return manifest || EMPTY_MANIFEST;
+}
 
-
-function getManifest(curriculumId) {
-    return MANIFESTS[curriculumId] || MANIFESTS['default'];
+/** Sync — returns cached manifest or empty (for use in non-async contexts like tooltips) */
+function getManifestSync(curriculumId) {
+    return MANIFESTS[curriculumId] || EMPTY_MANIFEST;
 }
 
 export function isFeatureUnlocked(feature, currentLessonId) {
     const curriculumId = getActiveCurriculum();
-    const manifest = getManifest(curriculumId);
+    const manifest = getManifestSync(curriculumId);
 
     // 1. Check if feature is in current lesson
     if (manifest.lessons[currentLessonId] &&
@@ -186,10 +189,10 @@ function getExplanations(entry, langCode = 'nb') {
     return entry?.explanations?.[langCode] || {};
 }
 
-export function collectAndProcessVocabulary(lessonIds, { ordbank, verbbank, substantivbank, adjektivbank }) {
+export async function collectAndProcessVocabulary(lessonIds, { ordbank, verbbank, substantivbank, adjektivbank }) {
     // Get configuration for current curriculum
     const curriculumId = getActiveCurriculum();
-    const manifest = getManifest(curriculumId);
+    const manifest = await getManifest(curriculumId);
 
     const config = getCurriculumConfig(curriculumId);
     const { grammar } = config.languageConfig;

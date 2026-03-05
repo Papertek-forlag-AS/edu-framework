@@ -180,7 +180,7 @@ export async function initLessonPage() {
     setupGrammarTermLookups();
 
     // Initialize all exercises with error boundaries
-    safeExecute(() => setupFlashcards(wordBanks), { type: ErrorType.EXERCISE, showToast: false });
+    safeExecuteAsync(() => setupFlashcards(wordBanks), { type: ErrorType.EXERCISE, showToast: false });
     safeExecute(() => autoSetupMatchingGames(), { type: ErrorType.EXERCISE, showToast: false });
     safeExecute(() => autoSetupImageMatchingGames(), { type: ErrorType.EXERCISE, showToast: false });
     safeExecute(() => autoSetupFillInTasks(), { type: ErrorType.EXERCISE, showToast: false });
@@ -224,13 +224,13 @@ export async function initLessonPage() {
     // Auto-refresh flashcards when switching to 'ordforrad' tab
     document.addEventListener('tab-changed', (e) => {
         if (e.detail.tabId === 'ordforrad') {
-            safeExecute(() => setupFlashcards(wordBanks), { type: ErrorType.EXERCISE, showToast: false });
+            safeExecuteAsync(() => setupFlashcards(wordBanks), { type: ErrorType.EXERCISE, showToast: false });
         }
     }, { signal });
 
     // Auto-refresh when vocab is updated from the Trainer
     document.addEventListener('vocab-updated', () => {
-        safeExecute(() => setupFlashcards(wordBanks), { type: ErrorType.EXERCISE, showToast: false });
+        safeExecuteAsync(() => setupFlashcards(wordBanks), { type: ErrorType.EXERCISE, showToast: false });
     }, { signal });
 }
 

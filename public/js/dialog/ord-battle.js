@@ -443,7 +443,7 @@ export function setupOrdBattle(container, config) {
     const banks = await loadVocabularyBanks();
 
     // Load vocabulary using the new manifest structure with loaded banks
-    const fullVocab = getLessonVocabulary(lessonId, banks);
+    const fullVocab = await getLessonVocabulary(lessonId, banks);
 
     // Transform to simplified format for the game (norsk/tysk pairs)
     vocabulary = shuffle(fullVocab.map(word => ({
