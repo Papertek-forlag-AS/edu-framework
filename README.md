@@ -22,7 +22,7 @@ The framework provides the engine — 19 exercise types, spaced repetition vocab
 - **Zero JS dependencies** — Vanilla JavaScript with ES modules, no React, no build step
 - **Convention over configuration** — Rigid file structure means fewer AI mistakes
 - **Schema-driven content** — JSON schemas validate everything the AI generates
-- **Language-agnostic** — Built for German, but works for any language (or non-language subjects like math)
+- **Subject-agnostic** — Built for German, but works for any language or subject ([Naturfag VG1 demo](https://naturfag-vg1-demo.vercel.app) — science content from NDLA)
 
 ## Quick Start
 
