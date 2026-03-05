@@ -1,5 +1,7 @@
 # German A1 — Example Course
 
+> **Live demo:** [german-a1-demo.vercel.app](https://german-a1-demo.vercel.app)
+
 A minimal but complete example showing how to build a German language course with the Papertek Framework for Education.
 
 This example includes 2 chapters with 2 lessons each, demonstrating all the key content types: lessons, exercises, and grammar modules.
