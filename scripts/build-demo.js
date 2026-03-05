@@ -50,7 +50,6 @@ const dirs = [
     path.join(distDir, 'lessons'),
     path.join(distDir, 'content', contentLanguage),
     path.join(distDir, 'content', contentLanguage, 'exercises-data', curriculum.id),
-    path.join(distDir, 'ikoner'),
 ];
 dirs.forEach(d => fs.mkdirSync(d, { recursive: true }));
 
@@ -58,11 +57,19 @@ dirs.forEach(d => fs.mkdirSync(d, { recursive: true }));
 console.log('📦 Copying engine files...');
 copyRecursive(path.join(engineDir, 'js'), path.join(distDir, 'js'));
 
-// ─── 2. Copy CSS ────────────────────────────────────────────────────
-for (const cssFile of ['papertek.css', 'stylesheet.css']) {
-    const src = path.join(engineDir, cssFile);
-    if (fs.existsSync(src)) {
-        fs.copyFileSync(src, path.join(distDir, cssFile));
+// ─── 2. Copy all static assets from engine (CSS, fonts, icons, libs) ─
+// Copy everything from public/ except js/ (copied above) and HTML templates.
+// This ensures new assets added to public/ are automatically included.
+console.log('📦 Copying static assets...');
+const skipDirs = new Set(['js']);
+const skipExts = new Set(['.html']);
+for (const entry of fs.readdirSync(engineDir, { withFileTypes: true })) {
+    if (entry.isDirectory()) {
+        if (skipDirs.has(entry.name)) continue;
+        copyRecursive(path.join(engineDir, entry.name), path.join(distDir, entry.name));
+    } else {
+        if (skipExts.has(path.extname(entry.name))) continue;
+        fs.copyFileSync(path.join(engineDir, entry.name), path.join(distDir, entry.name));
     }
 }
 
