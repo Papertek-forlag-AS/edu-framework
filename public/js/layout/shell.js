@@ -48,17 +48,21 @@ export class AppShell {
         this.renderStructure();
 
         // Only render full header and install button on index/home pages, not lesson pages
+        const frontpageTemplate = document.body.dataset.frontpageTemplate;
         if (!this.isLessonPage) {
-            this.renderHeader();
-            this.renderInstallButton();
-            this.renderToolsSection();
-            this.renderFooterButtons();
+            // Subject/minimal templates handle their own layout — skip shell header/tools
+            if (!frontpageTemplate || frontpageTemplate === 'classic') {
+                this.renderHeader();
+                this.renderInstallButton();
+                this.renderToolsSection();
+                this.renderFooterButtons();
+
+                // Initialize Curriculum Selector logic
+                this.setupCurriculumSelector();
+            }
 
             // Setup functionality
             setupDebugTools();
-
-            // Initialize Curriculum Selector logic
-            this.setupCurriculumSelector();
 
             // Trigger curriculum content caching after a short delay
             // (let the page render first, then cache in background)

@@ -135,6 +135,15 @@ export function renderLessonList(lessonsData, chapterTitles) {
     const container = document.getElementById('lessons-container');
     if (!container) return;
 
+    // Dispatch to template-specific renderer if applicable
+    const template = document.body.dataset.frontpageTemplate;
+    if (template === 'subject') {
+        return renderSubjectLayout(container, lessonsData, chapterTitles);
+    }
+    if (template === 'minimal') {
+        return renderMinimalLayout(container, lessonsData, chapterTitles);
+    }
+
     container.innerHTML = '';
 
     const config = getCurriculumConfig(getActiveCurriculum());
@@ -427,6 +436,104 @@ function renderTestProgress(completedTests, requiredTests) {
     });
     html += '</ul></div>';
     return html;
+}
+
+/**
+ * Subject template renderer — chapter grid cards
+ */
+function renderSubjectLayout(container, lessonsData, chapterTitles) {
+    container.innerHTML = '';
+
+    const config = getCurriculumConfig(getActiveCurriculum());
+    const filePrefix = config.filePrefix;
+    const folderName = config.folderName;
+    const langCode = config.languageConfig?.code || 'nb';
+    const langDirs = { 'de': 'german', 'es': 'spanish', 'fr': 'french' };
+    const langFolder = config.languageDir || langDirs[langCode] || langCode;
+    const progress = getProgressData();
+
+    const chapters = chapterTitles ? Object.keys(chapterTitles).map(Number).sort((a, b) => a - b) : [];
+
+    chapters.forEach(chapterId => {
+        const chapterTitle = chapterTitles[chapterId];
+        const chapterLessons = Object.keys(lessonsData)
+            .filter(id => id.startsWith(`${chapterId}-`))
+            .sort();
+
+        if (chapterLessons.length === 0) return;
+
+        // Calculate progress for this chapter
+        let completedLessons = 0;
+        chapterLessons.forEach(id => {
+            const lp = progress[id];
+            if (lp?.achievements?.leksjon) completedLessons++;
+        });
+        const progressPct = chapterLessons.length > 0 ? Math.round((completedLessons / chapterLessons.length) * 100) : 0;
+
+        // First lesson URL for the chapter card link
+        const firstLessonId = chapterLessons[0];
+        const lessonUrl = `content/${langFolder}/lessons/${folderName}/${filePrefix}-${firstLessonId}.html`;
+
+        const card = document.createElement('a');
+        card.href = lessonUrl;
+        card.className = 'chapter-card';
+        card.dataset.chapterId = String(chapterId);
+        card.innerHTML = `
+            <div class="chapter-number">Kapittel ${chapterId}</div>
+            <h3>${chapterTitle}</h3>
+            <p>${lessonsData[firstLessonId]?.learningGoals?.[0] || ''}</p>
+            <div class="lesson-count">${chapterLessons.length} leksjoner${completedLessons > 0 ? ` &middot; ${completedLessons} fullfort` : ''}</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${progressPct}%"></div></div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+/**
+ * Minimal template renderer — compact row list
+ */
+function renderMinimalLayout(container, lessonsData, chapterTitles) {
+    container.innerHTML = '';
+
+    const config = getCurriculumConfig(getActiveCurriculum());
+    const filePrefix = config.filePrefix;
+    const folderName = config.folderName;
+    const langCode = config.languageConfig?.code || 'nb';
+    const langDirs = { 'de': 'german', 'es': 'spanish', 'fr': 'french' };
+    const langFolder = config.languageDir || langDirs[langCode] || langCode;
+
+    const chapters = chapterTitles ? Object.keys(chapterTitles).map(Number).sort((a, b) => a - b) : [];
+
+    chapters.forEach(chapterId => {
+        const chapterTitle = chapterTitles[chapterId];
+        const chapterLessons = Object.keys(lessonsData)
+            .filter(id => id.startsWith(`${chapterId}-`))
+            .sort();
+
+        if (chapterLessons.length === 0) return;
+
+        const heading = document.createElement('div');
+        heading.className = 'chapter-heading';
+        heading.textContent = `Kapittel ${chapterId}: ${chapterTitle}`;
+        container.appendChild(heading);
+
+        chapterLessons.forEach(lessonId => {
+            const lesson = lessonsData[lessonId];
+            const displayId = lessonId.replace('-', '.');
+            const lessonUrl = `content/${langFolder}/lessons/${folderName}/${filePrefix}-${lessonId}.html`;
+
+            const row = document.createElement('a');
+            row.href = lessonUrl;
+            row.className = 'lesson-row leksjon-link';
+            row.dataset.leksjonId = lessonId;
+            row.innerHTML = `
+                <span class="num">${displayId}</span>
+                <span class="title">${lesson.targetTitle || lesson.dialog?.title || 'Uten tittel'}</span>
+                <span class="arrow">&rsaquo;</span>
+            `;
+            container.appendChild(row);
+        });
+    });
 }
 
 // Set up event listeners for achievements and curriculum events
