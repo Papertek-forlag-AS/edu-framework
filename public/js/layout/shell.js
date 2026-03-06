@@ -221,6 +221,7 @@ export class AppShell {
             switch (this.language) {
                 case 'es': defaultId = 'spansk1-vg1'; break;
                 case 'fr': defaultId = 'fransk1-vg1'; break;
+                case 'nb': defaultId = 'naturfag-vg1'; break;
                 default: defaultId = 'tysk1-vg1';
             }
             setActiveCurriculum(defaultId);

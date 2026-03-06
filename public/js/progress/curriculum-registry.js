@@ -75,6 +75,23 @@ const FRENCH_LANGUAGE_CONFIG = {
     characterNormalization: { 'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e', 'à': 'a', 'â': 'a', 'ù': 'u', 'û': 'u', 'ô': 'o', 'î': 'i', 'ï': 'i', 'ç': 'c', 'œ': 'oe', 'æ': 'ae' }
 };
 
+const NATURFAG_LANGUAGE_CONFIG = {
+    code: 'nb',
+    grammar: {
+        genderCount: 0,
+        articles: {},
+        genderLabels: {},
+        genderColors: {},
+        pronouns: []
+    },
+    dataKeys: {
+        target: 'naturfag',
+        native: 'norsk'
+    },
+    specialChars: [],
+    characterNormalization: {}
+};
+
 export const CURRICULUM_REGISTRY = {
     'us-8': {
         id: 'us-8',
@@ -212,6 +229,21 @@ export const CURRICULUM_REGISTRY = {
         },
         startButtonText: 'Start med spansk',
         languageConfig: SPANISH_LANGUAGE_CONFIG
+    },
+    'naturfag-vg1': {
+        id: 'naturfag-vg1',
+        filePrefix: 'nf',
+        folderName: 'naturfag-vg1',
+        chapters: 2,
+        lessonsPerChapter: 2,
+        title: 'Naturfag VG1 — Biologi',
+        description: 'Celler, fotosyntese og energi',
+        contentPath: '../../content/naturfag',
+        languageDir: 'naturfag',
+        paths: {
+            homeLink: '../index.html'
+        },
+        languageConfig: NATURFAG_LANGUAGE_CONFIG
     },
     'fransk1-vg1': {
         id: 'fransk1-vg1',
