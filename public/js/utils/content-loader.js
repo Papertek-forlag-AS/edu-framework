@@ -101,15 +101,10 @@ export async function loadContent(externalConfig) {
 
     const config = externalConfig || getCurriculumConfig(curriculumId);
 
-    // Determine content path:
-    // - International pages load from german-international/
-    // - Spanish pages load from spanish/
-    // - Standard pages load from german/
+    // Determine content path from curriculum config
     let contentPath;
     if (isInternational) {
         contentPath = '../../content/german-international';
-    } else if (config.languageConfig?.code === 'es') {
-        contentPath = '../../content/spanish';
     } else {
         contentPath = config.contentPath || '../../content/german';
     }
@@ -117,77 +112,70 @@ export async function loadContent(externalConfig) {
     // Determine content file suffix based on page type
     // International pages use 'international-a1' suffix, others use curriculum ID
     const contentSuffix = isInternational ? 'international-a1' : config.id;
-    const fallbackSuffix = isInternational ? 'international-a1' : 'tysk1-vg1';
+    const fallbackSuffix = isInternational ? 'international-a1' : config.id;
 
     let lessonsModule;
     try {
         lessonsModule = await import(`${contentPath}/lessons-data-${contentSuffix}.js`);
     } catch (e) {
-        console.warn(`Could not load lessons-data-${contentSuffix}.js, falling back to ${fallbackSuffix}`);
-        lessonsModule = await import(`${contentPath}/lessons-data-${fallbackSuffix}.js`);
+        console.warn(`Could not load lessons-data-${contentSuffix}.js`);
+        lessonsModule = { lessonsData: {}, chapterTitles: {} };
     }
 
-    // Dynamic load with fallback for shared content types
+    // Dynamic load with fallback — modules return empty data if not found
     let grammarModule, pronunciationModule, cultureModule;
+    const emptyModule = { grammarData: {}, pronunciationData: {}, cultureData: {} };
 
     try { grammarModule = await import(`${contentPath}/grammar-data-${contentSuffix}.js`); }
-    catch (e) {
-        console.warn(`Could not load grammar-data-${contentSuffix}.js, falling back to ${fallbackSuffix}`);
-        grammarModule = await import(`${contentPath}/grammar-data-${fallbackSuffix}.js`);
-    }
+    catch (e) { grammarModule = emptyModule; }
 
     try { pronunciationModule = await import(`${contentPath}/pronunciation-data-${contentSuffix}.js`); }
-    catch (e) {
-        console.warn(`Could not load pronunciation-data-${contentSuffix}.js, falling back to ${fallbackSuffix}`);
-        pronunciationModule = await import(`${contentPath}/pronunciation-data-${fallbackSuffix}.js`);
-    }
+    catch (e) { pronunciationModule = emptyModule; }
 
     try { cultureModule = await import(`${contentPath}/culture-data-${contentSuffix}.js`); }
-    catch (e) {
-        console.warn(`Could not load culture-data-${contentSuffix}.js, falling back to ${fallbackSuffix}`);
-        cultureModule = await import(`${contentPath}/culture-data-${fallbackSuffix}.js`);
-    }
+    catch (e) { cultureModule = emptyModule; }
 
-    const vocabDataModule = await import(`${contentPath}/vocabulary-data.js`);
+    let vocabDataModule;
+    try { vocabDataModule = await import(`${contentPath}/vocabulary-data.js`); }
+    catch (e) { vocabDataModule = { vocabularyData: {} }; }
 
     // Load characters data
-    const charactersModule = await import(`${contentPath}/characters-data.js`);
+    let charactersModule;
+    try { charactersModule = await import(`${contentPath}/characters-data.js`); }
+    catch (e) { charactersModule = {}; }
 
-    // Load vocabulary from external API (core + translations)
-    // Uses ISO 639-1 codes: de (German), es (Spanish), fr (French), nb (Norwegian), en (English)
-    const langCode = config.languageConfig?.code || 'de';
+    // Load vocabulary from external API (only for foreign-language courses)
+    const langCode = config.languageConfig?.code || 'nb';
     const nativeCode = nativeLang || 'nb';
-    const transPair = `${langCode}-${nativeCode}`;
+    const hasVocab = langCode !== nativeCode; // Skip vocab for same-language courses (e.g. naturfag)
 
-    const bankNames = ['nounbank', 'verbbank', 'generalbank', 'adjectivebank', 'numbersbank', 'phrasesbank', 'pronounsbank', 'articlesbank'];
+    let nounBank = {}, verbbank = {}, wordBank = {}, adjectiveBank = {};
 
-    // Load core and translation banks in parallel from external API
-    const [coreBanks, transBanks] = await Promise.all([
-        Promise.all(bankNames.map(b => fetchCoreBank(langCode, b))),
-        Promise.all(bankNames.map(b => fetchTranslationBank(transPair, b)))
-    ]);
+    if (hasVocab) {
+        const transPair = `${langCode}-${nativeCode}`;
+        const bankNames = ['nounbank', 'verbbank', 'generalbank', 'adjectivebank', 'numbersbank', 'phrasesbank', 'pronounsbank', 'articlesbank'];
 
-    // Merge core with translations
-    const [nounCore, verbCore, generalCore, adjCore, numbersCore, phrasesCore, pronounsCore, articlesCore] = coreBanks;
-    const [nounTrans, verbTrans, generalTrans, adjTrans, numbersTrans, phrasesTrans, pronounsTrans, articlesTrans] = transBanks;
+        // Load core and translation banks in parallel from external API
+        const [coreBanks, transBanks] = await Promise.all([
+            Promise.all(bankNames.map(b => fetchCoreBank(langCode, b))),
+            Promise.all(bankNames.map(b => fetchTranslationBank(transPair, b)))
+        ]);
 
-    const nounBank = mergeVocabulary(nounCore, nounTrans, nativeLang);
-    const verbbank = mergeVocabulary(verbCore, verbTrans, nativeLang);
-    const generalBank = mergeVocabulary(generalCore, generalTrans, nativeLang);
-    const adjectiveBank = mergeVocabulary(adjCore, adjTrans, nativeLang);
-    const numbersBank = mergeVocabulary(numbersCore, numbersTrans, nativeLang);
-    const phrasesBank = mergeVocabulary(phrasesCore, phrasesTrans, nativeLang);
-    const pronounsBank = mergeVocabulary(pronounsCore, pronounsTrans, nativeLang);
-    const articlesBank = mergeVocabulary(articlesCore, articlesTrans, nativeLang);
+        // Merge core with translations
+        const [nounCore, verbCore, generalCore, adjCore, numbersCore, phrasesCore, pronounsCore, articlesCore] = coreBanks;
+        const [nounTrans, verbTrans, generalTrans, adjTrans, numbersTrans, phrasesTrans, pronounsTrans, articlesTrans] = transBanks;
 
-    // Combine into wordBank (general + numbers + phrases + pronouns + articles)
-    const wordBank = {
-        ...generalBank,
-        ...numbersBank,
-        ...phrasesBank,
-        ...pronounsBank,
-        ...articlesBank
-    };
+        nounBank = mergeVocabulary(nounCore, nounTrans, nativeLang);
+        verbbank = mergeVocabulary(verbCore, verbTrans, nativeLang);
+        const generalBank = mergeVocabulary(generalCore, generalTrans, nativeLang);
+        adjectiveBank = mergeVocabulary(adjCore, adjTrans, nativeLang);
+        const numbersBank = mergeVocabulary(numbersCore, numbersTrans, nativeLang);
+        const phrasesBank = mergeVocabulary(phrasesCore, phrasesTrans, nativeLang);
+        const pronounsBank = mergeVocabulary(pronounsCore, pronounsTrans, nativeLang);
+        const articlesBank = mergeVocabulary(articlesCore, articlesTrans, nativeLang);
+
+        wordBank = { ...generalBank, ...numbersBank, ...phrasesBank, ...pronounsBank, ...articlesBank };
+    }
 
     const content = {
         lessonsData: lessonsModule.lessonsData,

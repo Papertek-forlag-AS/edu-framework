@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!--
+  Papertek Frontpage Template: minimal
+  Best for: Small courses, simple lesson lists, workshops
+  Features: Clean header, compact lesson list, no extras
+-->
+<html lang="{{UI_LANG}}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{COURSE_NAME}}</title>
+  <link rel="stylesheet" href="papertek.css" />
+  <link rel="stylesheet" href="stylesheet.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="ikoner/icon-192x192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="{{COURSE_NAME}}" />
+  <style>
+    .minimal-header {
+      padding: 2rem 0;
+      border-bottom: 2px solid var(--color-neutral-200);
+      margin-bottom: 2rem;
+    }
+    .minimal-header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--color-neutral-900);
+    }
+    .minimal-header p {
+      color: var(--color-neutral-500);
+      margin-top: 0.5rem;
+    }
+    @media (min-width: 768px) {
+      .minimal-header h1 { font-size: 2.5rem; }
+    }
+    .lesson-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--color-neutral-100);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+    .lesson-row:hover {
+      background: var(--color-neutral-100);
+    }
+    .lesson-row .num {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--color-primary-600);
+      min-width: 2.5rem;
+    }
+    .lesson-row .title {
+      font-weight: 600;
+      color: var(--color-neutral-800);
+    }
+    .lesson-row .arrow {
+      margin-left: auto;
+      color: var(--color-neutral-400);
+    }
+    .chapter-heading {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-neutral-700);
+      padding: 1.25rem 0 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 0.85rem;
+    }
+    .chapter-heading:not(:first-child) {
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--color-neutral-200);
+      padding-top: 1.5rem;
+    }
+  </style>
+</head>
+<body class="bg-neutral-50 text-neutral-800"
+      data-frontpage-template="minimal"
+      data-curriculum-id="{{CURRICULUM_ID}}">
+  <div class="max-w-2xl mx-auto px-4 py-6 md:px-8">
+
+    <!-- Header -->
+    <div class="minimal-header">
+      <h1 id="main-app-title">{{COURSE_NAME}}</h1>
+      <p>{{COURSE_DESCRIPTION}}</p>
+    </div>
+
+    <!-- Continue Button -->
+    <a href="#" id="continue-btn" class="hidden mb-6 block bg-primary-500 text-white text-center font-bold py-3 px-4 rounded-lg hover:bg-primary-600 transition-colors">
+      Fortsett der du slapp
+    </a>
+
+    <!-- Lesson List (populated by JS) -->
+    <main>
+      <div id="lessons-container"></div>
+    </main>
+
+    <!-- Install -->
+    <div id="install-container" class="text-center mt-8 mb-4">
+      <button id="install-btn" class="hidden bg-primary-600 text-white font-bold py-3 px-5 rounded-lg hover:bg-primary-700 transition-colors shadow-lg">
+        Installer appen
+      </button>
+    </div>
+
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

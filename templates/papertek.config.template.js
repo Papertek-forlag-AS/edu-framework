@@ -71,6 +71,13 @@ export default {
     },
   },
 
+  // ─── Frontpage Layout ──────────────────────────────────────────
+  // Available templates: 'classic' | 'subject' | 'minimal'
+  //   classic  — Language course style (curriculum selector, vocab trainer link)
+  //   subject  — Subject course style (chapter card grid, hero section)
+  //   minimal  — Simple list layout (compact rows, clean header)
+  frontpageTemplate: '{{FRONTPAGE_TEMPLATE}}',
+
   // ─── Feature Flags ─────────────────────────────────────────────
   features: {
     offlineMode: true,

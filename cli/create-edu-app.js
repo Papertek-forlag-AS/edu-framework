@@ -158,7 +158,23 @@ async function main() {
   // 6. CEFR level
   const cefrLevel = args.cefr || await prompt.ask('CEFR level', 'A1');
 
-  // 7. Output directory
+  // 7. Frontpage template
+  console.log('\n  Available frontpage templates:');
+  console.log('    classic  - Language course style (curriculum selector, vocab trainer)');
+  console.log('    subject  - Subject course style (chapter card grid, hero section)');
+  console.log('    minimal  - Simple compact list layout');
+  const isLanguageCourse = langCode !== uiLang;
+  const defaultTemplate = isLanguageCourse ? 'classic' : 'subject';
+  const frontpageTemplate = args.template || await prompt.ask('Frontpage template', defaultTemplate);
+
+  // 8. Color theme (for subject/minimal templates)
+  let colorTheme = '';
+  if (frontpageTemplate !== 'classic') {
+    console.log('\n  Available color themes: default (amber), science (green), humanities (indigo), math (pink), social (orange)');
+    colorTheme = args.theme || await prompt.ask('Color theme', 'default');
+  }
+
+  // 9. Output directory
   const slug = slugify(courseName);
   const defaultDir = `./${slug}`;
   const outputDir = args.output || await prompt.ask('Output directory', defaultDir);
@@ -210,7 +226,7 @@ async function main() {
   // ── Generate papertek.config.js ─────────────────────────────────
   const configContent = generateConfig({
     courseName, langCode, langPreset, uiLang,
-    chapters, lessonsPerCh, cefrLevel, slug, curriculumId,
+    chapters, lessonsPerCh, cefrLevel, slug, curriculumId, frontpageTemplate,
   });
   writeFileSync(join(projectRoot, 'papertek.config.js'), configContent);
 
@@ -227,6 +243,13 @@ async function main() {
   // ── Generate package.json ───────────────────────────────────────
   const packageJson = generatePackageJson({ slug, courseName });
   writeFileSync(join(projectRoot, 'package.json'), JSON.stringify(packageJson, null, 2) + '\n');
+
+  // ── Copy frontpage templates ────────────────────────────────────
+  const frontpageSrc = join(FRAMEWORK_ROOT, 'templates/frontpage');
+  if (existsSync(frontpageSrc)) {
+    copyDirSync(frontpageSrc, join(projectRoot, 'templates/frontpage'));
+    console.log('  ✅ Copied frontpage templates');
+  }
 
   // ── Copy schemas ────────────────────────────────────────────────
   const schemasDir = join(FRAMEWORK_ROOT, 'schemas');
@@ -269,9 +292,21 @@ async function main() {
   // ── Generate .gitignore ─────────────────────────────────────────
   writeFileSync(join(projectRoot, '.gitignore'), generateGitignore());
 
-  // ── Generate index.html ─────────────────────────────────────────
-  writeFileSync(join(projectRoot, 'public/index.html'), generateIndexHtml({ courseName, chapters, lessonsPerCh }));
-  console.log('  ✅ Generated public/index.html');
+  // ── Generate index.html from frontpage template ─────────────────
+  const templateFile = join(FRAMEWORK_ROOT, 'templates/frontpage', `${frontpageTemplate}.html`);
+  let indexHtml;
+  if (existsSync(templateFile)) {
+    indexHtml = readFileSync(templateFile, 'utf-8')
+      .replace(/\{\{COURSE_NAME\}\}/g, courseName)
+      .replace(/\{\{COURSE_DESCRIPTION\}\}/g, `${chapters} kapitler`)
+      .replace(/\{\{UI_LANG\}\}/g, uiLang === 'nb' ? 'no' : uiLang)
+      .replace(/\{\{CURRICULUM_ID\}\}/g, curriculumId)
+      .replace(/\{\{COLOR_THEME\}\}/g, colorTheme && colorTheme !== 'default' ? colorTheme : '');
+  } else {
+    indexHtml = generateIndexHtml({ courseName, chapters, lessonsPerCh });
+  }
+  writeFileSync(join(projectRoot, 'public/index.html'), indexHtml);
+  console.log(`  ✅ Generated public/index.html (template: ${frontpageTemplate})`);
 
   // ── Init git ────────────────────────────────────────────────────
   try {
@@ -301,7 +336,7 @@ async function main() {
 
 // ── Generators ───────────────────────────────────────────────────
 
-function generateConfig({ courseName, langCode, langPreset, uiLang, chapters, lessonsPerCh, cefrLevel, slug, curriculumId }) {
+function generateConfig({ courseName, langCode, langPreset, uiLang, chapters, lessonsPerCh, cefrLevel, slug, curriculumId, frontpageTemplate }) {
   const articlesStr = Object.entries(langPreset.articles || {})
     .map(([k, v]) => `${k}: '${v}'`).join(', ');
   const genderLabelsStr = Object.entries(langPreset.genderLabels || {})
@@ -371,12 +406,14 @@ export default {
     fetchAudio: true,
   },
 
+  frontpageTemplate: '${frontpageTemplate || 'classic'}',
+
   features: {
     offlineMode: true,
     cloudSync: false,
     teacherDashboard: false,
     classroomGames: false,
-    vocabTrainer: true,
+    vocabTrainer: ${langCode !== uiLang},
     spacedRepetition: true,
     wordTooltips: true,
     specialCharKeyboard: ${langPreset.specialCharacters.length > 0},

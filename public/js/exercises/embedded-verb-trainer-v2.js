@@ -12,7 +12,8 @@
 
 import { fetchCoreBank } from '../vocabulary/vocab-api-client.js';
 import { getTargetLanguageCode } from '../core/language-utils.js';
-const verbbank = await fetchCoreBank(getTargetLanguageCode(), 'verbbank');
+let verbbank = {};
+try { verbbank = await fetchCoreBank(getTargetLanguageCode(), 'verbbank'); } catch { /* No vocab for non-language courses */ }
 
 // Dynamic verb classification import — loads language-specific file at runtime
 let verbClassification = {};

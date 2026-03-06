@@ -12,9 +12,10 @@ import { checkMediaStatus, downloadMedia, deleteMedia, getStorageInfo, formatByt
 
 export class AppShell {
     constructor(config) {
-        this.appTitle = config.appTitle || (config.language === 'es' ? "Hablamos Español 1" : (config.language === 'fr' ? "Nous parlons Français 1" : "Wir sprechen Deutsch 1"));
-        this.language = config.language || "de"; // 'de' or 'es'
-        this.theme = config.theme || (this.language === 'es' ? 'spanish' : (this.language === 'fr' ? 'french' : 'german'));
+        const defaultTitles = { 'es': "Hablamos Español 1", 'fr': "Nous parlons Français 1", 'de': "Wir sprechen Deutsch 1" };
+        this.appTitle = config.appTitle || defaultTitles[config.language] || config.language || 'Papertek';
+        this.language = config.language || "nb";
+        this.theme = config.theme || { 'es': 'spanish', 'fr': 'french', 'de': 'german' }[this.language] || 'default';
         this.uiLanguage = config.uiLanguage || 'no'; // 'no' or 'en' - UI language for translations
 
         // Control whether this is a lesson page (minimal header) or index page (full header)
@@ -47,17 +48,21 @@ export class AppShell {
         this.renderStructure();
 
         // Only render full header and install button on index/home pages, not lesson pages
+        const frontpageTemplate = document.body.dataset.frontpageTemplate;
         if (!this.isLessonPage) {
-            this.renderHeader();
-            this.renderInstallButton();
-            this.renderToolsSection();
-            this.renderFooterButtons();
+            // Subject/minimal templates handle their own layout — skip shell header/tools
+            if (!frontpageTemplate || frontpageTemplate === 'classic') {
+                this.renderHeader();
+                this.renderInstallButton();
+                this.renderToolsSection();
+                this.renderFooterButtons();
+
+                // Initialize Curriculum Selector logic
+                this.setupCurriculumSelector();
+            }
 
             // Setup functionality
             setupDebugTools();
-
-            // Initialize Curriculum Selector logic
-            this.setupCurriculumSelector();
 
             // Trigger curriculum content caching after a short delay
             // (let the page render first, then cache in background)
@@ -210,7 +215,7 @@ export class AppShell {
     enforceLanguageConsistency() {
         const activeId = getActiveCurriculum();
         const activeConfig = getCurriculumConfig(activeId);
-        const activeLangCode = activeConfig?.languageConfig?.code || 'de'; // Default to 'de' if missing
+        const activeLangCode = activeConfig?.languageConfig?.code || 'nb';
 
         // If the current saved curriculum does not match the Portal's language...
         if (activeLangCode !== this.language) {
@@ -221,6 +226,7 @@ export class AppShell {
             switch (this.language) {
                 case 'es': defaultId = 'spansk1-vg1'; break;
                 case 'fr': defaultId = 'fransk1-vg1'; break;
+                case 'nb': defaultId = 'naturfag-vg1'; break;
                 default: defaultId = 'tysk1-vg1';
             }
             setActiveCurriculum(defaultId);

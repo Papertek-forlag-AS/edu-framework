@@ -16,7 +16,8 @@ import { clearOldExerciseKeys } from '../exercises/storage-utils.js';
 // Import core vocabulary from external API (for migration checks - no translations needed)
 import { fetchCoreBank } from '../vocabulary/vocab-api-client.js';
 import { getTargetLanguageCode, genusToArticle } from '../core/language-utils.js';
-const nounBank = await fetchCoreBank(getTargetLanguageCode(), 'nounbank');
+// nounBank is fetched lazily inside convertKnownWordsToNewFormat() to avoid
+// crashing non-language courses (e.g. naturfag) that have no nounbank.json.
 import { auth, isAuthAvailable } from '../auth/firebase-client.js';
 
 // =================================================================
@@ -175,11 +176,20 @@ function calculateAchievements(isAuthenticated, lessonId, migrationDate) {
 /**
  * Konverterer gamle known words til nytt format med artikler for substantiver
  * @param {string[]} oldKnownWords - Array med kjente ord (uten artikler)
- * @returns {string[]} Array med kjente ord (med artikler for substantiver)
+ * @returns {Promise<string[]>} Array med kjente ord (med artikler for substantiver)
  */
-function convertKnownWordsToNewFormat(oldKnownWords) {
+async function convertKnownWordsToNewFormat(oldKnownWords) {
     if (!Array.isArray(oldKnownWords)) {
         return [];
+    }
+
+    // Fetch nounbank lazily — returns {} silently for courses without vocab
+    let nounBank = {};
+    try {
+        nounBank = await fetchCoreBank(getTargetLanguageCode(), 'nounbank');
+    } catch {
+        // Non-language courses (e.g. naturfag) have no nounbank — skip article conversion
+        console.log('[Migration] No nounbank available — skipping article conversion');
     }
 
     const convertedWords = [];
@@ -213,7 +223,7 @@ function convertKnownWordsToNewFormat(oldKnownWords) {
  * @param {boolean} isAuthenticated - Om brukeren er logget inn
  * @returns {boolean} True hvis migrering var vellykket
  */
-export function migrateProgressData(isAuthenticated) {
+export async function migrateProgressData(isAuthenticated) {
     try {
         // Hent gammel data
         const oldKnownWords = safeStorage.get('vocab-trainer-known-words', []);
@@ -223,7 +233,7 @@ export function migrateProgressData(isAuthenticated) {
         console.log('📖 Kjente ord (gammelt format):', oldKnownWords.length);
 
         // Konverter kjente ord til nytt format (med artikler for substantiver)
-        const convertedKnownWords = convertKnownWordsToNewFormat(oldKnownWords);
+        const convertedKnownWords = await convertKnownWordsToNewFormat(oldKnownWords);
         console.log('📖 Kjente ord (nytt format):', convertedKnownWords.length);
 
         // Opprett ny datastruktur
@@ -537,7 +547,7 @@ export async function runMigrationIfNeeded() {
     // Run progress data migration (runs for both authenticated and anonymous users)
     if (needsMigration()) {
         console.log('📦 Gammel progresjonsdata funnet. Starter migrering...');
-        const success = migrateProgressData(isAuthenticated);
+        const success = await migrateProgressData(isAuthenticated);
 
         if (success) {
             showMigrationNotification(isAuthenticated);

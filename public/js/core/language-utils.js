@@ -195,7 +195,7 @@ export function getNativeKey() {
  */
 export function getTargetLanguageCode() {
     const config = getLanguageConfig();
-    return config.code || 'de';
+    return config.code || 'nb';
 }
 
 /**

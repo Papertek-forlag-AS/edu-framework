@@ -10,6 +10,9 @@
 import { safeStorage } from '../error-handler.js';
 import { CURRICULUM_CONFIG } from './config.js';
 
+/** Get the first registered curriculum ID as default (avoids hardcoding 'tysk1-vg1'). */
+const _defaultCurriculum = () => Object.keys(CURRICULUM_CONFIG)[0] || 'default';
+
 /**
  * Lagrer data til localStorage med feilhåndtering
  * @param {string} key - Nøkkel
@@ -39,13 +42,13 @@ export function getFullProgressData() {
         return {
             studentProfile: {
                 name: "Student",
-                activeCurriculum: 'tysk1-vg1',
+                activeCurriculum: _defaultCurriculum(),
                 currentGrade: 'vg1',
                 startYear: new Date().getFullYear(),
                 migrated: false
             },
             progressByCurriculum: {
-                'tysk1-vg1': {}
+                [_defaultCurriculum()]: {}
             },
             knownWords: [],
             vocabTestHistory: []
@@ -54,12 +57,12 @@ export function getFullProgressData() {
 
     // Ensure data has required structure (for backwards compatibility)
     if (!data.progressByCurriculum) {
-        data.progressByCurriculum = { 'tysk1-vg1': {} };
+        data.progressByCurriculum = { [_defaultCurriculum()]: {} };
     }
     if (!data.studentProfile) {
         data.studentProfile = {
             name: "Student",
-            activeCurriculum: 'tysk1-vg1',
+            activeCurriculum: _defaultCurriculum(),
             currentGrade: 'vg1',
             startYear: new Date().getFullYear(),
             migrated: false
@@ -89,7 +92,7 @@ export function saveFullProgressData(data) {
  */
 export function getActiveCurriculum() {
     const data = getFullProgressData();
-    return data.studentProfile?.activeCurriculum || 'tysk1-vg1';
+    return data.studentProfile?.activeCurriculum || _defaultCurriculum();
 }
 
 /**
