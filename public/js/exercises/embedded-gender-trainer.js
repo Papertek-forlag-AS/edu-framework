@@ -14,7 +14,8 @@
 // Import core vocabulary from external API (genus, word - no translations needed for gender trainer)
 import { fetchCoreBank } from '../vocabulary/vocab-api-client.js';
 import { getTargetLanguageCode, genusToArticle } from '../core/language-utils.js';
-const nounBank = await fetchCoreBank(getTargetLanguageCode(), 'nounbank');
+let nounBank = {};
+try { nounBank = await fetchCoreBank(getTargetLanguageCode(), 'nounbank'); } catch { /* No vocab for non-language courses */ }
 
 import { saveData, loadData, trackExerciseCompletion } from '../progress/index.js';
 

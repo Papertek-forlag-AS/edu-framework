@@ -64,7 +64,7 @@ async function loadVocabularyBanks() {
     }
 
     const config = getCurriculumConfig(curriculumId);
-    const langCode = config?.languageConfig?.code || 'de';
+    const langCode = config?.languageConfig?.code || 'nb';
     const nativeCode = getTranslationLangCode() === 'en' ? 'en' : 'nb';
     const transPair = `${langCode}-${nativeCode}`;
 

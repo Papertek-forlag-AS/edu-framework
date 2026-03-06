@@ -16,8 +16,15 @@ try {
     console.warn(`No question bank found for ${langDir}. Tests will be empty.`);
 }
 
-const verbbank = await fetchCoreBank(langCode, 'verbbank');
-const nounBank = await fetchCoreBank(langCode, 'nounbank');
+let verbbank = {}, nounBank = {};
+try {
+    [verbbank, nounBank] = await Promise.all([
+        fetchCoreBank(langCode, 'verbbank'),
+        fetchCoreBank(langCode, 'nounbank')
+    ]);
+} catch {
+    console.warn(`No vocabulary banks available for ${langCode}. Vocab-based questions will be skipped.`);
+}
 
 /**
  * =============================================================================

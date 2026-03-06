@@ -106,8 +106,9 @@ export function setupContinueButton() {
 
             const isSubdirectory = window.location.pathname.includes('/tysk/') || window.location.pathname.includes('/spansk/') || window.location.pathname.includes('/fransk/');
             const langConfig = config.languageConfig;
-            const langCode = langConfig?.code || 'de';
-            const langFolder = config.languageDir || (langCode === 'es' ? 'spanish' : (langCode === 'fr' ? 'french' : 'german'));
+            const langCode = langConfig?.code || 'nb';
+            const langDirs = { 'de': 'german', 'es': 'spanish', 'fr': 'french' };
+            const langFolder = config.languageDir || langDirs[langCode] || langCode;
             const pathPrefix = isSubdirectory ? '../' : '';
 
             // Build base URL
@@ -145,8 +146,9 @@ export function renderLessonList(lessonsData, chapterTitles) {
 
     const isSubdirectory = window.location.pathname.includes('/tysk/') || window.location.pathname.includes('/spansk/') || window.location.pathname.includes('/fransk/');
     const langConfig = config.languageConfig;
-    const langCode = langConfig?.code || 'de';
-    const langFolder = config.languageDir || (langCode === 'es' ? 'spanish' : (langCode === 'fr' ? 'french' : 'german'));
+    const langCode = langConfig?.code || 'nb';
+    const langDirs = { 'de': 'german', 'es': 'spanish', 'fr': 'french' };
+    const langFolder = config.languageDir || langDirs[langCode] || langCode;
     const pathPrefix = isSubdirectory ? '../' : '';
 
     // Use default chapters if chapterTitles is missing (fallback)

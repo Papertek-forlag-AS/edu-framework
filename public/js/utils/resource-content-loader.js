@@ -22,16 +22,16 @@ const resourceCache = {};
  * @returns {string} Content folder path (relative to this module's location)
  */
 function getContentPath(config) {
-    const langCode = config.languageConfig?.code || 'de';
+    // Use explicit contentPath from curriculum config when available
+    if (config.contentPath) {
+        return config.contentPath;
+    }
 
-    // Path is relative from public/js/utils/ to public/content/
-    if (langCode === 'fr') {
-        return '../../content/french';
-    }
-    if (langCode === 'es') {
-        return '../../content/spanish';
-    }
-    return '../../content/german';
+    // Fallback: derive from language code for known languages
+    const langCode = config.languageConfig?.code || 'nb';
+    const langDirs = { 'de': 'german', 'es': 'spanish', 'fr': 'french' };
+    const dir = langDirs[langCode] || langCode;
+    return `../../content/${dir}`;
 }
 
 /**
@@ -42,7 +42,7 @@ function getContentPath(config) {
 function getCurriculaForLanguage(langCode) {
     return Object.keys(CURRICULUM_REGISTRY).filter(id => {
         const config = CURRICULUM_REGISTRY[id];
-        return (config.languageConfig?.code || 'de') === langCode;
+        return (config.languageConfig?.code || 'nb') === langCode;
     });
 }
 
@@ -54,7 +54,7 @@ export async function loadGrammarWordlist() {
     const curriculumId = getActiveCurriculum();
     const config = getCurriculumConfig(curriculumId);
     const contentPath = getContentPath(config);
-    const langCode = config.languageConfig?.code || 'de';
+    const langCode = config.languageConfig?.code || 'nb';
 
     const cacheKey = `grammar-wordlist-${langCode}`;
     if (resourceCache[cacheKey]) {
@@ -93,7 +93,7 @@ export async function loadAllGrammarData() {
         console.warn(`Could not load grammar-data-${curriculumId}.js, trying fallback:`, error);
 
         // Try fallback for German
-        if ((config.languageConfig?.code || 'de') === 'de') {
+        if ((config.languageConfig?.code || 'nb') === 'de') {
             try {
                 const fallback = await import(`${contentPath}/grammar-data-tysk1-vg1.js`);
                 resourceCache[cacheKey] = fallback.grammarData;
@@ -128,7 +128,7 @@ export async function loadAllCultureData() {
         console.warn(`Could not load culture-data-${curriculumId}.js, trying fallback:`, error);
 
         // Try fallback for German
-        if ((config.languageConfig?.code || 'de') === 'de') {
+        if ((config.languageConfig?.code || 'nb') === 'de') {
             try {
                 const fallback = await import(`${contentPath}/culture-data-tysk1-vg1.js`);
                 resourceCache[cacheKey] = fallback.cultureData;
@@ -163,7 +163,7 @@ export async function loadAllPronunciationData() {
         console.warn(`Could not load pronunciation-data-${curriculumId}.js, trying fallback:`, error);
 
         // Try fallback for German
-        if ((config.languageConfig?.code || 'de') === 'de') {
+        if ((config.languageConfig?.code || 'nb') === 'de') {
             try {
                 const fallback = await import(`${contentPath}/pronunciation-data-tysk1-vg1.js`);
                 resourceCache[cacheKey] = fallback.pronunciationData;
@@ -183,7 +183,7 @@ export async function loadAllPronunciationData() {
 export function getCurrentLanguageName() {
     const curriculumId = getActiveCurriculum();
     const config = getCurriculumConfig(curriculumId);
-    const langCode = config.languageConfig?.code || 'de';
+    const langCode = config.languageConfig?.code || 'nb';
 
     const names = {
         'de': 'tysk',
@@ -203,7 +203,7 @@ export function getCurrentLanguageName() {
 export function getHomePageUrl() {
     const curriculumId = getActiveCurriculum();
     const config = getCurriculumConfig(curriculumId);
-    const langCode = config.languageConfig?.code || 'de';
+    const langCode = config.languageConfig?.code || 'nb';
 
     // Resource pages are in public/, home pages are in public/tysk/ or public/spansk/
     const homeUrls = {
@@ -213,7 +213,7 @@ export function getHomePageUrl() {
         'en': 'engelsk/index.html'
     };
 
-    return homeUrls[langCode] || 'tysk/index.html';
+    return homeUrls[langCode] || config.paths?.homeLink || 'index.html';
 }
 
 /**
@@ -224,7 +224,7 @@ export function getHomePageUrl() {
 export function getResourcePageTitles(pageType) {
     const curriculumId = getActiveCurriculum();
     const config = getCurriculumConfig(curriculumId);
-    const langCode = config.languageConfig?.code || 'de';
+    const langCode = config.languageConfig?.code || 'nb';
 
     const titles = {
         'de': {

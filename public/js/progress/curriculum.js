@@ -33,7 +33,7 @@ export function getCurrentCurriculum() {
  */
 export function getCurriculumConfig(curriculumId = null) {
     const id = curriculumId || getActiveCurriculum();
-    return CURRICULUM_CONFIG[id] || CURRICULUM_CONFIG['tysk1-vg1'];
+    return CURRICULUM_CONFIG[id] || Object.values(CURRICULUM_CONFIG)[0] || {};
 }
 
 /**
@@ -57,8 +57,8 @@ export function updateLessonLinks() {
     const maxChapters = config.chapters;
 
     // Determine language folder from config
-    const langCode = config.languageConfig?.code || 'de';
-    const languageDir = langCode === 'fr' ? 'french' : (langCode === 'es' ? 'spanish' : 'german');
+    const langCode = config.languageConfig?.code || 'nb';
+    const languageDir = config.languageDir || { 'de': 'german', 'es': 'spanish', 'fr': 'french' }[langCode] || langCode;
 
     // Oppdater alle leksjonslenkene
     const lessonLinks = document.querySelectorAll('.leksjon-link[data-leksjon-id]');

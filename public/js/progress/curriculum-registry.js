@@ -267,5 +267,5 @@ export const CURRICULUM_REGISTRY = {
  * Accessor for easy registry lookup
  */
 export function getCurriculumConfig(id) {
-    return CURRICULUM_REGISTRY[id] || CURRICULUM_REGISTRY['tysk1-vg1'];
+    return CURRICULUM_REGISTRY[id] || Object.values(CURRICULUM_REGISTRY)[0] || {};
 }

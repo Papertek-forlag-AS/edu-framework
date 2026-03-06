@@ -18,9 +18,10 @@ export function renderFlashcards(container, context, mode = 'normal') {
     const { vocabulary, knownWords, saveKnownWords, adapter, config, isLessonMode } = context;
 
     // Determine language code for audio paths (ISO 639-1: de, es, fr)
-    const langCode = config?.languageConfig?.code || 'de';
+    const langCode = config?.languageConfig?.code || 'nb';
     // Legacy language name for content/ symlink paths
-    const language = langCode === 'es' ? 'spanish' : (langCode === 'fr' ? 'french' : 'german');
+    const langDirs = { 'de': 'german', 'es': 'spanish', 'fr': 'french' };
+    const language = config?.languageDir || langDirs[langCode] || langCode;
 
     // 1. Filter words based on mode
     let allAvailableWords;
