@@ -202,16 +202,23 @@ for (const [lessonId, lessonData] of Object.entries(allLessons)) {
         html = html.replace('{{EKSTRAOVELSER_TAB}}', '');
     }
 
-    // Fix content path for demo structure
-    // The content-loader resolves paths relative to the JS file location
-    // We need the international page detection to work, which it will via data-ui-language="en"
+    // Add data-home-url so the "Back to home" link points to the demo homepage
+    // Also fix data-ui-language to match the example config (not always "en")
+    const uiLang = config.language.uiLocale || 'nb';
+    html = html.replace('<body ', `<body data-home-url="../index.html" data-curriculum-id="${curriculum.id}" `);
+    html = html.replace('data-ui-language="en"', `data-ui-language="${uiLang}"`);
+
+    // Fix i18n locale to match example config
+    html = html.replace("initI18n('en')", `initI18n('${uiLang}')`);
 
     // Fix start button text
     html = html.replace('{{START_BUTTON_TEXT}}', 'Start');
 
-    // Fix service worker path
-    html = html.replace("'./sw-international.js'", "'../sw-international.js'");
-    html = html.replace("{ scope: '/international/' }", "{ scope: '/' }");
+    // Remove inline service worker registration (handled by engine's registerServiceWorker)
+    html = html.replace(
+        /<!-- International Service Worker -->\s*<script>[\s\S]*?<\/script>/,
+        '<!-- Service worker disabled for demo -->'
+    );
 
     // Fix manifest path
     html = html.replace('href="./manifest.json"', 'href="../manifest.json"');
@@ -236,11 +243,174 @@ const manifest = {
 };
 fs.writeFileSync(path.join(distDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
 
-// ─── 10. Generate minimal service worker ─────────────────────────────
-fs.writeFileSync(path.join(distDir, 'sw-international.js'), `// Minimal service worker for demo
+// ─── 10. No service worker needed for demo ──────────────────────────
+
+// ─── 11. Patch engine for demo mode ──────────────────────────────────
+console.log('🔧 Patching engine for demo mode...');
+
+// 11a. Overwrite sw.js with minimal service worker (prevent production SW madness)
+fs.writeFileSync(path.join(distDir, 'sw.js'), `// Minimal service worker for demo
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim()));
 `);
+
+// 11b. Replace service-worker-manager.js with demo stub (no update modals, no release notes)
+fs.writeFileSync(path.join(distDir, 'js', 'utils', 'service-worker-manager.js'), `// Demo stub — disables production service worker features
+export const SW_ENABLED = false;
+export const SW_VERSION = 'demo';
+export const releaseNotes = {};
+export function checkAndShowReleaseNotes() {}
+export function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(regs =>
+            regs.forEach(r => r.unregister())
+        );
+    }
+}
+`);
+
+// 11c. Patch ui.js to support data-home-url on body (fixes "Back to home" link)
+const uiJsPath = path.join(distDir, 'js', 'ui.js');
+let uiJs = fs.readFileSync(uiJsPath, 'utf-8');
+uiJs = uiJs.replace(
+    /const isInternational = window\.location\.pathname\.includes\('\/international\/'\);\s*let homeLink;\s*if \(isInternational\)/,
+    `const isInternational = window.location.pathname.includes('/international/');\n    let homeLink;\n    if (document.body.dataset.homeUrl) {\n        homeLink = document.body.dataset.homeUrl;\n    } else if (isInternational)`
+);
+fs.writeFileSync(uiJsPath, uiJs);
+
+// 11d. Replace content-loader.js with demo version (no isInternational, no vocab API)
+fs.writeFileSync(path.join(distDir, 'js', 'utils', 'content-loader.js'), `/**
+ * content-loader.js — Demo version
+ * Always uses curriculum config for paths. No external vocab API calls.
+ */
+import { getCurriculumConfig } from '../progress/curriculum-registry.js';
+import { getActiveCurriculum } from '../progress/store.js';
+
+const contentCache = {};
+
+export async function loadContent(externalConfig) {
+    const curriculumId = externalConfig?.id || getActiveCurriculum();
+    const cacheKey = curriculumId;
+    if (contentCache[cacheKey]) return contentCache[cacheKey];
+
+    const config = externalConfig || getCurriculumConfig(curriculumId);
+    const contentPath = config.contentPath || '../../content/german';
+    const contentSuffix = config.id;
+
+    const emptyModule = { grammarData: {}, pronunciationData: {}, cultureData: {} };
+
+    let lessonsModule;
+    try { lessonsModule = await import(contentPath + '/lessons-data-' + contentSuffix + '.js'); }
+    catch (e) { console.warn('Could not load lessons-data-' + contentSuffix + '.js'); lessonsModule = { lessonsData: {}, chapterTitles: {} }; }
+
+    let grammarModule;
+    try { grammarModule = await import(contentPath + '/grammar-data-' + contentSuffix + '.js'); }
+    catch (e) { grammarModule = emptyModule; }
+
+    let pronunciationModule;
+    try { pronunciationModule = await import(contentPath + '/pronunciation-data-' + contentSuffix + '.js'); }
+    catch (e) { pronunciationModule = emptyModule; }
+
+    let cultureModule;
+    try { cultureModule = await import(contentPath + '/culture-data-' + contentSuffix + '.js'); }
+    catch (e) { cultureModule = emptyModule; }
+
+    let vocabDataModule;
+    try { vocabDataModule = await import(contentPath + '/vocabulary-data.js'); }
+    catch (e) { vocabDataModule = { vocabularyData: {} }; }
+
+    let charactersModule;
+    try { charactersModule = await import(contentPath + '/characters-data.js'); }
+    catch (e) { charactersModule = {}; }
+
+    const content = {
+        lessonsData: lessonsModule.lessonsData || {},
+        chapterTitles: lessonsModule.chapterTitles || {},
+        grammarData: grammarModule.grammarData || {},
+        pronunciationData: pronunciationModule.pronunciationData || {},
+        cultureData: cultureModule.cultureData || {},
+        vocabularyData: vocabDataModule.vocabularyData || {},
+        charactersData: charactersModule,
+        wordBanks: { nounBank: {}, verbbank: {}, wordBank: {}, adjectiveBank: {} },
+        _nativeLanguage: 'nb'
+    };
+    contentCache[cacheKey] = content;
+    return content;
+}
+
+export function clearContentCache() {
+    for (const key of Object.keys(contentCache)) delete contentCache[key];
+}
+
+export function getCurrentNativeLanguage() { return 'nb'; }
+`);
+
+// 11e. Force getActiveCurriculum to ALWAYS return demo curriculum (ignores stale localStorage)
+const storePath = path.join(distDir, 'js', 'progress', 'store.js');
+let storeJs = fs.readFileSync(storePath, 'utf-8');
+storeJs = storeJs.replace(
+    /const _defaultCurriculum = \(\) => Object\.keys\(CURRICULUM_CONFIG\)\[0\] \|\| 'default';/,
+    `const _defaultCurriculum = () => '${curriculum.id}';`
+);
+// Override getActiveCurriculum to always return the demo curriculum
+storeJs = storeJs.replace(
+    /export function getActiveCurriculum\(\) \{[^}]+\}/,
+    `export function getActiveCurriculum() { return '${curriculum.id}'; }`
+);
+fs.writeFileSync(storePath, storeJs);
+
+// 11f. Replace environment-indicator.js with no-op (prevents STAGING badge)
+fs.writeFileSync(path.join(distDir, 'js', 'utils', 'environment-indicator.js'),
+    `// Demo stub — no environment indicator\n`
+);
+
+// 11g. Replace feedback/index.js with no-op (removes floating widget)
+fs.writeFileSync(path.join(distDir, 'js', 'feedback', 'index.js'),
+    `// Demo stub — no feedback widget\nexport function initFeedbackSystem() {}\n`
+
+);
+
+// 11h. Replace vocab-api-client.js with no-op (prevents all external vocab fetches)
+fs.writeFileSync(path.join(distDir, 'js', 'vocabulary', 'vocab-api-client.js'),
+    `// Demo stub — no vocab API calls
+export async function fetchCoreBank() { return {}; }
+export async function fetchTranslationBank() { return {}; }
+export async function fetchCurriculum() { return null; }
+export async function fetchGrammarFeatures() { return {}; }
+`);
+
+// 11i. Replace firebase-client.js with no-op (prevents Firebase init + STAGING detection)
+fs.writeFileSync(path.join(distDir, 'js', 'auth', 'firebase-client.js'),
+    `// Demo stub — no Firebase
+export function getCurrentEnvironment() { return 'production'; }
+export function getFirebaseApp() { return null; }
+export function getFirebaseAuth() { return null; }
+export function getFirebaseFirestore() { return null; }
+export function getCurrentUser() { return null; }
+export function getUserFullName() { return ''; }
+export function getUserOrganization() { return ''; }
+export function isAuthAvailable() { return false; }
+export const auth = null;
+export const firestore = null;
+`);
+
+// 11j. Patch exercises-content-loader.js — remove isInternational hardcoding
+const exercisesLoaderPath = path.join(distDir, 'js', 'exercises-content-loader.js');
+let exercisesLoader = fs.readFileSync(exercisesLoaderPath, 'utf-8');
+exercisesLoader = exercisesLoader.replace(
+    /if\s*\(isInternational\)\s*\{\s*contentPath\s*=\s*'[^']*';/,
+    `if (false) { contentPath = '';`
+);
+fs.writeFileSync(exercisesLoaderPath, exercisesLoader);
+
+// 11k. Patch vocabulary-provider.js — always return config-appropriate language
+fs.writeFileSync(path.join(distDir, 'js', 'vocabulary', 'vocabulary-provider.js'),
+    `// Demo stub
+let currentNativeLanguage = 'nb';
+export function getNativeLanguage() { return currentNativeLanguage; }
+export function setNativeLanguage(lang) { currentNativeLanguage = lang; }
+`
+);
 
 console.log('\n✅ Demo built successfully!');
 console.log(`   Output: ${distDir}/`);
