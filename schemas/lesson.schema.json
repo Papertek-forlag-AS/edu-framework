@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://papertek.no/schemas/lesson.schema.json",
   "title": "Papertek Framework for Education Lesson Data Schema",
-  "description": "JSON Schema for lesson data files in the Papertek Framework for Education. Defines the structure for lesson content including dialog, learning goals, and metadata.",
+  "description": "JSON Schema for lesson data files in the Papertek Framework for Education. Defines the structure for lesson content including dialog or article, learning goals, and metadata.",
   "type": "object",
   "additionalProperties": {
     "$ref": "#/$defs/lessonEntry"
@@ -43,12 +43,15 @@
     "lessonEntry": {
       "type": "object",
       "title": "Lesson Entry",
-      "description": "A single lesson entry keyed by lesson ID (e.g., '1-1', '3-2')",
+      "description": "A single lesson entry keyed by lesson ID (e.g., '1-1', '3-2'). Must contain either a dialog (language courses) or an article (non-language courses).",
       "required": [
         "targetTitle",
         "learningGoals",
-        "dialog",
         "checklist"
+      ],
+      "anyOf": [
+        { "required": ["dialog"] },
+        { "required": ["article"] }
       ],
       "properties": {
         "targetTitle": {
@@ -69,6 +72,17 @@
         },
         "dialog": {
           "$ref": "#/$defs/dialogEntry"
+        },
+        "article": {
+          "$ref": "#/$defs/articleEntry"
+        },
+        "terms": {
+          "type": "array",
+          "title": "Subject Terms",
+          "description": "Array of key terms and definitions for non-language courses (begrepstrening)",
+          "items": {
+            "$ref": "#/$defs/termEntry"
+          }
         },
         "checklist": {
           "type": "array",
@@ -159,6 +173,98 @@
           "type": "string",
           "title": "Text",
           "description": "The dialog text (may contain HTML word-lookup spans with data-type, data-verb, data-word, or data-noun attributes)",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "articleEntry": {
+      "type": "object",
+      "title": "Article",
+      "description": "Structured article content for non-language courses (science, math, etc.)",
+      "required": [
+        "title",
+        "sections"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "Article Title",
+          "description": "Main title of the article",
+          "minLength": 1
+        },
+        "introduction": {
+          "type": "string",
+          "title": "Introduction",
+          "description": "Introductory paragraph for the article"
+        },
+        "sections": {
+          "type": "array",
+          "title": "Article Sections",
+          "description": "Array of content sections with headings and paragraphs",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/articleSection"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "articleSection": {
+      "type": "object",
+      "title": "Article Section",
+      "description": "A section within an article with heading and paragraphs",
+      "required": [
+        "heading",
+        "paragraphs"
+      ],
+      "properties": {
+        "heading": {
+          "type": "string",
+          "title": "Section Heading",
+          "description": "The heading text for this section",
+          "minLength": 1
+        },
+        "level": {
+          "type": "integer",
+          "title": "Heading Level",
+          "description": "HTML heading level (2-4)",
+          "minimum": 2,
+          "maximum": 4,
+          "default": 2
+        },
+        "paragraphs": {
+          "type": "array",
+          "title": "Paragraphs",
+          "description": "Array of paragraph texts in the section",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "termEntry": {
+      "type": "object",
+      "title": "Term",
+      "description": "A key term with definition for begrepstrening (term training)",
+      "required": [
+        "term",
+        "definition"
+      ],
+      "properties": {
+        "term": {
+          "type": "string",
+          "title": "Term",
+          "description": "The key term or concept name",
+          "minLength": 1
+        },
+        "definition": {
+          "type": "string",
+          "title": "Definition",
+          "description": "Explanation of the term",
           "minLength": 1
         }
       },

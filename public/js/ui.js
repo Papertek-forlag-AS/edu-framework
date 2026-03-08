@@ -5,7 +5,7 @@ export { setupInteractiveTooltips, setupWordLookups, setupGrammarTermLookups } f
 import { isLessonUnlocked, PRONOUN_UNLOCK_LEVELS } from './utils.js';
 import { debug } from './logger.js';
 import { initI18n, t } from './utils/i18n.js';
-import { getCurriculumConfig } from './progress/curriculum-registry.js';
+import { getCurriculumConfig, getCurriculumTabs } from './progress/curriculum-registry.js';
 import { getActiveCurriculum } from './progress/store.js';
 
 /**
@@ -590,13 +590,19 @@ export function renderPageHeader() {
     const existingTabs = document.querySelectorAll('.tab-content');
     let tabButtonsHTML = '';
 
-    const tabNames = {
-        'leksjon': t('tab_lesson'),
-        'ordforrad': t('tab_vocabulary'),
-        'grammatikk': t('tab_grammar'),
-        'dialog': t('tab_dialog'),
-        'exercises': t('tab_exercises'),
-        'extra-exercises': t('tab_extra_exercises')
+    // Config-driven tab system: read which tabs this curriculum uses
+    const curriculumId = document.body.dataset.curriculumId || getActiveCurriculum();
+    const configuredTabs = getCurriculumTabs(curriculumId);
+    const configuredTabIds = new Set(configuredTabs.map(ct => ct.id));
+
+    // Fallback i18n keys for standard tab IDs
+    const defaultI18nKeys = {
+        'leksjon': 'tab_lesson',
+        'ordforrad': 'tab_vocabulary',
+        'grammatikk': 'tab_grammar',
+        'dialog': 'tab_dialog',
+        'exercises': 'tab_exercises',
+        'extra-exercises': 'tab_extra_exercises'
     };
 
     // Check if dialog tab was previously accessed for this lesson
@@ -605,9 +611,27 @@ export function renderPageHeader() {
 
     existingTabs.forEach(tab => {
         const tabId = tab.id;
-        const tabName = tabNames[tabId] || tabId;
-        // Skip removed tabs
+        // Skip removed/internal tabs
         if (tabId === 'larer') return;
+
+        // If tab is not in the curriculum's configured tabs AND it's not a special conditional tab, hide it
+        const isConditionalTab = (tabId === 'extra-exercises' || tabId === 'dialog');
+        if (!configuredTabIds.has(tabId) && !isConditionalTab) {
+            tab.classList.add('hidden');
+            return; // Don't create a button for it
+        }
+        // If it's a conditional tab but not in config, also hide
+        if (isConditionalTab && !configuredTabIds.has(tabId)) {
+            tab.classList.add('hidden');
+            return;
+        }
+
+        // Resolve tab label: config label > i18n key > fallback
+        const configTab = configuredTabs.find(ct => ct.id === tabId);
+        const i18nKey = configTab?.i18nKey || defaultI18nKeys[tabId];
+        const i18nLabel = i18nKey ? t(i18nKey) : null;
+        const tabName = configTab?.label || i18nLabel || tabId;
+
         // Hide Dialog tab button by default UNLESS it was previously accessed
         const shouldHideDialog = (tabId === 'dialog') && !dialogPreviouslyAccessed;
         // Hide Extra Exercises tab button by default (will be shown by applyExtraTabLock if unlocked)
@@ -866,19 +890,31 @@ export function showTab(tabId, shouldSave = false) {
     const tabContents = document.querySelectorAll('.tab-content');
     const lessonId = document.body.dataset.chapterId;
 
-    tabContents.forEach(content => content.classList.add('hidden'));
+    tabContents.forEach(content => {
+        content.classList.add('hidden');
+        content.classList.remove('active');
+    });
     tabs.forEach(tab => tab.classList.remove('active'));
 
     if (activeContent) {
         activeContent.classList.remove('hidden');
+        activeContent.classList.add('active');
     }
 
     if (activeButton) {
         activeButton.classList.add('active');
     }
 
-    if (lessonId && ['leksjon', 'ordforrad', 'grammatikk', 'exercises', 'extra-exercises'].includes(tabId)) {
-        logProgress(lessonId, 'tabs', tabId);
+    // Log progress for any configured tab (config-driven, not hardcoded whitelist)
+    if (lessonId) {
+        const currId = document.body.dataset.curriculumId || getActiveCurriculum();
+        const cfgTabs = getCurriculumTabs(currId);
+        const cfgTabIds = new Set(cfgTabs.map(ct => ct.id));
+        // Also allow extra-exercises since it's always a valid progress tab
+        cfgTabIds.add('extra-exercises');
+        if (cfgTabIds.has(tabId)) {
+            logProgress(lessonId, 'tabs', tabId);
+        }
     }
 
     // Dispatch event for other components to react (e.g., refresh flashcards)
@@ -954,19 +990,50 @@ export function loadLastLocation() {
 }
 
 export function setupNextTabButtons() {
+    // Build ordered tab list from config for skipping unconfigured tabs
+    const currId = document.body.dataset.curriculumId || getActiveCurriculum();
+    const cfgTabs = getCurriculumTabs(currId);
+    const cfgTabIds = cfgTabs.map(ct => ct.id);
+
     document.querySelectorAll('.next-tab-btn').forEach(button => {
+        const nextTabId = button.dataset.nextTab;
+        if (!nextTabId) return;
+
+        // If the target tab doesn't exist in config, find the next configured tab
+        // Tab order in template: leksjon → ordforrad → grammatikk → exercises → extra-exercises → dialog
+        // extra-exercises is exempt (dynamically shown/hidden by applyExtraTabLock)
+        const fullTabOrder = ['leksjon', 'ordforrad', 'grammatikk', 'exercises', 'extra-exercises', 'dialog'];
+        let resolvedTab = nextTabId;
+        if (!cfgTabIds.includes(nextTabId) && nextTabId !== 'extra-exercises') {
+            // Find the next available tab after the target in the full order
+            const targetIdx = fullTabOrder.indexOf(nextTabId);
+            if (targetIdx !== -1) {
+                for (let i = targetIdx + 1; i < fullTabOrder.length; i++) {
+                    if (cfgTabIds.includes(fullTabOrder[i])) {
+                        resolvedTab = fullTabOrder[i];
+                        break;
+                    }
+                }
+            }
+            // If no configured tab found after this one, hide the button entirely
+            if (resolvedTab === nextTabId) {
+                button.classList.add('hidden');
+                return;
+            }
+            // Update the button's data attribute to the resolved tab
+            button.dataset.nextTab = resolvedTab;
+        }
+
         button.addEventListener('click', () => {
             if (button.dataset.locked === 'true') {
                 return;
             }
 
-            const nextTabId = button.dataset.nextTab;
-            if (!nextTabId) {
-                return;
-            }
+            const targetTabId = button.dataset.nextTab;
+            if (!targetTabId) return;
 
             // Special handling for dialog/jeopardy tab - unhide it when accessed
-            if (nextTabId === 'dialog') {
+            if (targetTabId === 'dialog') {
                 const tabButton = document.querySelector(`.tab-button[data-tab-id='dialog']`);
                 if (tabButton && tabButton.classList.contains('hidden')) {
                     tabButton.classList.remove('hidden');
@@ -978,13 +1045,13 @@ export function setupNextTabButtons() {
                 }
             }
 
-            const targetButton = document.querySelector(`.tab-button[data-tab-id='${nextTabId}']`);
+            const targetButton = document.querySelector(`.tab-button[data-tab-id='${targetTabId}']`);
             const isLocked = targetButton && targetButton.dataset.locked === 'true';
             if (isLocked) {
                 return;
             }
 
-            showTab(nextTabId, true);
+            showTab(targetTabId, true);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });

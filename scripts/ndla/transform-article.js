@@ -99,7 +99,7 @@ export function parseArticle(article) {
  * @param {Object} parsed - Output from parseArticle()
  * @param {Object} lessonConfig - Lesson config from articles.json
  * @param {string[]} [lessonConfig.sections] - Which sections to include (by heading match)
- * @returns {Object} Papertek lesson data: { title, subtitle, goals[], dialog[], checklist[], vocabulary[] }
+ * @returns {Object} Papertek lesson data: { title, subtitle, goals[], article, terms[], checklist[] }
  */
 export function transformToLesson(parsed, lessonConfig) {
   // Filter sections if specific ones are requested
@@ -116,43 +116,24 @@ export function transformToLesson(parsed, lessonConfig) {
     }
   }
 
-  // Build dialog from sections (teacher/student conversational format)
-  const dialog = [];
+  // Build structured article (not fake dialog)
+  const article = {
+    title: lessonConfig.title,
+    introduction: parsed.introduction || '',
+    sections: relevantSections.map(s => ({
+      heading: s.heading,
+      level: s.level || 2,
+      paragraphs: s.paragraphs,
+    })),
+  };
 
-  // Opening: teacher introduces the topic
-  dialog.push({
-    speaker: 'Lærer',
-    text: `I dag skal vi lære om ${lessonConfig.title.toLowerCase()}. ${parsed.introduction}`,
-    translation: '',
-  });
-
-  // Convert each section into teacher explanation + student question
-  for (const section of relevantSections) {
-    // Student asks about the topic
-    dialog.push({
-      speaker: 'Elev',
-      text: `Hva betyr «${section.heading.replace(/[–—]/g, '-').trim()}»?`,
-      translation: '',
-    });
-
-    // Teacher explains using the first 2-3 paragraphs
-    const explanation = section.paragraphs.slice(0, 3).join(' ');
-    // Trim to reasonable length for dialog
-    const trimmed = explanation.length > 400
-      ? explanation.slice(0, 400).replace(/\s\S*$/, '') + '...'
-      : explanation;
-
-    dialog.push({
-      speaker: 'Lærer',
-      text: trimmed,
-      translation: '',
-    });
-  }
+  // Pass through terms from NDLA parsing
+  const terms = parsed.terms || [];
 
   // Build learning goals from section headings + intro
   const goals = relevantSections.map(s => `Forstå hva «${s.heading}» betyr`);
-  if (parsed.terms.length > 0) {
-    goals.push(`Kunne forklare ${Math.min(parsed.terms.length, 5)} viktige begreper`);
+  if (terms.length > 0) {
+    goals.push(`Kunne forklare ${Math.min(terms.length, 5)} viktige begreper`);
   }
 
   // Build checklist from goals
@@ -163,9 +144,9 @@ export function transformToLesson(parsed, lessonConfig) {
     title: lessonConfig.title,
     subtitle: parsed.title,
     goals,
-    dialog,
+    article,
+    terms,
     checklist,
-    vocabulary: [],
   };
 }
 

@@ -13,6 +13,9 @@ import { t } from '../utils/i18n.js';
 
 export function autoSetupTrueFalseGames() {
     document.querySelectorAll('.true-false-task').forEach(container => {
+        // Skip dynamically-loaded exercises (handled by exercises-content-loader)
+        if (container.dataset.dynamic === 'true') return;
+
         const containerId = container.id;
         const dataVariableName = container.dataset.trueFalseVariable;
         const trueFalseData = window[dataVariableName];
@@ -42,7 +45,7 @@ export function setupTrueFalseGame(containerId, statements) {
 
             const statementsContainer = ctx.$('.statements-container');
             const resetButton = ctx.$('.reset');
-            const feedbackEl = ctx.$('.feedback');
+            const feedbackEl = ctx.$('.feedback-message') || ctx.$('.feedback');
 
             if (!statementsContainer || !resetButton) return;
 

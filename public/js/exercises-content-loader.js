@@ -252,7 +252,13 @@ function validateExercise(exercise) {
     'embedded-verb-trainer': ['id', 'type', 'title', 'config'],
     'embedded-gender-trainer': ['id', 'type', 'title', 'config'],
     'chronology': ['id', 'type', 'title', 'items'],
-    'categorize': ['id', 'type', 'title', 'categories']
+    'categorize': ['id', 'type', 'title', 'categories'],
+    'interactive-flashcards': ['id', 'type', 'title', 'cards'],
+    'true-false-pictures': ['id', 'type', 'title', 'statements'],
+    'interactive-map': ['id', 'type', 'title'],
+    'number-grids': ['id', 'type', 'title'],
+    'color-picker': ['id', 'type', 'title'],
+    'checklist': ['id', 'type', 'title']
   };
 
   // Sjekk at type er kjent
@@ -345,7 +351,7 @@ function generateExerciseHTML(exercise) {
   const taskClass = getTaskClass(exercise.type);
 
   return `
-    <div class="bg-surface p-6 rounded-xl shadow-sm ${taskClass}" id="${exercise.id}" ${getExtraAttributes(exercise)}>
+    <div class="bg-surface p-6 rounded-xl shadow-sm ${taskClass}" id="${exercise.id}" data-dynamic="true" ${getExtraAttributes(exercise)}>
       ${header}
       ${description}
       ${body}
@@ -411,6 +417,8 @@ function generateBody(exercise) {
       return generateChronologyBody(exercise);
     case 'categorize':
       return generateCategorizeBody(exercise);
+    case 'interactive-flashcards':
+      return generateInteractiveFlashcardsBody(exercise);
     default:
       console.error(`Unknown exercise type: ${exercise.type}`);
       return '<p class="text-error-600">Ukjent øvelsestype</p>';
@@ -687,7 +695,7 @@ function generateWritingBody(exercise) {
 function generateQuizBody(exercise) {
   // Quiz-container vil bli populert av initializeQuiz
   return `
-    <div class="quiz-wrapper">
+    <div class="quiz-wrapper" id="${exercise.id}-quiz">
       <div class="quiz-container"></div>
     </div>
   `;
@@ -816,6 +824,58 @@ function generateCategorizeBody(exercise) {
 }
 
 /**
+ * Genererer interactive-flashcards øvelse (exercise-based, not vocab tab)
+ */
+function generateInteractiveFlashcardsBody(exercise) {
+  return `
+    <div class="flashcards-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Populated by initializeInteractiveFlashcards -->
+    </div>
+    <div class="mt-6 text-center">
+      <button class="reset bg-neutral-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-neutral-600 transition-colors">Start på nytt</button>
+    </div>
+  `;
+}
+
+/**
+ * Initialiserer interactive-flashcards øvelse (exercise-based, front/back cards)
+ */
+function initializeInteractiveFlashcards(exercise) {
+  const container = document.getElementById(exercise.id);
+  if (!container) return;
+
+  const grid = container.querySelector('.flashcards-grid');
+  if (!grid || !exercise.cards) return;
+
+  function render() {
+    grid.innerHTML = '';
+    // Shuffle cards for each render
+    const shuffled = [...exercise.cards].sort(() => Math.random() - 0.5);
+    shuffled.forEach(card => {
+      const el = document.createElement('div');
+      el.className = 'flashcard h-36 bg-transparent cursor-pointer group perspective';
+      el.innerHTML = `
+        <div class="flashcard-inner relative w-full h-full">
+          <div class="flashcard-front absolute w-full h-full flex items-center justify-center bg-primary-100 text-primary-800 rounded-lg p-4 text-center font-semibold">${card.front}</div>
+          <div class="flashcard-back absolute w-full h-full flex items-center justify-center bg-primary-500 text-white rounded-lg p-4 text-center font-semibold text-sm">${card.back}</div>
+        </div>`;
+      el.addEventListener('click', () => el.classList.toggle('flipped'));
+      grid.appendChild(el);
+    });
+  }
+
+  render();
+
+  // Reset button
+  const resetBtn = container.querySelector('.reset');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      render();
+    });
+  }
+}
+
+/**
  * Returnerer CSS-klasse for task-type
  */
 function getTaskClass(type) {
@@ -832,7 +892,8 @@ function getTaskClass(type) {
     'minidialoge': 'minidialoge-task',
     'embedded-verb-trainer': 'embedded-verb-trainer-task',
     'embedded-gender-trainer': 'embedded-gender-trainer-task',
-    'categorize': 'categorize-task'
+    'categorize': 'categorize-task',
+    'interactive-flashcards': 'interactive-flashcards-task'
   };
   return classMap[type] || '';
 }
@@ -923,6 +984,10 @@ function initializeExercise(exercise) {
 
     case 'categorize':
       setupCategorizeTask(exercise.id, exercise.categories);
+      break;
+
+    case 'interactive-flashcards':
+      initializeInteractiveFlashcards(exercise);
       break;
 
     default:

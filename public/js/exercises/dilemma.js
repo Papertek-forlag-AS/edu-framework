@@ -30,6 +30,9 @@ function shuffleArray(array, seed) {
 
 export function autoSetupDilemmaTasks() {
     document.querySelectorAll('.dilemma-task').forEach(container => {
+        // Skip dynamically-loaded exercises (handled by exercises-content-loader)
+        if (container.dataset.dynamic === 'true') return;
+
         const exerciseId = container.id;
         const itemsData = Array.from(container.querySelectorAll('.dilemma-item')).map(item => ({
             pre: item.dataset.pre || '',
@@ -57,7 +60,7 @@ export function setupDilemmaTask(exerciseId, items) {
                 itemsContainer = document.createElement('div');
                 itemsContainer.className = 'dilemma-items space-y-3';
 
-                const feedback = ctx.$('.feedback');
+                const feedback = ctx.$('.feedback-message') || ctx.$('.feedback');
                 if (feedback) {
                     ctx.container.insertBefore(itemsContainer, feedback);
                 } else {
@@ -65,7 +68,7 @@ export function setupDilemmaTask(exerciseId, items) {
                 }
             }
 
-            const feedbackEl = ctx.$('.feedback');
+            const feedbackEl = ctx.$('.feedback-message') || ctx.$('.feedback');
             const checkButton = ctx.$('.check');
             const resetButton = ctx.$('.reset');
 

@@ -18,50 +18,42 @@ export const lessonsData = {
       "Forstå hva «Cellas vekstfase» betyr",
       "Forstå hva «Cellas delingsfase» betyr"
     ],
-    "dialog": [
-      {
-        "speaker": "Lærer",
-        "text": "I dag skal vi lære om celler og celledeling. Alle levende organismer er bygd opp av celler. Når en organisme vokser, er det fordi cellene vokser og deler seg slik at det blir stadig flere celler. Når encellede organismer vokser, slik som gjær og bakterier, vil de dele seg og bli til to atskilte celler som er helt lik hverandre.",
-        "translation": ""
-      },
-      {
-        "speaker": "Elev",
-        "text": "Hva betyr «Vanlig celledeling - mitose»?",
-        "translation": ""
-      },
-      {
-        "speaker": "Lærer",
-        "text": "Når ei celle deler seg, dannes to nye, identiske celler. De to nye cellene skal ha både mitokondrier, ribosomer, cytoplasma og cellekjerne. Vi kaller gjerne den opprinnelig cella for morcelle og de to nye for datterceller. Fordi det er mange mitokondrier og ribosomer i morcellen, fordeles disse mellom dattercellene. Men i morcella er det bare en kjerne og inni den bare ett sett med arvestoff. Før...",
-        "translation": ""
-      },
-      {
-        "speaker": "Elev",
-        "text": "Hva betyr «Cellas vekstfase»?",
-        "translation": ""
-      },
-      {
-        "speaker": "Lærer",
-        "text": "Når ei ny celle har oppstått, har den en jobb å gjøre. Først må den vokse opp til normal størrelse. Den starter sitt selvstendige liv med færre mitokondrier og ribosomer så den må produsere flere. Etter hvert som den blir større, må cellemembranen også vokse. Alle stoffene som går med til dette, må cella produsere selv. I tillegg har cella en eller flere oppgaver i kroppen. Hvis det er ei...",
-        "translation": ""
-      },
-      {
-        "speaker": "Elev",
-        "text": "Hva betyr «Cellas delingsfase»?",
-        "translation": ""
-      },
-      {
-        "speaker": "Lærer",
-        "text": "Når cella skal dele seg, må arvestoffet kopieres slik at det blir et sett til begge dattercellene som skal oppstå. Etter at kopieringen er ferdig, fordeler de to settene med kromosomer seg i hver sin side av cella, og morcellene avsnøres på midten. Dattercellene går så inn i en ny vekstfase.",
-        "translation": ""
-      }
-    ],
+    "article": {
+      "title": "Celler og celledeling",
+      "introduction": "Alle levende organismer er bygd opp av celler. Når en organisme vokser, er det fordi cellene vokser og deler seg slik at det blir stadig flere celler. Når encellede organismer vokser, slik som gjær og bakterier, vil de dele seg og bli til to atskilte celler som er helt lik hverandre.",
+      "sections": [
+        {
+          "heading": "Vanlig celledeling – mitose",
+          "level": 2,
+          "paragraphs": [
+            "Når ei celle deler seg, dannes to nye, identiske celler. De to nye cellene skal ha både mitokondrier, ribosomer, cytoplasma og cellekjerne. Vi kaller gjerne den opprinnelig cella for morcelle og de to nye for datterceller. Fordi det er mange mitokondrier og ribosomer i morcellen, fordeles disse mellom dattercellene.",
+            "Men i morcella er det bare en kjerne og inni den bare ett sett med arvestoff. Før delingen må derfor morcella sørge for å lage en kopi av arvestoffet, slik at det blir en fullstendig versjon til begge dattercellene. I menneskekroppen er arvesoffet organisert i 46 kromosomer, som kopieres om og om igjen når cellene deler seg for å bli flere og for å erstatte celler som dør."
+          ]
+        },
+        {
+          "heading": "Cellas vekstfase",
+          "level": 2,
+          "paragraphs": [
+            "Når ei ny celle har oppstått, har den en jobb å gjøre. Først må den vokse opp til normal størrelse. Den starter sitt selvstendige liv med færre mitokondrier og ribosomer så den må produsere flere. Etter hvert som den blir større, må cellemembranen også vokse. Alle stoffene som går med til dette, må cella produsere selv.",
+            "I tillegg har cella en eller flere oppgaver i kroppen. Hvis det er ei betacelle i bukspyttkjertelen, skal den produsere insulin. Ei celle i tarmveggen skal produsere fordøyelsesenzymer. Ei celle i huden skal utvikle fargepigmenter. For at alle disse prosessene skal fungere, må cella få tilført næringsstoffer og oksygen, og den må kvitte seg med avfallsstoffer. Blodet transporterer stoffer til og fra cella."
+          ]
+        },
+        {
+          "heading": "Cellas delingsfase",
+          "level": 2,
+          "paragraphs": [
+            "Når cella skal dele seg, må arvestoffet kopieres slik at det blir et sett til begge dattercellene som skal oppstå. Etter at kopieringen er ferdig, fordeler de to settene med kromosomer seg i hver sin side av cella, og morcellene avsnøres på midten. Dattercellene går så inn i en ny vekstfase."
+          ]
+        }
+      ]
+    },
+    "terms": [],
     "checklist": [
       "Jeg kan forklare hva «vanlig celledeling – mitose» betyr",
       "Jeg kan forklare hva «cellas vekstfase» betyr",
       "Jeg kan forklare hva «cellas delingsfase» betyr",
       "Jeg kan oppsummere det viktigste fra leksjonen"
-    ],
-    "vocabulary": []
+    ]
   },
   "1-2": {
     "title": "Meiose og arvestoff",
@@ -70,38 +62,33 @@ export const lessonsData = {
       "Forstå hva «Produksjon av kjønnsceller – meiose» betyr",
       "Forstå hva «Arvestoffet styrer» betyr"
     ],
-    "dialog": [
-      {
-        "speaker": "Lærer",
-        "text": "I dag skal vi lære om meiose og arvestoff. Alle levende organismer er bygd opp av celler. Når en organisme vokser, er det fordi cellene vokser og deler seg slik at det blir stadig flere celler. Når encellede organismer vokser, slik som gjær og bakterier, vil de dele seg og bli til to atskilte celler som er helt lik hverandre.",
-        "translation": ""
-      },
-      {
-        "speaker": "Elev",
-        "text": "Hva betyr «Produksjon av kjønnsceller - meiose»?",
-        "translation": ""
-      },
-      {
-        "speaker": "Lærer",
-        "text": "Kjønnsceller, egg- og sædceller, dannes også ved celledeling. Denne celledelingen er forskjellig fra den vanlige celledelingen fordi dattercellene bare skal ha halvparten så mye arvestoff som morcella. I kvinnens eggstokker og mannens testikler finnes spesialiserte morceller som deler seg på denne måten. Morcellene har 46 kromosomer og dattercellene, egg- og sædcellene, har 23 kromosomer. Når det...",
-        "translation": ""
-      },
-      {
-        "speaker": "Elev",
-        "text": "Hva betyr «Arvestoffet styrer»?",
-        "translation": ""
-      },
-      {
-        "speaker": "Lærer",
-        "text": "Alt som skjer i cella, styres av oppskriften i arvestoffet. Arvestoffet har mange oppskrifter, og vi kaller dem gener. Et kromosom er en trådformet bit av arvestoff. Et gen er en bit av denne tråden. På et kromosom er det altså mange gener. Når ribosomene i cella skal produsere et protein, hentes oppskriften på proteinet i cellekjernen før produksjonen starter. Selv om arvestoffet er likt i alle...",
-        "translation": ""
-      }
-    ],
+    "article": {
+      "title": "Meiose og arvestoff",
+      "introduction": "Alle levende organismer er bygd opp av celler. Når en organisme vokser, er det fordi cellene vokser og deler seg slik at det blir stadig flere celler. Når encellede organismer vokser, slik som gjær og bakterier, vil de dele seg og bli til to atskilte celler som er helt lik hverandre.",
+      "sections": [
+        {
+          "heading": "Produksjon av kjønnsceller – meiose",
+          "level": 2,
+          "paragraphs": [
+            "Kjønnsceller, egg- og sædceller, dannes også ved celledeling. Denne celledelingen er forskjellig fra den vanlige celledelingen fordi dattercellene bare skal ha halvparten så mye arvestoff som morcella. I kvinnens eggstokker og mannens testikler finnes spesialiserte morceller som deler seg på denne måten. Morcellene har 46 kromosomer og dattercellene, egg- og sædcellene, har 23 kromosomer.",
+            "Når det skjer en befruktning, smelter to celler, egg- og sædcelle, sammen, og den nye cella som dannes, har 46 kromosomer. Den befruktede eggcella kalles zygote og begynner straks å dele seg. I begynnelsen er alle cellene like, men etter hvert spesialiserer de seg. Noen blir muskelceller, noen hudceller og noen blir til betaceller i bukspyttkjertelen."
+          ]
+        },
+        {
+          "heading": "Arvestoffet styrer",
+          "level": 2,
+          "paragraphs": [
+            "Alt som skjer i cella, styres av oppskriften i arvestoffet. Arvestoffet har mange oppskrifter, og vi kaller dem gener. Et kromosom er en trådformet bit av arvestoff. Et gen er en bit av denne tråden. På et kromosom er det altså mange gener.",
+            "Når ribosomene i cella skal produsere et protein, hentes oppskriften på proteinet i cellekjernen før produksjonen starter. Selv om arvestoffet er likt i alle celler i kroppen, gjør cellene forskjellige ting. Dette er mulig fordi noen gener er påslått og noen avslått.Hvilke gener som er avslått og påslått i ulike celler, bestemmes av gener i samspill med forhold i cellens omgivelser. Celler påvirker hverandre. Det er også koder i arvestoffet som styrer når cella skal begynne å dele seg."
+          ]
+        }
+      ]
+    },
+    "terms": [],
     "checklist": [
       "Jeg kan forklare hva «produksjon av kjønnsceller – meiose» betyr",
       "Jeg kan forklare hva «arvestoffet styrer» betyr",
       "Jeg kan oppsummere det viktigste fra leksjonen"
-    ],
-    "vocabulary": []
+    ]
   }
 };

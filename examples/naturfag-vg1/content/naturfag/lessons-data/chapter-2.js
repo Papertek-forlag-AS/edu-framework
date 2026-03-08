@@ -19,50 +19,43 @@ export const lessonsData = {
       "Forstå hva «Produserer sukker» betyr",
       "Forstå hva «Klorofyllkorn eller grønnkorn» betyr"
     ],
-    "dialog": [
-      {
-        "speaker": "Lærer",
-        "text": "I dag skal vi lære om fotosyntesen. Fotosyntesen er den viktigste livsprosessen på jorda. For over tre milliarder år siden var det ikke oksygen i atmosfæren. De encella enkle organismene som eksisterte da, levde i havet. For det meste av livet den gangen var oksygen ei gift.",
-        "translation": ""
-      },
-      {
-        "speaker": "Elev",
-        "text": "Hva betyr «Mulig med liv på land»?",
-        "translation": ""
-      },
-      {
-        "speaker": "Lærer",
-        "text": "Da plantene hadde inntatt landjorda, var det mulig for noen dyr å krabbe opp på land. Dette gjorde de først for å unngå rovdyra i havet, men etter hvert utviklet de seg til å kunne tilbringe lengre tid på land enn i vann. De utviklet lunger for å kunne ta opp oksygen fra lufta i stedet for fra vannet. Plantene og fotosyntesen er derfor opphavet til nesten alt liv som eksisterer på planeten vår.",
-        "translation": ""
-      },
-      {
-        "speaker": "Elev",
-        "text": "Hva betyr «Produserer sukker»?",
-        "translation": ""
-      },
-      {
-        "speaker": "Lærer",
-        "text": "Når planten driver fotosyntese, produserer den sukker. Dette sukkeret blir brukt til mye forskjellig. Planten bruker sukker til næring, som den for eksempel lagrer i knoller under bakken. Da omdannes sukkeret til stivelse – dette skjer blant annet i poteten. Planten bruker også sukkeret til å danne byggematerialer for å vokse. Da omdannes sukkeret til cellulose – som for eksempel stammen på et...",
-        "translation": ""
-      },
-      {
-        "speaker": "Elev",
-        "text": "Hva betyr «Klorofyllkorn eller grønnkorn»?",
-        "translation": ""
-      },
-      {
-        "speaker": "Lærer",
-        "text": "For at plantene skal kunne drive med fotosyntese, har de grønne korn inne i cellene. Grønnkorna har klorofyll som kan fange energien i sollyset. De fungerer nesten som solcellepaneler. Energien som plantene henter fra sollyset, bruker de til å danne sukker: glukose. Oksygen er et avfallsprodukt som plantene slipper ut. I tillegg til fotosyntesen må planter drive med celleånding. Det gjør de hele...",
-        "translation": ""
-      }
-    ],
+    "article": {
+      "title": "Fotosyntesen",
+      "introduction": "Fotosyntesen er den viktigste livsprosessen på jorda. For over tre milliarder år siden var det ikke oksygen i atmosfæren. De encella enkle organismene som eksisterte da, levde i havet. For det meste av livet den gangen var oksygen ei gift.",
+      "sections": [
+        {
+          "heading": "Mulig med liv på land",
+          "level": 2,
+          "paragraphs": [
+            "Da plantene hadde inntatt landjorda, var det mulig for noen dyr å krabbe opp på land. Dette gjorde de først for å unngå rovdyra i havet, men etter hvert utviklet de seg til å kunne tilbringe lengre tid på land enn i vann. De utviklet lunger for å kunne ta opp oksygen fra lufta i stedet for fra vannet.",
+            "Plantene og fotosyntesen er derfor opphavet til nesten alt liv som eksisterer på planeten vår."
+          ]
+        },
+        {
+          "heading": "Produserer sukker",
+          "level": 2,
+          "paragraphs": [
+            "Når planten driver fotosyntese, produserer den sukker. Dette sukkeret blir brukt til mye forskjellig. Planten bruker sukker til næring, som den for eksempel lagrer i knoller under bakken. Da omdannes sukkeret til stivelse – dette skjer blant annet i poteten.",
+            "Planten bruker også sukkeret til å danne byggematerialer for å vokse. Da omdannes sukkeret til cellulose – som for eksempel stammen på et tre. I tillegg til at sukkeret er næring og byggemateriale for planten, er det også næring for dyr og mennesker. Det er bare planter og alger som driver fotosyntese og kan produsere sukker. Vi kaller dem derfor produsenter."
+          ]
+        },
+        {
+          "heading": "Klorofyllkorn eller grønnkorn",
+          "level": 2,
+          "paragraphs": [
+            "For at plantene skal kunne drive med fotosyntese, har de grønne korn inne i cellene. Grønnkorna har klorofyll som kan fange energien i sollyset. De fungerer nesten som solcellepaneler. Energien som plantene henter fra sollyset, bruker de til å danne sukker: glukose. Oksygen er et avfallsprodukt som plantene slipper ut.",
+            "I tillegg til fotosyntesen må planter drive med celleånding. Det gjør de hele tida. Er det nok lys, blir det produsert mer energi i fotosyntesen enn det blir brukt i celleåndinga, men er det mindre lys, vil plantene etter hvert ikke klare å hente energi gjennom fotosyntesen, og de må gå over på rein celleånding. Når plantene bruker like mye oksygen i celleåndinga som de slipper ut gjennom fotosyntesen, kaller vi det plantenes kompensasjonsnivå. Ulike planter har ulikt kompensasjonsnivå, avhengig av om de er tilpasset å vokse i mye eller lite lys."
+          ]
+        }
+      ]
+    },
+    "terms": [],
     "checklist": [
       "Jeg kan forklare hva «mulig med liv på land» betyr",
       "Jeg kan forklare hva «produserer sukker» betyr",
       "Jeg kan forklare hva «klorofyllkorn eller grønnkorn» betyr",
       "Jeg kan oppsummere det viktigste fra leksjonen"
-    ],
-    "vocabulary": []
+    ]
   },
   "2-2": {
     "title": "Hva er energi?",
@@ -73,41 +66,57 @@ export const lessonsData = {
       "Forstå hva «Energi er konstant» betyr",
       "Kunne forklare 5 viktige begreper"
     ],
-    "dialog": [
+    "article": {
+      "title": "Hva er energi?",
+      "introduction": "Energi er det som får noe til å skje. Det finnes mange former for energi. Noen former kan omdannes til andre former eller overføres til mennesker og gjenstander. Hvor kommer energien fra, og hvordan kan vi omdanne den slik at den blir nyttig for oss?",
+      "sections": [
+        {
+          "heading": "Energi får noe til å skje",
+          "level": 2,
+          "paragraphs": [
+            "Energi er det som får noe til å skje: Når du skrur på telefonen, vil energi fra batteriet gjøre at du kan sende meldinger med den. Når du slår på lyset, gir elektrisk energi lys og varme, og energien i maten du spiser, gir deg energi til alt du gjør i løpet av en dag."
+          ]
+        },
+        {
+          "heading": "Energikilder",
+          "level": 2,
+          "paragraphs": [
+            "Det vi kan høste energi fra, kaller vi energikilder. Med energikilde mener vi energi som finnes naturlig, som sol-, vind- og vannenergi, oljelagre under havbunnen og kjerneenergi."
+          ]
+        },
+        {
+          "heading": "Energi er konstant",
+          "level": 2,
+          "paragraphs": [
+            "Energi kan ikke oppstå eller forsvinne, den kan bare gå over i andre former. Det betyr at den totale mengden energi er den samme hele tida. Dette høres litt rart ut, vi har jo alle opplevd at vi ikke har strøm på telefonen, og det virker dermed som om den elektriske energien har forsvunnet. Det har den ikke! Den har rett og slett gått over til andre former for energi: varmeenergi og lysenergi."
+          ]
+        }
+      ]
+    },
+    "terms": [
       {
-        "speaker": "Lærer",
-        "text": "I dag skal vi lære om hva er energi?. Energi er det som får noe til å skje. Det finnes mange former for energi. Noen former kan omdannes til andre former eller overføres til mennesker og gjenstander. Hvor kommer energien fra, og hvordan kan vi omdanne den slik at den blir nyttig for oss?",
-        "translation": ""
+        "term": "Energi",
+        "definition": "er det som får noe til å skje."
       },
       {
-        "speaker": "Elev",
-        "text": "Hva betyr «Energi får noe til å skje»?",
-        "translation": ""
+        "term": "Energikilde",
+        "definition": "er noe vi kan høste energi fra."
       },
       {
-        "speaker": "Lærer",
-        "text": "Energi er det som får noe til å skje: Når du skrur på telefonen, vil energi fra batteriet gjøre at du kan sende meldinger med den. Når du slår på lyset, gir elektrisk energi lys og varme, og energien i maten du spiser, gir deg energi til alt du gjør i løpet av en dag.",
-        "translation": ""
+        "term": "Stillingsenergi (potensiell energi)",
+        "definition": "er energi en gjenstand har på grunn av stillingen/posisjonen sin."
       },
       {
-        "speaker": "Elev",
-        "text": "Hva betyr «Energikilder»?",
-        "translation": ""
+        "term": "Bevegelsesenergi (kinetisk energi)",
+        "definition": "er den energien en gjenstand har på grunn av hastigheten sin."
       },
       {
-        "speaker": "Lærer",
-        "text": "Det vi kan høste energi fra, kaller vi energikilder. Med energikilde mener vi energi som finnes naturlig, som sol-, vind- og vannenergi, oljelagre under havbunnen og kjerneenergi.",
-        "translation": ""
+        "term": "Energikjede",
+        "definition": "er en oversikt over hvordan energi overføres fra en gjenstand til en annen."
       },
       {
-        "speaker": "Elev",
-        "text": "Hva betyr «Energi er konstant»?",
-        "translation": ""
-      },
-      {
-        "speaker": "Lærer",
-        "text": "Energi kan ikke oppstå eller forsvinne, den kan bare gå over i andre former. Det betyr at den totale mengden energi er den samme hele tida. Dette høres litt rart ut, vi har jo alle opplevd at vi ikke har strøm på telefonen, og det virker dermed som om den elektriske energien har forsvunnet. Det har den ikke! Den har rett og slett gått over til andre former for energi: varmeenergi og lysenergi.",
-        "translation": ""
+        "term": "Energiovergang",
+        "definition": "er når energi går over fra en form til en annen."
       }
     ],
     "checklist": [
@@ -116,7 +125,6 @@ export const lessonsData = {
       "Jeg kan forklare hva «energi er konstant» betyr",
       "Jeg kan kunne forklare 5 viktige begreper",
       "Jeg kan oppsummere det viktigste fra leksjonen"
-    ],
-    "vocabulary": []
+    ]
   }
 };

@@ -152,7 +152,14 @@ export async function loadLessonContent(externalConfig) {
     logDebug('✓ Data found for', chapterId);
 
     loadLearningGoals(data.learningGoals);
-    loadDialog(data.dialog);
+
+    // Article-first: render article for non-language courses, dialog for language courses
+    if (data.article) {
+      loadArticle(data.article, data.terms);
+    } else {
+      loadDialog(data.dialog);
+    }
+
     loadAdditionalTexts(data.additionalTexts);
     loadPhraseTables(data.phraseTables);
     loadFactCards(data.factCards);
@@ -243,6 +250,96 @@ function loadDialog(dialog) {
       return `<p><strong>${characterName}:</strong> ${taggedText}</p>`;
     }).join('');
 
+    replikkContainer.innerHTML = html;
+  }
+}
+
+/**
+ * Tags recognized science terms in text with <span class="term-lookup">.
+ * Definition is stored in data-term-definition attribute (self-contained, no bank lookups).
+ * Terms are sorted longest-first to avoid partial matches.
+ */
+function autoTagTerms(text, terms) {
+  if (!text || !terms || terms.length === 0) return text;
+
+  // Sort terms longest-first to avoid partial matches (e.g., "celledeling" before "celle")
+  const sorted = [...terms].sort((a, b) => b.term.length - a.term.length);
+
+  // Build regex that skips existing spans and HTML tags
+  for (const t of sorted) {
+    // Escape special regex characters in term
+    const escaped = t.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // Case-insensitive, word-boundary match, skip inside tags
+    const re = new RegExp(
+      `(<span[^>]*>.*?<\\/span>)|(<[^>]+>)|(\\b${escaped}\\b)`,
+      'gi'
+    );
+    const escapedDef = t.definition.replace(/"/g, '&quot;');
+    text = text.replace(re, (match, existingSpan, tag, term) => {
+      if (existingSpan || tag) return match;
+      if (term) {
+        return `<span class="term-lookup" data-term-definition="${escapedDef}">${term}</span>`;
+      }
+      return match;
+    });
+  }
+
+  return text;
+}
+
+/**
+ * Renders structured article content (for non-language courses).
+ * Replaces the dialog section with flowing article prose.
+ * @param {Object} article - Article data: { title, introduction, sections }
+ * @param {Array} terms - Optional terms array for auto-tagging
+ */
+function loadArticle(article, terms) {
+  const tittelEl = document.getElementById('dialog-tittel');
+  const beskrivelseEl = document.getElementById('dialog-beskrivelse');
+  const replikkContainer = document.getElementById('dialog-replikker');
+
+  // Hide audio player and image (not needed for articles)
+  const audioEl = document.querySelector('#leksjon audio');
+  if (audioEl) audioEl.style.display = 'none';
+  const bildeEl = document.getElementById('dialog-bilde');
+  if (bildeEl) bildeEl.style.display = 'none';
+
+  // Hide "Tekst A:" label
+  const textALabel = document.querySelector('#leksjon .text-a-label, #leksjon [data-i18n="text_a_title"]');
+  if (textALabel) textALabel.style.display = 'none';
+
+  // Set article title
+  if (tittelEl && article.title) {
+    tittelEl.innerHTML = article.title;
+  }
+
+  // Set introduction
+  if (beskrivelseEl && article.introduction) {
+    const taggedIntro = terms ? autoTagTerms(article.introduction, terms) : article.introduction;
+    beskrivelseEl.innerHTML = taggedIntro;
+  } else if (beskrivelseEl) {
+    beskrivelseEl.style.display = 'none';
+  }
+
+  // Render sections as flowing prose
+  if (replikkContainer && article.sections && article.sections.length > 0) {
+    let html = '<div class="prose max-w-none space-y-6">';
+
+    for (const section of article.sections) {
+      const headingTag = section.level === 3 ? 'h4' : section.level === 4 ? 'h5' : 'h3';
+      const headingClass = section.level === 3
+        ? 'text-lg font-bold text-primary-700 mt-6 mb-2'
+        : 'text-xl font-bold text-primary-800 mt-8 mb-3';
+
+      html += `<${headingTag} class="${headingClass}">${section.heading}</${headingTag}>`;
+
+      for (const para of section.paragraphs) {
+        const tagged = terms ? autoTagTerms(para, terms) : para;
+        html += `<p class="text-neutral-700 leading-relaxed">${tagged}</p>`;
+      }
+    }
+
+    html += '</div>';
     replikkContainer.innerHTML = html;
   }
 }

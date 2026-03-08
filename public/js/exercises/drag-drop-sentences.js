@@ -12,6 +12,9 @@ import { handleReset } from './core-reset.js';
 
 export function autoSetupDragDropTasks() {
     document.querySelectorAll('.drag-drop-task').forEach(container => {
+        // Skip dynamically-loaded exercises (handled by exercises-content-loader)
+        if (container.dataset.dynamic === 'true') return;
+
         const containerId = container.id;
         const dataVariableName = container.dataset.dragDropVariable;
         const dragDropData = window[dataVariableName];
@@ -62,12 +65,12 @@ export function setupDragDropSentenceTask(containerId, sentences) {
                 const dropZoneEl = taskWrapper.querySelector('.drop-zone');
                 const wordBankEl = taskWrapper.querySelector('.word-bank');
                 const resetBtn = taskWrapper.querySelector('.reset');
-                const feedbackEl = taskWrapper.querySelector('.feedback');
+                const feedbackEl = taskWrapper.querySelector('.feedback-message') || taskWrapper.querySelector('.feedback');
 
                 const populate = () => {
-                    wordBankEl.innerHTML = '';
-                    dropZoneEl.innerHTML = '';
-                    feedbackEl.innerHTML = '';
+                    if (wordBankEl) wordBankEl.innerHTML = '';
+                    if (dropZoneEl) dropZoneEl.innerHTML = '';
+                    if (feedbackEl) feedbackEl.innerHTML = '';
 
                     const shuffledWords = [...sentence.words].sort(() => Math.random() - 0.5);
                     shuffledWords.forEach(word => {
@@ -89,7 +92,7 @@ export function setupDragDropSentenceTask(containerId, sentences) {
                                 }
                             });
                         }
-                        if (savedSentenceState.isCompleted) {
+                        if (savedSentenceState.isCompleted && feedbackEl) {
                             feedbackEl.textContent = '🎉 Perfekt! Helt riktig.';
                             feedbackEl.className = 'feedback-message correct';
                             taskWrapper.querySelectorAll('.clickable-word').forEach(w => {
@@ -129,8 +132,10 @@ export function setupDragDropSentenceTask(containerId, sentences) {
                     const correctAnswer = sentence.words.join(' ');
                     const sentenceKey = `sentence_${index}`;
                     if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-                        feedbackEl.textContent = '🎉 Perfekt! Helt riktig.';
-                        feedbackEl.className = 'feedback-message correct';
+                        if (feedbackEl) {
+                            feedbackEl.textContent = '🎉 Perfekt! Helt riktig.';
+                            feedbackEl.className = 'feedback-message correct';
+                        }
                         taskWrapper.querySelectorAll('.clickable-word').forEach(w => {
                             w.classList.remove('cursor-pointer', 'hover:bg-primary-200');
                             w.classList.add('cursor-default', 'bg-success-100', 'text-success-800');
@@ -149,12 +154,14 @@ export function setupDragDropSentenceTask(containerId, sentences) {
                             trackExerciseCompletion(exerciseId);
                         }
                     } else {
-                        feedbackEl.textContent = '❌ Ikke helt riktig. Prøv igjen!';
-                        feedbackEl.className = 'feedback-message incorrect';
+                        if (feedbackEl) {
+                            feedbackEl.textContent = '❌ Ikke helt riktig. Prøv igjen!';
+                            feedbackEl.className = 'feedback-message incorrect';
+                        }
                         dropZoneEl.classList.add('animate-pulse');
                         ctx.setTimeout(() => {
                             dropZoneEl.classList.remove('animate-pulse');
-                            feedbackEl.innerHTML = '';
+                            if (feedbackEl) feedbackEl.innerHTML = '';
                             delete savedState[sentenceKey];
                             saveData(storageKey, savedState);
                             populate();

@@ -88,10 +88,16 @@ for (let ch = 1; ch <= curriculum.chapters; ch++) {
     const mod = await import(`file://${chapterFile}`);
     const raw = mod.lessonsData;
 
-    // Build chapter title from first lesson
+    // Build chapter title from lesson titles in this chapter
     const firstLessonId = `${ch}-1`;
     if (raw[firstLessonId]) {
-        chapterTitles[ch] = `Chapter ${ch}`;
+        const lessonTitles = Object.entries(raw)
+            .filter(([id]) => id.startsWith(`${ch}-`))
+            .map(([, l]) => l.title)
+            .filter(Boolean);
+        chapterTitles[ch] = lessonTitles.length > 0
+            ? lessonTitles.join(', ')
+            : `Chapter ${ch}`;
     }
 
     // Normalize each lesson
@@ -182,7 +188,7 @@ const template = fs.readFileSync(templatePath, 'utf-8');
 for (const [lessonId, lessonData] of Object.entries(allLessons)) {
     const [chapter, lesson] = lessonId.split('-');
     const fileName = `${curriculum.filePrefix}-${chapter}-${lesson}.html`;
-    const title = lessonData.dialog?.title || lessonData._originalTitle || `Lesson ${chapter}.${lesson}`;
+    const title = lessonData.dialog?.title || lessonData.article?.title || lessonData._originalTitle || `Lesson ${chapter}.${lesson}`;
     const lessonNumber = `${chapter}.${lesson}`;
 
     // Check if this lesson has extra exercises
@@ -194,6 +200,44 @@ for (const [lessonId, lessonData] of Object.entries(allLessons)) {
         .replace(/\{\{CHAPTER_ID\}\}/g, lessonId)
         .replace(/\{\{FILE_NAME\}\}/g, fileName)
         .replace(/\{\{LESSON_DOT_NUMBER\}\}/g, lessonNumber);
+
+    // Replace hardcoded "German A1" meta tag with actual course name
+    html = html.replace(
+        '<meta content="German A1" name="apple-mobile-web-app-title" />',
+        `<meta content="${escapeHtml(config.name)}" name="apple-mobile-web-app-title" />`
+    );
+
+    // Config-driven tab stripping: read tabs from curriculum config
+    const configuredTabs = curriculum.tabs || null;
+    const configuredTabIds = configuredTabs ? new Set(configuredTabs.map(t => t.id)) : null;
+
+    // Strip Ordforråd tab if not in configured tabs
+    if (configuredTabIds && !configuredTabIds.has('ordforrad')) {
+        html = html.replace(
+            /<!-- ORDFORRÅD TAB -->[\s\S]*?<!-- GRAMMATIKK TAB -->/,
+            '<!-- GRAMMATIKK TAB -->'
+        );
+        // Fix Leksjon "Next" button to skip ordforrad
+        // Find the next configured tab after ordforrad in the standard order
+        const tabOrder = ['leksjon', 'ordforrad', 'grammatikk', 'exercises'];
+        const nextTab = tabOrder.find(t => t !== 'ordforrad' && configuredTabIds.has(t) && tabOrder.indexOf(t) > tabOrder.indexOf('ordforrad'));
+        if (nextTab) {
+            html = html.replace('data-next-tab="ordforrad"', `data-next-tab="${nextTab}"`);
+        }
+    }
+
+    // Strip Dialog tab and classroom dialog button if not in configured tabs
+    if (configuredTabIds && !configuredTabIds.has('dialog')) {
+        html = html.replace(
+            /<!-- DIALOG TAB -->[\s\S]*?<div id="classroom-dialog-container"><\/div>\s*<\/div>/,
+            ''
+        );
+        // Remove the classroom dialog button section from exercises tab
+        html = html.replace(
+            /<!-- Classroom Dialog Button -->[\s\S]*?<\/button>\s*<\/div>\s*<\/div>\s*<\/div>/,
+            ''
+        );
+    }
 
     // Handle extra exercises tab
     if (hasExtras) {
@@ -425,6 +469,7 @@ console.log(`\n   Run: npx http-server dist -p 8080`);
  * Normalize example lesson data to engine format
  * - goals → learningGoals
  * - flat dialog[] → structured { title, lines: [{ person, text }] }
+ * - pass through article + terms (non-language courses)
  */
 function normalizeLessonData(lesson) {
     const normalized = {};
@@ -432,10 +477,9 @@ function normalizeLessonData(lesson) {
     // goals → learningGoals
     normalized.learningGoals = lesson.learningGoals || lesson.goals || [];
 
-    // Normalize dialog format
+    // Normalize dialog format (language courses)
     if (Array.isArray(lesson.dialog)) {
         // Flat array format → structured
-        const firstLine = lesson.dialog[0];
         normalized.dialog = {
             title: lesson.title || '',
             description: lesson.subtitle || '',
@@ -448,6 +492,14 @@ function normalizeLessonData(lesson) {
     } else if (lesson.dialog) {
         // Already structured
         normalized.dialog = lesson.dialog;
+    }
+
+    // Pass through article + terms (non-language courses)
+    if (lesson.article) {
+        normalized.article = lesson.article;
+    }
+    if (lesson.terms) {
+        normalized.terms = lesson.terms;
     }
 
     // Pass through other fields
@@ -511,7 +563,7 @@ function generateHomepage(config, curriculum, lessons, chapterTitles) {
         const fileName = `${curriculum.filePrefix}-${lessonId.replace('-', '-')}.html`;
         chapters[ch].push({
             id: lessonId,
-            title: data._originalTitle || data.dialog?.title || `Lesson ${lessonId}`,
+            title: data._originalTitle || data.dialog?.title || data.article?.title || `Lesson ${lessonId}`,
             fileName,
             goals: data.learningGoals || []
         });

@@ -176,9 +176,9 @@ export function setupWordLookups() {
         document.body.appendChild(tooltipElement);
     }
 
-    // Event Delegation: Listen on body for clicks
+    // Event Delegation: Listen on body for clicks (word-lookup, grammar-info, term-lookup)
     document.body.addEventListener('click', (event) => {
-        const target = event.target.closest('.grammar-info, .word-lookup');
+        const target = event.target.closest('.grammar-info, .word-lookup, .term-lookup');
         if (!target) return; // Not a lookup element
 
         event.stopPropagation();
@@ -199,6 +199,26 @@ export function setupWordLookups() {
 
         tooltipElement.dataset.currentWordId = target.textContent;
         tooltipElement.innerHTML = '';
+
+        // --- TERM LOOKUP (science terms with data-term-definition) ---
+        if (target.classList.contains('term-lookup') && target.dataset.termDefinition) {
+            const termText = target.textContent.trim();
+            const definition = target.dataset.termDefinition;
+            const termHTML = `
+                <div class="tooltip-title">📘 ${termText}</div>
+                <div class="mt-1 text-sm">${definition}</div>
+            `;
+            tooltipElement.innerHTML = termHTML;
+
+            const wordRect = target.getBoundingClientRect();
+            tooltipElement.style.position = 'fixed';
+            tooltipElement.style.zIndex = '10000';
+            const topPos = wordRect.top - tooltipElement.offsetHeight - 8;
+            tooltipElement.style.left = `${wordRect.left}px`;
+            tooltipElement.style.top = `${topPos}px`;
+            tooltipElement.classList.add('visible');
+            return;
+        }
 
         const wordType = target.dataset.type;
         // Prioritize explicit data-attributes, then data-word (Ch 12 style), then text content
@@ -564,7 +584,7 @@ export function setupWordLookups() {
 
     // Close tooltip when clicking outside
     document.addEventListener('click', (event) => {
-        if (!event.target.closest('.grammar-info, .word-lookup')) {
+        if (!event.target.closest('.grammar-info, .word-lookup, .term-lookup')) {
             if (tooltipElement && tooltipElement.classList.contains('visible')) {
                 tooltipElement.classList.remove('visible');
             }
@@ -593,6 +613,31 @@ export function setupGrammarTermLookups() {
                 document.body.appendChild(tooltipElement);
             }
 
+            // Science term with self-contained definition (from autoTagTerms)
+            if (event.target.dataset.termDefinition) {
+                const termText = event.target.textContent.trim();
+                const termDef = event.target.dataset.termDefinition;
+
+                const isVisible = tooltipElement.classList.contains('visible');
+                tooltipElement.classList.remove('visible');
+                if (isVisible && tooltipElement.dataset.currentWordId === termText) return;
+
+                tooltipElement.dataset.currentWordId = termText;
+                tooltipElement.innerHTML = `
+                    <div class="tooltip-title">\u{1F4D8} ${termText}</div>
+                    <div class="mt-1 text-sm">${termDef}</div>
+                `;
+
+                const wordRect = event.target.getBoundingClientRect();
+                tooltipElement.style.position = 'fixed';
+                tooltipElement.style.zIndex = '10000';
+                tooltipElement.style.left = `${wordRect.left}px`;
+                tooltipElement.style.top = `${wordRect.top - tooltipElement.offsetHeight - 8}px`;
+                tooltipElement.classList.add('visible');
+                return;
+            }
+
+            // Grammar term from wordlist
             const termKey = event.target.dataset.term;
             const definition = grammarWordlist[termKey];
 

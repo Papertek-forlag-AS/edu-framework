@@ -12,6 +12,9 @@ import { saveExerciseState, loadExerciseState, getExerciseStorageKey } from './s
 
 export function autoSetupImageMatchingGames() {
     document.querySelectorAll('.image-matching-game-task').forEach(container => {
+        // Skip dynamically-loaded exercises (handled by exercises-content-loader)
+        if (container.dataset.dynamic === 'true') return;
+
         const containerId = container.id;
         const pairsVariableName = container.dataset.pairsVariable;
         const pairsData = window[pairsVariableName];
@@ -37,7 +40,7 @@ export function setupImageMatchingGame(containerId, pairsData) {
             const dom = {
                 images: ctx.$('.images'),
                 answers: ctx.$('.answers'),
-                feedback: ctx.$('.feedback'),
+                feedback: ctx.$('.feedback-message') || ctx.$('.feedback'),
                 resetButton: ctx.$('.reset'),
             };
 

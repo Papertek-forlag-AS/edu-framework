@@ -14,6 +14,9 @@ import { t } from '../utils/i18n.js';
 
 export function autoSetupMatchingGames() {
     document.querySelectorAll('.matching-game-task').forEach(container => {
+        // Skip dynamically-loaded exercises (handled by exercises-content-loader)
+        if (container.dataset.dynamic === 'true') return;
+
         const containerId = container.id;
         const pairsVariableName = container.dataset.pairsVariable;
         const isIcon = container.dataset.isIconGame === 'true';
@@ -40,7 +43,7 @@ export function setupMatchingGame(containerId, pairsData, isIconGame = false) {
             const dom = {
                 questions: ctx.$('.questions'),
                 answers: ctx.$('.answers'),
-                feedback: ctx.$('.feedback'),
+                feedback: ctx.$('.feedback-message') || ctx.$('.feedback'),
                 resetButton: ctx.$('.reset'),
             };
 

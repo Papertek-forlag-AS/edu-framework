@@ -16,7 +16,7 @@ export function setupChronologyTask(exerciseId, items) {
         onMount(ctx) {
             const poolContainer = ctx.$('.chronology-pool');
             const timelineContainer = ctx.$('.chronology-timeline');
-            const feedbackElement = ctx.$('.feedback');
+            const feedbackElement = ctx.$('.feedback-message') || ctx.$('.feedback');
             const resetButton = ctx.$('.reset-btn');
 
             if (!poolContainer || !timelineContainer) return;

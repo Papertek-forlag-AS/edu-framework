@@ -35,6 +35,11 @@ export default {
       description: 'Introduksjon til variabler og likninger',
       cefrLevel: null,
       contentPath: 'content/math',
+      tabs: [
+        { id: 'leksjon', i18nKey: 'tab_lesson', label: 'Leksjon' },
+        { id: 'grammatikk', i18nKey: 'tab_theory', label: 'Teori' },
+        { id: 'exercises', i18nKey: 'tab_exercises', label: 'Oppgaver' },
+      ],
     },
   ],
 

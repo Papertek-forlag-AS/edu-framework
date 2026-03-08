@@ -92,6 +92,16 @@ const NATURFAG_LANGUAGE_CONFIG = {
     characterNormalization: {}
 };
 
+// --- Default Tab Configuration ---
+// Language courses use this when no explicit tabs are defined.
+// Non-language courses override with their own tabs array.
+export const DEFAULT_TABS = [
+    { id: 'leksjon', i18nKey: 'tab_lesson' },
+    { id: 'ordforrad', i18nKey: 'tab_vocabulary' },
+    { id: 'grammatikk', i18nKey: 'tab_grammar' },
+    { id: 'exercises', i18nKey: 'tab_exercises' },
+];
+
 export const CURRICULUM_REGISTRY = {
     'us-8': {
         id: 'us-8',
@@ -240,9 +250,16 @@ export const CURRICULUM_REGISTRY = {
         description: 'Celler, fotosyntese og energi',
         contentPath: '../../content/naturfag',
         languageDir: 'naturfag',
+        theme: 'default',
         paths: {
             homeLink: '../index.html'
         },
+        tabs: [
+            { id: 'leksjon', i18nKey: 'tab_lesson', label: 'Leksjon' },
+            { id: 'ordforrad', i18nKey: 'tab_terms', label: 'Begreper' },
+            { id: 'grammatikk', i18nKey: 'tab_reference', label: 'Fagstoff' },
+            { id: 'exercises', i18nKey: 'tab_exercises', label: 'Oppgaver' },
+        ],
         languageConfig: NATURFAG_LANGUAGE_CONFIG
     },
     'fransk1-vg1': {
@@ -268,4 +285,14 @@ export const CURRICULUM_REGISTRY = {
  */
 export function getCurriculumConfig(id) {
     return CURRICULUM_REGISTRY[id] || Object.values(CURRICULUM_REGISTRY)[0] || {};
+}
+
+/**
+ * Returns the tab configuration for a curriculum.
+ * If the curriculum defines custom tabs, those are used.
+ * Otherwise falls back to DEFAULT_TABS (language-learning default).
+ */
+export function getCurriculumTabs(id) {
+    const config = getCurriculumConfig(id);
+    return config.tabs || DEFAULT_TABS;
 }

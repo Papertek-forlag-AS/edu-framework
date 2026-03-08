@@ -36,6 +36,12 @@ export default {
       description: 'Celler, fotosyntese og energi',
       cefrLevel: null,
       contentPath: 'content/naturfag',
+      tabs: [
+        { id: 'leksjon', i18nKey: 'tab_lesson', label: 'Leksjon' },
+        { id: 'ordforrad', i18nKey: 'tab_terms', label: 'Begreper' },
+        { id: 'grammatikk', i18nKey: 'tab_reference', label: 'Fagstoff' },
+        { id: 'exercises', i18nKey: 'tab_exercises', label: 'Oppgaver' },
+      ],
     },
   ],
 

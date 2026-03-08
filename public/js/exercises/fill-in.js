@@ -14,6 +14,9 @@ import { t } from '../utils/i18n.js';
 
 export function autoSetupFillInTasks() {
     document.querySelectorAll('.fill-in-task').forEach(container => {
+        // Skip dynamically-loaded exercises (handled by exercises-content-loader)
+        if (container.dataset.dynamic === 'true') return;
+
         if (container.id) {
             setupFillInTask(container.id);
         } else {
