@@ -211,19 +211,32 @@ for (const [lessonId, lessonData] of Object.entries(allLessons)) {
     const configuredTabs = curriculum.tabs || null;
     const configuredTabIds = configuredTabs ? new Set(configuredTabs.map(t => t.id)) : null;
 
-    // Strip Ordforråd tab if not in configured tabs OR vocabTrainer is disabled
-    const stripOrdforrad = (configuredTabIds && !configuredTabIds.has('ordforrad')) || config.features?.vocabTrainer === false;
-    if (stripOrdforrad) {
+    // Strip Ordforråd tab if not in configured tabs
+    if (configuredTabIds && !configuredTabIds.has('ordforrad')) {
         html = html.replace(
             /<!-- ORDFORRÅD TAB -->[\s\S]*?<!-- GRAMMATIKK TAB -->/,
             '<!-- GRAMMATIKK TAB -->'
         );
         // Fix Leksjon "Next" button to skip ordforrad
-        // Find the next configured tab after ordforrad in the standard order
         const tabOrder = ['leksjon', 'ordforrad', 'grammatikk', 'exercises'];
         const nextTab = tabOrder.find(t => t !== 'ordforrad' && configuredTabIds.has(t) && tabOrder.indexOf(t) > tabOrder.indexOf('ordforrad'));
         if (nextTab) {
             html = html.replace('data-next-tab="ordforrad"', `data-next-tab="${nextTab}"`);
+        }
+    }
+
+    // Strip Grammatikk tab if not in configured tabs OR grammarModules is disabled
+    const stripGrammatikk = (configuredTabIds && !configuredTabIds.has('grammatikk')) || config.features?.grammarModules === false;
+    if (stripGrammatikk) {
+        html = html.replace(
+            /<!-- GRAMMATIKK TAB -->[\s\S]*?<!-- EXERCISES TAB -->/,
+            '<!-- EXERCISES TAB -->'
+        );
+        // Fix next-tab pointers that targeted grammatikk
+        const tabOrder = ['leksjon', 'ordforrad', 'grammatikk', 'exercises'];
+        const nextTab = tabOrder.find(t => t !== 'grammatikk' && configuredTabIds.has(t) && tabOrder.indexOf(t) > tabOrder.indexOf('grammatikk'));
+        if (nextTab) {
+            html = html.replace('data-next-tab="grammatikk"', `data-next-tab="${nextTab}"`);
         }
     }
 
