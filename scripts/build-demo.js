@@ -211,8 +211,9 @@ for (const [lessonId, lessonData] of Object.entries(allLessons)) {
     const configuredTabs = curriculum.tabs || null;
     const configuredTabIds = configuredTabs ? new Set(configuredTabs.map(t => t.id)) : null;
 
-    // Strip Ordforråd tab if not in configured tabs
-    if (configuredTabIds && !configuredTabIds.has('ordforrad')) {
+    // Strip Ordforråd tab if not in configured tabs OR vocabTrainer is disabled
+    const stripOrdforrad = (configuredTabIds && !configuredTabIds.has('ordforrad')) || config.features?.vocabTrainer === false;
+    if (stripOrdforrad) {
         html = html.replace(
             /<!-- ORDFORRÅD TAB -->[\s\S]*?<!-- GRAMMATIKK TAB -->/,
             '<!-- GRAMMATIKK TAB -->'

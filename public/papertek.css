@@ -601,7 +601,7 @@
     display: none;
   }
   .tab-content.active {
-    display: block;
+    display: block !important;
   }
 
 
