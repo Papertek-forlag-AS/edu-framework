@@ -44,35 +44,9 @@ function detectEnvironment() {
 }
 
 // --- FIREBASE CONFIGURATIONS ---
-const FIREBASE_CONFIGS = {
-    development: {
-        apiKey: "AIzaSyB6p1-0IJh6-_ST7nFtNct4noNqZMt9y34",
-        authDomain: "tysk01-dev.firebaseapp.com",
-        projectId: "tysk01-dev",
-        storageBucket: "tysk01-dev.firebasestorage.app",
-        messagingSenderId: "420569508908",
-        appId: "1:420569508908:web:1d1f88353bc2dbcdb67589",
-        measurementId: "G-9WCWZV5CBC"
-    },
-    staging: {
-        apiKey: "AIzaSyBL6zke6KL3belZg-mHt4B-BD9eYE674HA",
-        authDomain: "tysk01-staging.firebaseapp.com",
-        projectId: "tysk01-staging",
-        storageBucket: "tysk01-staging.firebasestorage.app",
-        messagingSenderId: "1052614340189",
-        appId: "1:1052614340189:web:4836ed58a17fce46cee7b4",
-        measurementId: "G-RQ812C6XL9"
-    },
-    production: {
-        apiKey: "AIzaSyBb6T-TYWMbUWwktgAXUG9yhZ4NsGyLwD0",
-        authDomain: "tysk01-141b1.firebaseapp.com", // IMPORTANT: Must be .firebaseapp.com for auth
-        projectId: "tysk01-141b1",
-        storageBucket: "tysk01-141b1.firebasestorage.app",
-        messagingSenderId: "129236699385",
-        appId: "1:129236699385:web:7b93e0082bbb3990613a28",
-        measurementId: "G-MB76YPR90Q"
-    }
-};
+// Loaded from papertek.config.js at runtime (firebase.dev / firebase.staging / firebase.production)
+// Each project must provide its own Firebase credentials — never hardcode them in the engine.
+const FIREBASE_CONFIGS = window.__PAPERTEK_FIREBASE_CONFIGS__ || {};
 
 // Lazy initialization - only initialize when first needed
 function ensureFirebaseInitialized() {
@@ -83,6 +57,10 @@ function ensureFirebaseInitialized() {
         // Detect environment and get appropriate config
         _currentEnvironment = detectEnvironment();
         const firebaseConfig = FIREBASE_CONFIGS[_currentEnvironment];
+
+        if (!firebaseConfig || !firebaseConfig.apiKey) {
+            throw new Error(`No Firebase config for environment '${_currentEnvironment}'. Provide firebase configs via papertek.config.js or window.__PAPERTEK_FIREBASE_CONFIGS__.`);
+        }
 
         console.log(`🔥 Firebase Environment: ${_currentEnvironment.toUpperCase()}`);
         console.log(`   Project ID: ${firebaseConfig.projectId}`);
