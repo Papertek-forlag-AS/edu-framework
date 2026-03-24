@@ -1,6 +1,6 @@
 # Naturfag VG1 — Papertek Example
 
-> **Live demo:** [naturfag-vg1-demo.vercel.app](https://naturfag-vg1-demo.vercel.app)
+> **Live demo:** [papertek-forlag-as.github.io/edu-framework](https://papertek-forlag-as.github.io/edu-framework/)
 
 Demonstrates that the Papertek framework works for **non-language subjects** using real educational content from [NDLA](https://ndla.no) (Nasjonal digital læringsarena).
 
