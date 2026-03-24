@@ -31,12 +31,6 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-/* Stil for faneknapper */
-.tab-button.active {
-  border-color: #F59E0B;
-  color: #F59E0B;
-}
-
 /* Stil for interaktive ordforråd-kort (flashcards) */
 .flashcard {
   perspective: 1000px;

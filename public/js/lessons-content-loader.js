@@ -160,6 +160,9 @@ export async function loadLessonContent(externalConfig) {
       loadDialog(data.dialog);
     }
 
+    // Render terms glossary in Begreper tab (non-language courses)
+    loadTermsGlossary(data.terms);
+
     loadAdditionalTexts(data.additionalTexts);
     loadPhraseTables(data.phraseTables);
     loadFactCards(data.factCards);
@@ -285,6 +288,24 @@ function autoTagTerms(text, terms) {
   }
 
   return text;
+}
+
+/**
+ * Renders a terms glossary in the Begreper tab (non-language courses).
+ * @param {Array} terms - Array of { term, definition } objects
+ */
+function loadTermsGlossary(terms) {
+  const container = document.getElementById('terms-glossary');
+  if (!container || !terms || terms.length === 0) return;
+
+  const html = terms.map(t =>
+    `<div class="p-4 bg-neutral-50 rounded-lg border border-neutral-200">` +
+    `<dt class="font-bold text-primary-700">${t.term}</dt>` +
+    `<dd class="mt-1 text-neutral-700">${t.definition}</dd>` +
+    `</div>`
+  ).join('');
+
+  container.innerHTML = `<dl class="space-y-3">${html}</dl>`;
 }
 
 /**

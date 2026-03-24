@@ -225,6 +225,16 @@ for (const [lessonId, lessonData] of Object.entries(allLessons)) {
         }
     }
 
+    // Replace vocab trainer content with terms glossary when vocabTrainer is disabled
+    // but the ordforrad tab is still configured (e.g. as "Begreper" for science courses)
+    if (config.features?.vocabTrainer === false && configuredTabIds?.has('ordforrad')) {
+        const termsTabLabel = configuredTabs.find(t => t.id === 'ordforrad')?.label || 'Begreper';
+        html = html.replace(
+            /<!-- ORDFORRÅD TAB -->\s*<div class="tab-content hidden" id="ordforrad">[\s\S]*?(<div class="mt-12 p-6 bg-neutral-100\/60 rounded-lg text-center">[\s\S]*?<\/button>\s*<\/div>\s*<\/div>)/,
+            `<!-- ORDFORRÅD TAB -->\n            <div class="tab-content hidden" id="ordforrad">\n                <div class="bg-surface p-6 rounded-xl shadow-sm mb-6">\n                    <h2 class="text-2xl font-bold text-primary-700 mb-4">${termsTabLabel}</h2>\n                    <div id="terms-glossary"><p class="text-neutral-500">Ingen begreper for denne leksjonen.</p></div>\n                </div>\n                $1`
+        );
+    }
+
     // Strip Grammatikk tab if not in configured tabs OR grammarModules is disabled
     const stripGrammatikk = (configuredTabIds && !configuredTabIds.has('grammatikk')) || config.features?.grammarModules === false;
     if (stripGrammatikk) {
